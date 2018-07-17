@@ -96,7 +96,7 @@
         margin-bottom: 0px;
     }
     .firing-card .card-body .firing-atmospheres {
-        font-size: 1rem;
+        font-size: .875rem;
         color: #333333;
         margin-bottom: 0px;
     }

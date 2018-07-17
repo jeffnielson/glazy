@@ -30,7 +30,7 @@
                 v-if="!materialComponent.isAdditional">
                 <td class="align-middle">
                     <div class="d-none d-none d-sm-block float-left">
-                        <img class="rounded-circle"
+                        <img class="rounded-circle mr-1"
                              width="34" height="34"
                              v-if="materialComponent.material.thumbnail"
                              :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
@@ -63,7 +63,7 @@
                 class="table-info">
                 <td class="align-middle">
                     <div class="d-inline d-none d-sm-block float-left">
-                        <img class="rounded-circle"
+                        <img class="rounded-circle mr-1"
                              width="34" height="34"
                              v-if="materialComponent.material.thumbnail"
                              :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
@@ -227,6 +227,9 @@ export default {
 
     .material-recipe-calculator-table tr td {
         padding: 5px;
+        line-height: 34px;
+        min-height: 34px;
+        height: 34px;
     }
 
     .material-recipe-calculator-table tr td.batch {
