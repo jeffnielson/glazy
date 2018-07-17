@@ -247,8 +247,14 @@ export default {
 
     .material-recipe-calculator-table tr.total {
         background-color: #efefef;
-        font-size: 0.75em;
+        font-size: 0.825em;
         font-style: italic;
+    }
+
+    .material-recipe-calculator-table tr.total td {
+        line-height: 18px;
+        min-height: 18px;
+        height: 18px;
     }
 
     .batch-form-inline {
