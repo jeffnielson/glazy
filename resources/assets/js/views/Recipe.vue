@@ -1219,13 +1219,14 @@
   }
 
   .card-umf-info .card-body .card-title {
+    font-size: .875em;
     color: #999999;
     margin: 0;
     text-transform: none;
   }
 
   .card-umf-info .card-body .card-text {
-    font-size: 1.825em;
+    font-size: 1.5em;
   }
 
 </style>
