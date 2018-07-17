@@ -93,26 +93,31 @@
                 <td v-if="batchValues" colspan="2"></td>
             </tr>
             <tr class="batch_form">
-                <td v-bind:colspan="numColumns" class="text-right">
-                    Tare:&nbsp;
-                    <input type="number"
-                           inputmode="numeric"
-                           size="4"
-                           maxlength="10"
-                           placeholder="0.0"
-                           id="tareSize"
-                           class="material-recipe-calculator-tare-input"
-                           v-model.number="tareSize">
-
-                    Batch:
-                    <input type="number"
-                           inputmode="numeric"
-                           size="8"
-                           maxlength="10"
-                           placeholder="0.0"
-                           id="batchSize"
-                           class="material-recipe-calculator-batch-input"
-                           v-model.number="batchSize">
+                <td v-bind:colspan="numColumns">
+                    <form class="form-inline batch-form-inline float-right">
+                        <div class="form-group">
+                            <label class="form-label form-label-sm mr-1" for="tareSize">Tare:</label>
+                            <input type="number"
+                                   inputmode="numeric"
+                                   size="4"
+                                   maxlength="10"
+                                   placeholder="0.0"
+                                   id="tareSize"
+                                   class="form-control form-control-sm material-recipe-calculator-tare-input"
+                                   v-model.number="tareSize">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label form-label-sm mr-1" for="batchSize">Batch:</label>
+                            <input type="number"
+                                   inputmode="numeric"
+                                   size="8"
+                                   maxlength="10"
+                                   placeholder="0.0"
+                                   id="batchSize"
+                                   class="form-control form-control-sm material-recipe-calculator-batch-input"
+                                   v-model.number="batchSize">
+                        </div>
+                    </form>
                 </td>
             </tr>
             </tbody>
@@ -246,7 +251,8 @@ export default {
         font-style: italic;
     }
 
-    .material-recipe-calculator-table tr.batch_form {
+    .batch-form-inline {
+        width: 100%;
     }
 
     .material-recipe-calculator-tare-input {
