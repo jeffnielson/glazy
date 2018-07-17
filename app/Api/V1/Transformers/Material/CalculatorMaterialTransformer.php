@@ -48,11 +48,18 @@ class CalculatorMaterialTransformer extends Fractal\TransformerAbstract
 
     public function transform(Material $material)
     {
+
         $material_data = [];
 
         $material_data[self::JSON_NAMES[Material::DB_ID]] = $material[Material::DB_ID];
         $material_data[self::JSON_NAMES[Material::DB_PARENT_ID]] = $material[Material::DB_PARENT_ID];
-        $material_data[self::JSON_NAMES[Material::DB_NAME]] = $material[Material::DB_NAME];
+
+        if (isset($material['other_names']) && $material['other_names']) {
+            $material_data[self::JSON_NAMES[Material::DB_NAME]] = $material[Material::DB_NAME] . ', ' . $material['other_names'];
+        }
+        else {
+            $material_data[self::JSON_NAMES[Material::DB_NAME]] = $material[Material::DB_NAME];
+        }
         $material_data[self::JSON_NAMES[Material::DB_IS_ANALYSIS]] = (boolean) $material[Material::DB_IS_ANALYSIS];
         $material_data[self::JSON_NAMES[Material::DB_IS_PRIMITIVE]] = (boolean) $material[Material::DB_IS_PRIMITIVE];
 
