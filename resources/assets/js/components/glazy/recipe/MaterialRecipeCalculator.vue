@@ -29,12 +29,16 @@
             <tr v-for="(materialComponent, index) in this.materialComponents"
                 v-if="!materialComponent.isAdditional">
                 <td class="align-middle">
-                    <img class="rounded-circle"
-                         width="40" height="40"
-                         v-if="materialComponent.material.thumbnail"
-                         :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
-                    <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
-                    <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                    <div class="d-none d-none d-sm-block float-left">
+                        <img class="rounded-circle"
+                             width="34" height="34"
+                             v-if="materialComponent.material.thumbnail"
+                             :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
+                    </div>
+                    <div>
+                        <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                        <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                    </div>
                 </td>
                 <td class="text-right amount">
                     {{ parseFloat(materialComponent.percentageAmount) }}
@@ -58,13 +62,17 @@
                 v-if="materialComponent.isAdditional"
                 class="table-info">
                 <td class="align-middle">
-                    <img class="rounded-circle"
-                         width="40" height="40"
-                         v-if="materialComponent.material.thumbnail"
-                         :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
-                    <i class="fa fa-plus"></i>
-                    <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
-                    <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                    <div class="d-inline d-none d-sm-block float-left">
+                        <img class="rounded-circle"
+                             width="34" height="34"
+                             v-if="materialComponent.material.thumbnail"
+                             :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
+                    </div>
+                    <div>
+                        <i class="fa fa-plus"></i>
+                        <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                        <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                    </div>
                 </td>
                 <td class="text-right amount">
                     {{ parseFloat(materialComponent.percentageAmount) }}
@@ -209,7 +217,7 @@ export default {
 <style>
 
     .material-recipe-calculator-table {
-        font-size: 16px;
+        font-size: 1em;
     }
 
     .material-recipe-calculator-table tr th {
