@@ -194,9 +194,27 @@
                  ok-variant="default"
                  ok-title="Close Window">
             <div class="d-block text-center">
+
                 <img class="img-fluid"
                      :src="glazyHelper.getLargeImageUrl(material, currentImage)"
                      :alt="currentImage.title">
+
+                <div v-if="currentImage && imageList.length > 1" class="lightbox-nav-left">
+                    <b-button @click.stop.prevent="previousImage()"
+                              class="btn btn-icon btn-round btn-lightbox-nav"
+                              type="button">
+                        <i class="fa fa-chevron-left"></i>
+                    </b-button>
+                </div>
+                <div v-if="currentImage && imageList.length > 1" class="lightbox-nav-right">
+                    <b-button @click.stop.prevent="nextImage()"
+                              class="btn btn-icon btn-round btn-lightbox-nav"
+                              type="button">
+                        <i class="fa fa-chevron-right"></i>
+                    </b-button>
+                </div>
+
+
                 <h6 class="mt-2" v-if="currentImage.title">
                     {{ currentImage.title }}
                 </h6>
@@ -502,7 +520,32 @@
     .image-gallery-thumb {
         padding: 10px 10px;
     }
-
+    .lightbox-nav-left {
+        position: absolute;
+        top: 50%;
+        left: 28px;
+        padding: 0;
+        margin: 0;
+        z-index: 2;
+    }
+    .lightbox-nav-right {
+        position: absolute;
+        top: 50%;
+        right: 28px;
+        padding: 0;
+        margin: 0;
+        z-index: 2;
+    }
+    .btn-lightbox-nav,
+    .btn-lightbox-nav:focus {
+        color: rgba(0,0,0,0.6);
+        background-color: rgba(0,0,0,0.2);
+    }
+    .btn-lightbox-nav:active,
+    .btn-lightbox-nav:hover {
+        color: rgba(0,0,0,1.0);
+        background-color: rgba(0,0,0,0.6);
+    }
     .gallery-swatches {
         position: absolute;
         top: 10px;
@@ -529,7 +572,6 @@
     }
 
     .btn-upload-image {
-    //  background-color: blue;
         position:absolute;
         width:100%;
         height:100%;
