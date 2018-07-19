@@ -182,7 +182,9 @@ class Material extends Model
 
     public function collections()
     {
-        return $this->belongsToMany('App\Models\Collection', 'collection_materials');
+        return $this->belongsToMany('App\Models\Collection', 'collection_materials')
+            ->orderBy('created_by_user_id', 'asc');
+
     }
 
     public function reviews()
