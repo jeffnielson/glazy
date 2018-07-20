@@ -250,7 +250,6 @@
                         min="0"
                         placeholder="%"
                         v-focus="index === focused"
-                        @focus.native="selectAmountField"
                         @focus="focused = index"
                         @blur="focused = null"
                         @change="focused = index"
@@ -812,10 +811,12 @@
           this.setSubtotal()
         }
       },
-
+      /**
+       * Doesn't work well:
       selectAmountField: function (event) {
         event.target.setSelectionRange(0, 99999);
       }
+      */
 
     }
   }
