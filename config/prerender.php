@@ -133,6 +133,32 @@
         // 'googlebot',
         // 'yahoo',
         // 'bingbot',
+
+        // 20180721 As per prerender.io advice:
+        // Make sure to update your Prerender.io middleware or manually add
+        // googlebot and bingbot to the list of user agents being checked by
+        // your Prerender.io middleware:
+        'googlebot',
+        'bingbot',
+        // Also adding the following from:
+        // https://prerender.io/documentation/google-support
+        'bufferbot',
+        'www.google.com/webmasters/tools/richsnippets',
+        'slackbot',
+        'vkShare',
+        'W3C_Validator',
+        'redditbot',
+        'Applebot',
+        'WhatsApp',
+        'flipboard',
+        'tumblr',
+        'bitlybot',
+        'SkypeUriPreview',
+        'nuzzel',
+        'Discordbot',
+        'Google Page Speed',
+        'Qwantify',
+        // 20180721 END CHANGES
         'baiduspider',
         'facebookexternalhit',
         'twitterbot',
