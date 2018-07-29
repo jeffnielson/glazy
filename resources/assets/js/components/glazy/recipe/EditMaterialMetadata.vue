@@ -391,6 +391,14 @@
           loi: this.material.analysis.percentageAnalysis.loi,
           weight: this.material.analysis.weight
         }
+        if (!this.material.isPrimitive && !this.material.baseTypeId) {
+          // Default to "Glaze" if no base type set:
+          this.form.baseTypeId = 460;
+        }
+        if (!this.material.materialStateId) {
+          // Default material state to "test" (1):
+          this.form.materialStateId = 1;
+        }
         this.ceramicsCalcMaterial = Material.createFromJson(this.material)
         this.percentageAnalysis = this.ceramicsCalcMaterial.getPercentageAnalysis()
         this.formulaAnalysis = this.ceramicsCalcMaterial.getFormulaAnalysis()
