@@ -36,7 +36,8 @@ Vue.use(SocialSharing);
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 
-//window.axios = require('axios');
+//import VueI18n from 'vue-i18n'
+//Vue.use(VueI18n)
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -106,6 +107,3 @@ router.afterEach(( to, from ) => {
   ga('send', 'pageview')
 })
 
-//const app = new Vue({
-//  el: '#app'
-//});

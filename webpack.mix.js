@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const mix = require('laravel-mix')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { SyntaxDynamicImport } = require('babel-plugin-syntax-dynamic-import')
 
 mix
   .js('resources/assets/js/app.js', 'public/js')

@@ -1,0 +1,4 @@
+{
+    "plugins": ["syntax-dynamic-import"],
+    "optional": ["es7.decorators", "es7.classProperties", "es7.objectRestSpread"]
+}
