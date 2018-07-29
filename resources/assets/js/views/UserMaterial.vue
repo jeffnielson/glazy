@@ -35,17 +35,25 @@
                         </p>
                     </div>
                     <div class="col-md-6">
-                        <b-card>
-                            <b-media>
-                                <a slot="aside" href="/calculator"><i class="fa fa-calculator fa-fw calc-icon-lg"></i>
-                                </a>
-                                <h5 class="mt-0">Your Calculator Materials</h5>
-                                <p>
-                                    Note: For simplicity, only materials listed here in your inventory can be used in the
-                                    <a href="/calculator">Calculator</a>.
-                                </p>
-                            </b-media>
-                        </b-card>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="d-flex mr-3 align-self-top">
+                                        <a href="/calculator">
+                                            <i class="fa fa-calculator fa-fw calc-icon-lg"></i>
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h5 class="mt-0">Your Calculator Materials</h5>
+                                        <p>
+                                            Note: For simplicity, only materials listed here in
+                                            your inventory can be used in the
+                                            <a href="/calculator">Calculator</a>.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <table v-if="!isProcessing && inventoryMaterials && inventoryMaterials.length > 0"

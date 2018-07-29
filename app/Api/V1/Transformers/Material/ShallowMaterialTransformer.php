@@ -9,6 +9,7 @@ use App\Api\V1\Transformers\MaterialImage\ShallowMaterialImageTransformer;
 use App\Api\V1\Transformers\User\UserTransformer;
 use App\Models\Material;
 use App\Models\MaterialType;
+use App\Models\MaterialState;
 use App\Models\OrtonCone;
 use App\Models\SurfaceType;
 use App\Models\TransparencyType;
@@ -85,6 +86,10 @@ class ShallowMaterialTransformer extends Fractal\TransformerAbstract
         $material_data[self::JSON_NAMES[Material::DB_IS_ANALYSIS]] = (boolean) $material[Material::DB_IS_ANALYSIS];
         $material_data[self::JSON_NAMES[Material::DB_IS_PRIMITIVE]] = (boolean) $material[Material::DB_IS_PRIMITIVE];
         $material_data[self::JSON_NAMES[Material::DB_IS_ARCHIVED]] = (boolean) $material[Material::DB_IS_ARCHIVED];
+
+        $materialStates = new MaterialState();
+        $material_data['materialStateId'] = $material['material_state_id'];
+        $material_data['materialStateName'] = $materialStates->getValue($material['material_state_id']);
 
         $materialType = new MaterialType();
 

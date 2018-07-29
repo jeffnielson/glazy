@@ -145,32 +145,43 @@
                     </div>
                   </div>
 
-                  <div class="row material-metadata">
-                    <div class="col-12" v-if="recipe.parentId && recipe.parentName">
-                      Parent Material: 
-                        <router-link :to="{ name: 'material', params: { id: recipe.parentId }}">
-                          {{ recipe.parentName }}
-                        </router-link>
+                  <div v-if="recipe.parentId && recipe.parentName"
+                       class="row">
+                    <div class="col-12">
+                      Parent Material:
+                      <router-link :to="{ name: 'material', params: { id: recipe.parentId }}">
+                        {{ recipe.parentName }}
+                      </router-link>
                     </div>
-                    <div class="col-6 col-sm-4" v-if="recipe.surfaceTypeName">
+                  </div>
+
+                  <div class="d-flex flex-row material-metadata">
+                    <div class="p-2" v-if="recipe.surfaceTypeName">
                       Surface
                       <br/>
                       <span class="badge badge-info">
                     {{ recipe.surfaceTypeName }}
                     </span>
                     </div>
-                    <div class="col-6 col-sm-4"  v-if="recipe.transparencyTypeName">
+                    <div class="p-2"  v-if="recipe.transparencyTypeName">
                       Transparency
                       <br/>
                       <span class="badge badge-info">
                      {{ recipe.transparencyTypeName }}
                     </span>
                     </div>
-                    <div class="col-6 col-sm-4" v-if="recipe.countryName">
+                    <div class="p-2" v-if="recipe.countryName">
                       Country
                       <br/>
                       <span class="badge badge-info">
                           {{ recipe.countryName }}
+                        </span>
+                    </div>
+                    <div class="p-2" v-if="recipe.materialStateName">
+                      Status
+                      <br/>
+                      <span class="badge badge-info">
+                          {{ recipe.materialStateName }}
                         </span>
                     </div>
                   </div>

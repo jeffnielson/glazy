@@ -137,7 +137,7 @@ class SearchController extends ApiBaseController
         $query->select(
             'materials.id', 'materials.name',
             'materials.is_primitive', 'materials.material_type_id',
-            'materials.is_analysis', 'materials.is_theoretical',
+            'materials.is_analysis', 'materials.is_theoretical', 'materials.material_state_id',
             'materials.from_orton_cone_id', 'materials.to_orton_cone_id',
             'materials.surface_type_id', 'materials.transparency_type_id', 'materials.country_id',
             'materials.rating_total', 'materials.rating_number', 'materials.rating_average',
@@ -459,7 +459,7 @@ class SearchController extends ApiBaseController
         */
 
         $selectFields = 'materials.id, materials.name, materials.is_primitive, materials.material_type_id, '
-            .'materials.is_analysis, materials.is_theoretical, materials.from_orton_cone_id, '
+            .'materials.is_analysis, materials.is_theoretical, materials.material_state_id, materials.from_orton_cone_id, '
             .'materials.to_orton_cone_id, materials.surface_type_id, materials.transparency_type_id, '
             .'materials.thumbnail_id, materials.is_private, materials.is_archived, materials.created_by_user_id, '
             .'materials.created_at, materials.updated_at, '
