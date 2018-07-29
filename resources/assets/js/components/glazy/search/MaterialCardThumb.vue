@@ -33,6 +33,12 @@
           @change="selectMaterialRequest(material.id)"
           v-model="checkboxIsSelected">
     </div>
+    <div v-if="material.materialStateId === 1" class="material-state">
+      <span class="badge badge-warning">Test</span>
+    </div>
+    <div v-else-if="material.materialStateId === 3" class="material-state">
+      <span class="badge badge-danger">Discontinued</span>
+    </div>
     <ul v-if="!material.isPrimitive" class="list-group list-group-flush list-group-cone">
       <li class="list-group-item"
           v-html="'&#9651;' + glazyHelper.getConeString(material) + ' ' + glazyHelper.getAtmospheresString(material)">
@@ -215,6 +221,15 @@
     position: absolute;
     top: 0;
     left: 5px;
+    padding: 0;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .material-card .material-state {
+    position: absolute;
+    top: 0;
+    left: 24px;
     padding: 0;
     margin: 0;
     z-index: 2;

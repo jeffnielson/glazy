@@ -183,6 +183,14 @@ class MaterialRepository extends Repository
                 $data['from_orton_cone_id'] = $jsonData['toOrtonConeId'];
             }
         }
+        if (array_key_exists('materialStateId', $jsonData)) {
+            if ($jsonData['materialStateId']) {
+                $data['material_state_id'] = $jsonData['materialStateId'];
+            } else {
+                $data['material_state_id'] = null;
+            }
+        }
+
         if (array_key_exists('atmospheres', $jsonData)) {
             $data['atmospheres'] = $jsonData['atmospheres'];
         }
@@ -919,6 +927,7 @@ class MaterialRepository extends Repository
             'id', 'name',
             'is_primitive', 'material_type_id',
             'is_analysis', 'is_theoretical',
+            'material_state_id',
             'from_orton_cone_id', 'to_orton_cone_id',
             'surface_type_id', 'transparency_type_id',
             'rating_total', 'rating_number',

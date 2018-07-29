@@ -36,6 +36,8 @@
             {{ material.name }}
           </router-link>
         </h5>
+        <span v-if="material.materialStateId === 1" class="badge badge-warning">Test</span>
+        <span v-else-if="material.materialStateId === 3" class="badge badge-danger">Discontinued</span>
       </div>
 
       <b-btn v-b-toggle="'detail-collapse-' + material.id"

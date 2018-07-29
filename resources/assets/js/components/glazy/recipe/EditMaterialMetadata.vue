@@ -100,7 +100,7 @@
                             :options="constants.SURFACE_SELECT"
                             >
                         <template slot="first">
-                            <option :value="0">All Surfaces</option>
+                            <option :value="0">No Surface</option>
                         </template>
                     </b-form-select>
                 </b-col>
@@ -143,6 +143,19 @@
             </b-row>
 
             <b-row class="mt-2">
+                <b-col md="6">
+                    <label for="materialStateId">Status</label>
+                    <b-form-select
+                            id="materialStateId"
+                            placeholder="Status"
+                            v-model="form.materialStateId"
+                            :options="constants.MATERIAL_STATES_SELECT"
+                    >
+                        <template slot="first">
+                            <option :value="0">No Status</option>
+                        </template>
+                    </b-form-select>
+                </b-col>
                 <b-col md="6">
                     <label for="countryId">Country (Optional)</label>
                     <b-form-select
@@ -331,6 +344,7 @@
           fromOrtonConeId: null,
           toOrtonConeId: null,
           atmospheres: [],
+          materialStateId: null,
           countryId: null,
           analysis: null,
           formula: null,
@@ -372,6 +386,7 @@
           fromOrtonConeId: this.material.fromOrtonConeId,
           toOrtonConeId: this.material.toOrtonConeId,
           atmospheres: [],
+          materialStateId: this.material.materialStateId,
           countryId: this.material.countryId,
           loi: this.material.analysis.percentageAnalysis.loi,
           weight: this.material.analysis.weight

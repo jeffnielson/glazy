@@ -98,6 +98,20 @@
             <div v-bind:class="sizeMedium" class="form-group">
                 <b-form-select
                         size="sm"
+                        id="stateId"
+                        placeholder="Status"
+                        v-model="query.params.state"
+                        :options="constants.MATERIAL_STATES_SELECT"
+                        @input="search">
+                    <template slot="first">
+                        <option :value="0">All Statuses</option>
+                    </template>
+                </b-form-select>
+            </div>
+
+            <div v-bind:class="sizeMedium" class="form-group">
+                <b-form-select
+                        size="sm"
                         id="countryId"
                         placeholder="Country"
                         v-model="query.params.country"

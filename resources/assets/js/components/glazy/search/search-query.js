@@ -17,6 +17,7 @@ export default class SearchQuery {
       atmosphere: 0,
       surface: 0,
       transparency: 0,
+      state: 0,
       country: 0,
       hex_color: '',
       color: {},
@@ -72,6 +73,9 @@ export default class SearchQuery {
     }
     if (this.params.transparency) {
       minimalQuery.transparency = this.params.transparency
+    }
+    if (this.params.state) {
+      minimalQuery.state = this.params.state
     }
     if (this.params.country) {
       minimalQuery.country = this.params.country
@@ -131,6 +135,9 @@ export default class SearchQuery {
       if ('transparency' in routerQuery && routerQuery.transparency) {
         this.params.transparency = Number(routerQuery.transparency)
       }
+      if ('state' in routerQuery && routerQuery.state) {
+        this.params.state = Number(routerQuery.state)
+      }
       if ('country' in routerQuery && routerQuery.country) {
         this.params.country = Number(routerQuery.country)
       }
@@ -171,6 +178,7 @@ export default class SearchQuery {
       this.params.atmosphere = Number(params.atmosphere)
       this.params.surface = Number(params.surface)
       this.params.transparency = Number(params.transparency)
+      this.params.state = Number(params.state)
       this.params.country = Number(params.country)
       this.params.hex_color = params.hex_color
       this.params.y = params.y

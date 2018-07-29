@@ -156,6 +156,13 @@
                   </div>
 
                   <div class="d-flex flex-row material-metadata">
+                    <div class="p-2" v-if="recipe.materialStateId">
+                      Status
+                      <br/>
+                      <span v-if="recipe.materialStateId === 1" class="badge badge-warning">Test</span>
+                      <span v-else-if="recipe.materialStateId === 3" class="badge badge-danger">Discontinued</span>
+                      <span v-else class="badge badge-success">Production</span>
+                    </div>
                     <div class="p-2" v-if="recipe.surfaceTypeName">
                       Surface
                       <br/>
@@ -175,13 +182,6 @@
                       <br/>
                       <span class="badge badge-info">
                           {{ recipe.countryName }}
-                        </span>
-                    </div>
-                    <div class="p-2" v-if="recipe.materialStateName">
-                      Status
-                      <br/>
-                      <span class="badge badge-info">
-                          {{ recipe.materialStateName }}
                         </span>
                     </div>
                   </div>

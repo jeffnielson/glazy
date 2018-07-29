@@ -83,6 +83,7 @@ class SearchController extends ApiBaseController
         $atmosphere_id = (int)$request->input('atmosphere');
         $surface_type_id = (int)$request->input('surface');
         $transparency_type_id = (int)$request->input('transparency');
+        $material_state_id = (int)$request->input('state');
         $country_id = (int)$request->input('country');
         $username = $request->input('username');
         $hex_color = $request->input('hex_color');
@@ -184,6 +185,8 @@ class SearchController extends ApiBaseController
         $query->ofSurfaceType($surface_type_id);
 
         $query->ofTransparencyType($transparency_type_id);
+
+        $query->ofMaterialState($material_state_id);
 
         $query->ofCountry($country_id);
 

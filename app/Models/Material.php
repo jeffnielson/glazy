@@ -68,6 +68,7 @@ class Material extends Model
         'to_orton_cone_id',
         'surface_type_id',
         'transparency_type_id',
+        'material_state_id',
         'country_id',
         'color_name',
         'rgb_r',
@@ -163,6 +164,11 @@ class Material extends Model
     public function transparency_type()
     {
         return $this->belongsTo('App\Models\TransparencyType');
+    }
+
+    public function material_state()
+    {
+        return $this->belongsTo('App\Models\MaterialState');
     }
 
     public function country()
@@ -521,6 +527,18 @@ class Material extends Model
         if (!empty($transparency_type_id)
             && !empty($transparencyType->getValue($transparency_type_id))) {
             $query->where('materials.transparency_type_id', $transparency_type_id);
+        }
+
+        return $query;
+    }
+
+    public function scopeOfMaterialState($query, $material_state_id)
+    {
+        $materialState = new MaterialState();
+
+        if (!empty($materialState)
+            && !empty($materialState->getValue($material_state_id))) {
+            $query->where('materials.material_state_id', $material_state_id);
         }
 
         return $query;
