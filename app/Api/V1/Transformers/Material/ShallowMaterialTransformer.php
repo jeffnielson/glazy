@@ -3,7 +3,7 @@
 namespace App\Api\V1\Transformers\Material;
 
 use App\Api\V1\Transformers\Atmosphere\SimpleAtmosphereTransformer;
-use App\Api\V1\Transformers\MaterialAnalysis\MaterialAnalysisTransformer;
+use App\Api\V1\Transformers\MaterialAnalysis\MaterialUmfAnalysisTransformer;
 use App\Api\V1\Transformers\MaterialComponent\ShallowMaterialComponentTransformer;
 use App\Api\V1\Transformers\MaterialImage\ShallowMaterialImageTransformer;
 use App\Api\V1\Transformers\User\UserTransformer;
@@ -230,7 +230,8 @@ class ShallowMaterialTransformer extends Fractal\TransformerAbstract
 
     public function includeAnalysis(Material $material)
     {
-        return $this->item($material->analysis, new MaterialAnalysisTransformer());
+        // DAU: return $this->item($material->analysis, new MaterialAnalysisTransformer());
+        return $this->item($material->analysis, new MaterialUmfAnalysisTransformer());
     }
 
     public function includeThumbnail(Material $material)
