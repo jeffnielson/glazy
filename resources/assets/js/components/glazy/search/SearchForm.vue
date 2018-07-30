@@ -441,6 +441,10 @@ export default {
         margin-bottom: 0;
     }
 
+    .search-form .form-control-sm {
+        height: 2.25em;
+    }
+
     .search-form-button {
         margin-top: 0px;
         margin-bottom: 0px;
