@@ -77,6 +77,7 @@ class SearchController extends ApiBaseController
         $is_primitive = (int)$request->input('primitive'); // 0 == false
         $is_analysis = (int)$request->input('analysis'); // 0 == false
         $keywords = $request->input('keywords');
+        $has_thumbnail = $request->input('photo');
         $base_type_id = (int)$request->input('base_type');
         $type_id = (int)$request->input('type');
         $orton_cone_id = $request->input('cone');
@@ -175,6 +176,10 @@ class SearchController extends ApiBaseController
         }
 
         $query->ofKeywords($keywords);
+
+        if ($has_thumbnail) {
+            $query->ofHasThumbnail($has_thumbnail);
+        }
 
         $query->ofMaterialType($base_type_id, $type_id);
 

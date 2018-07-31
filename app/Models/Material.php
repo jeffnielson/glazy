@@ -412,6 +412,16 @@ class Material extends Model
         return $query;
     }
 
+
+    public function scopeOfHasThumbnail($query, $has_thumbnail)
+    {
+        if ($has_thumbnail)
+        {
+            $query->whereNotNull('thumbnail_id');
+        }
+        return $query;
+    }
+
     public function scopeOfMaterialType($query, $base_type_id, $type_id)
     {
         $search_type_id = null;

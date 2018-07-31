@@ -1,13 +1,22 @@
 <template>
     <form class="search-form">
         <div class="form-row">
-            <div v-bind:class="sizeLarge" class="form-group">
+            <div v-bind:class="sizeMedium" class="form-group">
                 <input type="text"
                        class="form-control form-control-sm"
                        v-model="query.params.keywords"
                        placeholder="Search Term"
                        @input="updateKeywords"
                        @keydown.enter.prevent="updateKeywords">
+            </div>
+
+            <div v-bind:class="sizeMedium" class="form-group">
+                <b-form-checkbox id="must-have-photo"
+                                 v-model="query.params.photo"
+                                 plain
+                                 @input="search">
+                    Must have photo
+                </b-form-checkbox>
             </div>
 
             <div v-bind:class="sizeMedium" class="form-group">

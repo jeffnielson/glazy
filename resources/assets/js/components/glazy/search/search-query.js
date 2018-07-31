@@ -10,6 +10,7 @@ export default class SearchQuery {
       u: 0,
       collection: 0,
       keywords: '',
+      photo: false,
       username: '',
       base_type: 0,
       type: 0,
@@ -52,6 +53,9 @@ export default class SearchQuery {
     }
     if (this.params.keywords) {
       minimalQuery.keywords = this.params.keywords
+    }
+    if (this.params.photo) {
+      minimalQuery.photo = this.params.photo
     }
     if (this.params.username) {
       minimalQuery.username = this.params.username
@@ -114,6 +118,9 @@ export default class SearchQuery {
       if ('keywords' in routerQuery && routerQuery.keywords) {
         this.params.keywords = routerQuery.keywords
       }
+      if ('photo' in routerQuery && routerQuery.photo) {
+        this.params.photo = routerQuery.photo
+      }
       if ('username' in routerQuery && routerQuery.username) {
         this.params.username = routerQuery.username
       }
@@ -171,6 +178,7 @@ export default class SearchQuery {
       this.params.u = Number(params.u)
       this.params.collection = Number(params.collection)
       this.params.keywords = params.keywords
+      this.params.photo = params.photo
       this.params.username = params.username
       this.params.base_type = Number(params.base_type)
       this.params.type = Number(params.type)
