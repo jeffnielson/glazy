@@ -39,6 +39,25 @@
           ga('send', 'pageview');
         </script>
 
+        <noscript>
+            <h1>Sorry!</h1>
+            <p>
+                Unfortunately Glazy requires a recent browser with Javascript enabled.
+            </p>
+            <p>
+                If you have disabled Javascript, please <strong>enable Javascript</strong> for this site.
+            </p>
+            <p>
+                If you are using an older web browser, please update it.
+                Glazy recommends using the free <strong>Google Chrome</strong> browser.
+            </p>
+            <p>
+                <form action="https://www.google.com/chrome/">
+                    <input type="submit" value="Download Google Chrome Now!" />
+                </form>
+            </p>
+        </noscript>
+
         <div id="app">
             <app></app>
         </div>
