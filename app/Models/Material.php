@@ -578,9 +578,14 @@ class Material extends Model
                 $query->where('materials.created_by_user_id', $username);
             }
             else {
-                $query->with('created_by_user')->whereHas('created_by_user', function($query) use ($username) {
-                    $query->where('users.name', 'like', '%'.$username.'%');
-                });
+                $query->with('created_by_user')
+                    ->with('created_by_user.profile')
+                    ->whereHas('created_by_user', function($query) use ($username) {
+                        $query->where('users.name', 'like', '%'.$username.'%');
+                    })
+                    ->orWhereHas('created_by_user.profile', function($query) use ($username) {
+                        $query->where('user_profiles.username', 'like', '%'.$username.'%');
+                    });
             }
         }
 
