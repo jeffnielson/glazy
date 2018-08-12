@@ -38,6 +38,8 @@
                     <div>
                         <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
                         <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
+                        <span v-if="materialComponent.material.materialStateId === 1" class="badge badge-warning">Test</span>
+                        <span v-else-if="materialComponent.material.materialStateId === 3" class="badge badge-danger">Discontinued</span>
                     </div>
                 </td>
                 <td class="text-right amount">

@@ -38,6 +38,7 @@ class MaterialComponentMaterialTransformer extends Fractal\TransformerAbstract
         $material_data[self::JSON_NAMES[self::DB_IS_ANALYSIS]] = (boolean) $material[self::DB_IS_ANALYSIS];
         $material_data[self::JSON_NAMES[self::DB_IS_PRIMITIVE]] = (boolean) $material[self::DB_IS_PRIMITIVE];
         $material_data[self::JSON_NAMES[self::DB_IS_PRIVATE]] = (boolean) $material[self::DB_IS_PRIVATE];
+        $material_data['materialStateId'] = $material['material_state_id'];
 
         return $material_data;
     }
