@@ -7,24 +7,25 @@
                 <th>Material</th>
                 <th class="text-right">Amount</th>
                 <th v-if="batchValues" class="text-right">Batch</th>
-                <th v-if="batchValues" class="text-right">Subtotal</th>
+                <th v-if="batchValues && isCumulative === 'true'" class="text-right">Subtotal</th>
+                <th v-else-if="batchValues && tareSize" class="text-right">Batch+Tare</th>
             </tr>
             </thead>
             <tbody>
             <tr v-if="batchValues && tareSize"
                 class="table-warning">
                 <td>Tare Weight</td>
-                <td></td>
-                <td v-if="batchValues"
-                    class="text-right batch"
+                <td class="text-right batch"
                     id="batch_tare">
                     {{ parseFloat(tareSize) }}
                 </td>
-                <td v-if="batchValues"
+                <td></td>
+                <td v-if="batchValues && isCumulative === 'true'"
                     class="text-right subtotal"
                     id="subtotal_tare">
                     {{ parseFloat(tareSize) }}
                 </td>
+                <td v-else></td>
             </tr>
             <tr v-for="(materialComponent, index) in this.materialComponents"
                 v-if="!materialComponent.isAdditional">
@@ -49,15 +50,20 @@
                     class="text-right batch" :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
-                <td v-if="batchValues"
+                <td v-if="batchValues && isCumulative === 'true'"
                     class="text-right subtotal" :id="'subtotal_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.subtotalRows[index]) }}
+                </td>
+                <td v-else-if="batchValues && tareSize"
+                    class="text-right subtotal" :id="'batch_tare_' + materialComponent.material.id">
+                    {{ parseFloat(batchValues.batchTareRows[index]) }}
                 </td>
             </tr>
             <tr v-if="hasAdditional" class="align-middle total">
                 <td>Total Base Recipe</td>
                 <td class="text-right">{{ parseFloat(baseRecipeAmount) }}</td>
-                <td v-if="batchValues" colspan="2"></td>
+                <td v-if="batchValues" class="text-right">{{ parseFloat(this.batchSize.toFixed(2)) }}</td>
+                <td v-if="batchValues && (isCumulative === 'true' || tareSize)"></td>
             </tr>
 
             <tr v-for="(materialComponent, index) in this.materialComponents"
@@ -83,20 +89,35 @@
                     class="text-right batch" :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
-                <td v-if="batchValues"
+                <td v-if="batchValues && isCumulative === 'true'"
                     class="text-right subtotal" :id="'subtotal_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.subtotalRows[index]) }}
+                </td>
+                <td v-else-if="batchValues && tareSize"
+                    class="text-right batch" :id="'batch_tare_' + materialComponent.material.id">
+                    {{ parseFloat(batchValues.batchTareRows[index]) }}
                 </td>
             </tr>
 
             <tr class="align-middle total">
                 <td>Total</td>
                 <td class="text-right">{{ parseFloat(totalRecipeAmount) }}</td>
-                <td v-if="batchValues" colspan="2"></td>
+                <td v-if="batchValues" class="text-right">{{ parseFloat(totalBatchAmount) }}</td>
+                <td v-if="batchValues && (isCumulative === 'true' || tareSize)"></td>
             </tr>
+
             <tr class="batch_form">
                 <td v-bind:colspan="numColumns">
-                    <form class="form-inline batch-form-inline float-right">
+                    <form class="form-inline float-right mt-1">
+                        <div class="form-group">
+                            <select v-model="isCumulative"
+                                    class="form-control form-control-sm">
+                                <option value="true">Measure ingredients together</option>
+                                <option value="false">Measure ingredients separately</option>
+                            </select>
+                        </div>
+                    </form>
+                    <form class="form-inline batch-form-inline float-right mt-1 mr-2">
                         <div class="form-group">
                             <label class="form-label form-label-sm mr-1" for="tareSize">Tare:</label>
                             <input type="number"
@@ -105,7 +126,7 @@
                                    maxlength="10"
                                    placeholder="0.0"
                                    id="tareSize"
-                                   class="form-control form-control-sm material-recipe-calculator-tare-input"
+                                   class="form-control form-control-sm material-recipe-calculator-tare-input mr-2"
                                    v-model.number="tareSize">
                         </div>
                         <div class="form-group">
@@ -122,6 +143,7 @@
                     </form>
                 </td>
             </tr>
+
             </tbody>
         </table>
     </div>
@@ -144,7 +166,8 @@ export default {
     return {
       glazyHelper: new GlazyHelper(),
       batchSize: null,
-      tareSize: null
+      tareSize: null,
+      isCumulative: "true"
     }
   },
 
@@ -177,12 +200,19 @@ export default {
       }
       return 0
     },
+    totalBatchAmount: function () {
+      if (!this.batchSize) {
+        return 0;
+      }
+      return (this.totalRecipeAmount * this.batchSize / this.baseRecipeAmount).toFixed(2);
+    },
     batchValues: function () {
       if (this.batchSize &&
         !isNaN(parseFloat(this.batchSize)) &&
         this.materialComponents) {
         var batchValues = {
           batchRows: [],
+          batchTareRows: [],
           subtotalRows: []
         }
         var subtotal = 0;
@@ -195,6 +225,9 @@ export default {
             / parseFloat(this.baseRecipeAmount)
           subtotal += value
           batchValues.batchRows[index] = value.toFixed(2)
+          if (this.tareSize && parseFloat(this.tareSize) > 0) {
+            batchValues.batchTareRows[index] = (value + this.tareSize).toFixed(2);
+          }
           batchValues.subtotalRows[index] = subtotal.toFixed(2)
         }.bind(this))
         return batchValues
@@ -259,17 +292,14 @@ export default {
         height: 18px;
     }
 
-    .batch-form-inline {
-        width: 100%;
+    .batch-form-inline .form-control{
+        width: 90px;
     }
 
     .material-recipe-calculator-tare-input {
-        width: 80px;
-        margin-right: 10px;
     }
 
     .material-recipe-calculator-batch-input {
-        width: 80px;
     }
 
 </style>
