@@ -219,9 +219,9 @@
                   this.$emit('updatedRecipeComponents');
                 }
           })
-          .catch(response => {
-              this.serverError = response;
-            console.log(response)
+          .catch((response) => {
+            this.serverError = "Sorry, that email address could not be found.";
+            //this.serverError = response;
           })
       }
     }
