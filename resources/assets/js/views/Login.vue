@@ -75,7 +75,7 @@
             <b-modal id="forgotPasswordModal"
                      title="Forgot your password?"
                      v-on:ok="completeForgotPassword()"
-                     ok-title="Send Email"
+                     ok-title="Reset My Password!"
             >
                 <p>
                     Enter your email address here to have your password reset.
