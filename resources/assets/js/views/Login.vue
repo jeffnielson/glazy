@@ -73,6 +73,7 @@
             </div>
 
             <b-modal id="forgotPasswordModal"
+                     ref="forgotPasswordModalRef"
                      title="Forgot your password?"
                      v-on:ok="completeForgotPassword()"
                      ok-title="Reset My Password!"
@@ -80,7 +81,7 @@
                 <p>
                     Enter your email address here to have your password reset.
                 </p>
-                <form>
+                <form v-on:submit.prevent="completeForgotPassword()">
                     <div class="form-group">
                         <label for="inputForgotPasswordEmail">Email address</label>
                         <input type="email"
@@ -206,6 +207,8 @@
       },
 
       completeForgotPassword () {
+        this.serverError = null;
+        this.alertMessage = null;
         var resetForm = {
           email: this.forgotPasswordEmail
         };
@@ -215,13 +218,15 @@
                   this.apiError = response.data.error
                   console.log(this.apiError)
                 } else {
-                  this.alertMessage = "Password reset and email sent!";
-                  this.$emit('updatedRecipeComponents');
+                  this.alertMessage = "Password reset!  Please check your email Inbox or Spam folder for our mail!";
+                  this.forgotPasswordEmail = null;
+                  this.$refs.forgotPasswordModalRef.hide();
                 }
           })
           .catch((response) => {
-            this.serverError = "Sorry, that email address could not be found.";
-            //this.serverError = response;
+            this.serverError = "Sorry, the email address " + this.forgotPasswordEmail + " could not be found.";
+            this.forgotPasswordEmail = null;
+            this.$refs.forgotPasswordModalRef.hide();
           })
       }
     }
