@@ -20,7 +20,7 @@ $api->version('v1', function (Router $api) {
         // $app->post('login/credentials', 'App\\Api\\V1\\Controllers\\LoginController@login');
 
         $api->post('recovery', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@sendResetEmail');
-        $api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
+        //$api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
 
         $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
         $api->post('refresh', 'App\\Api\\V1\\Controllers\\RefreshController@refresh');
@@ -32,7 +32,7 @@ $api->version('v1', function (Router $api) {
         $api->post('createAvatar', 'App\\Api\\V1\\Controllers\\Glazy\\UserProfileController@createAvatar');
 
     });
-
+    
     $api->group(['prefix' => 'recipes'], function(Router $api) {
         $api->get('/{id}', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@show')->name('show');
 

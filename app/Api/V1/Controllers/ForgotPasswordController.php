@@ -2,8 +2,11 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Mail\PasswordReset;
+use Illuminate\Support\Facades\Mail;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use App\Api\V1\Requests\ForgotPasswordRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -11,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ForgotPasswordController extends Controller
 {
+    /*
     public function sendResetEmail(ForgotPasswordRequest $request)
     {
         $user = User::where('email', '=', $request->get('email'))->first();
@@ -25,6 +29,26 @@ class ForgotPasswordController extends Controller
         if($sendingResponse !== Password::RESET_LINK_SENT) {
             throw new HttpException(500);
         }
+
+        return response()->json([
+            'status' => 'ok'
+        ], 200);
+    }
+    */
+    public function sendResetEmail(ForgotPasswordRequest $request)
+    {
+        $email = $request->get('email');
+        $user = User::where('email', '=', $email)->first();
+
+        if(!$user) {
+            throw new NotFoundHttpException();
+        }
+
+        $newPassword = str_random(12);
+        $user->password = $newPassword;
+        $user->save();
+
+        Mail::send(new PasswordReset($user, $newPassword));
 
         return response()->json([
             'status' => 'ok'

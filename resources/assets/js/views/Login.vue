@@ -2,51 +2,97 @@
 
     <div class="row content-row">
         <div class="col-md-4 offset-md-4 col-sm-12">
-            <b-card title="Login to Glazy">
-                <b-alert v-if="serverError" show variant="danger">
-                    {{ serverError }}
-                </b-alert>
-                <b-alert v-if="firstLogin" show variant="info">
-                    Registration successful!  Please login below.
-                </b-alert>
-                <div class="load-container load7 fullscreen" v-if="isProcessing">
-                    <div class="loader">Loading...</div>
-                </div>
+            <div class="card glazy-login-card">
+                <div class="card-body">
+                    <h4 class="card-title">Login to Glazy</h4>
 
-                <div v-show="!code || !type">
-                    <a @click="loginSocial('facebook')" href="#" class="btn btn-facebook btn-block btn-sm">
-                        <i class="fa fa-facebook-square"></i> Login with Facebook
-                    </a>
-                    <a @click="loginSocial('google')" class="btn btn-google btn-block btn-sm">
-                        <i class="fa fa-google-plus"></i> Login with Google
-                    </a>
-                    <b-form @submit="login" @reset="onReset">
-                        <b-form-group
-                                id="email"
-                                label="Email Address">
-                            <b-form-input v-model="data.body.email"
-                                          type="email"
-                                          :state="emailState"
-                                          aria-describedby="input-help input-feeback"
-                                          placeholder="jane@doe.com"></b-form-input>
-                        </b-form-group>
-                        <b-form-group
-                                id="password"
-                                label="Password">
-                            <b-form-input
-                                    id="login-form-password"
-                                    v-model="data.body.password"
-                                    :state="passwordState"
-                                    type="password"></b-form-input>
-                        </b-form-group>
-                        <b-button size="sm" class="float-left" type="reset" variant="secondary">Reset</b-button>
-                        <b-button size="sm" class="float-right" type="submit" variant="info">Login</b-button>
-                    </b-form>
+                    <b-alert v-if="alertMessage" show variant="success">
+                        {{ alertMessage }}
+                    </b-alert>
+                    <b-alert v-if="apiError" show variant="danger">
+                        API Error: {{ apiError.message }}
+                    </b-alert>
+                    <b-alert v-if="serverError" show variant="danger">
+                        {{ serverError }}
+                    </b-alert>
+                    <b-alert v-if="firstLogin" show variant="info">
+                        Registration successful!  Please login below.
+                    </b-alert>
+                    <div class="load-container load7 fullscreen" v-if="isProcessing">
+                        <div class="loader">Loading...</div>
+                    </div>
+
+                    <div v-show="!code || !type">
+                        <div class="col-12">
+                            <a @click="loginSocial('facebook')" href="#" class="btn btn-facebook btn-block btn-sm">
+                                <i class="fa fa-facebook-square"></i> Login with Facebook
+                            </a>
+                            <a @click="loginSocial('google')" class="btn btn-google btn-block btn-sm">
+                                <i class="fa fa-google-plus"></i> Login with Google
+                            </a>
+                        </div>
+                        <div class="col-12">
+                            <form @submit="login" @reset="onReset">
+                                <div class="form-group">
+                                    <label for="inputEmail">Email address</label>
+                                    <input type="email"
+                                           class="form-control"
+                                           id="inputEmail"
+                                           aria-describedby="emailHelp"
+                                           placeholder="Enter email"
+                                           v-model="data.body.email">
+                                    <small v-if="errors && 'email' in errors"
+                                            id="emailHelp"
+                                           class="form-text text-muted">
+                                        Please enter a valid Email address.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword">Password</label>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="inputPassword"
+                                           placeholder="Password"
+                                           v-model="data.body.password">
+                                    <small v-if="errors && 'password' in errors"
+                                           id="emailHelp"
+                                           class="form-text text-muted">
+                                        Please enter a valid password.</small>
+                                </div>
+                                <button type="submit" class="btn btn-info btn-block btn-sm">Login</button>
+                            </form>
+                        </div>
+                        <div class="col-12">
+                            <a v-b-modal.forgotPasswordModal>Forgot Password?</a>
+                        </div>
+                    </div>
+
+                    <div v-show="code && type">
+                        Logging you in via {{ type }}...
+                    </div>
                 </div>
-                <div v-show="code && type">
-                    Logging you in via {{ type }}...
-                </div>
-            </b-card>
+            </div>
+
+            <b-modal id="forgotPasswordModal"
+                     title="Forgot your password?"
+                     v-on:ok="completeForgotPassword()"
+                     ok-title="Send Email"
+            >
+                <p>
+                    Enter your email address here to have your password reset.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <label for="inputForgotPasswordEmail">Email address</label>
+                        <input type="email"
+                               class="form-control"
+                               id="inputForgotPasswordEmail"
+                               aria-describedby="emailHelp"
+                               placeholder="Enter email"
+                               v-model="forgotPasswordEmail">
+                    </div>
+                </form>
+            </b-modal>
+
         </div>
     </div>
 
@@ -70,27 +116,18 @@
           rememberMe: true,
           fetchUser: true
         },
+        forgotPasswordEmail: null,
         code: this.$route.query.code,
         type: this.$route.params.type,
         firstLogin: this.$route.query.firstLogin,
+        apiError: null,
         serverError: null,
+        alertMessage: null,
         errors: null,
         isProcessing: false
       }
     },
     computed : {
-      emailState() {
-        if (this.errors && 'email' in this.errors) {
-          return 'invalid'
-        }
-        return 'valid'
-      },
-      passwordState() {
-        if (this.errors && 'password' in this.errors) {
-          return 'invalid'
-        }
-        return 'valid'
-      }
     },
     mounted () {
       if (this.code) {
@@ -141,6 +178,7 @@
             // console.log('error ' + this.context)
             if (res.response.data && res.response.data.error) {
               this.errors = res.response.data.error.errors
+              console.log(this.errors);
             }
             if (res.response.status &&
               Number(res.response.status) === 403 ) {
@@ -165,8 +203,27 @@
           /* Reset our form values */
         this.data.body.email = null;
         this.data.body.password = null;
-      }
+      },
 
+      completeForgotPassword () {
+        var resetForm = {
+          email: this.forgotPasswordEmail
+        };
+        Vue.axios.post(Vue.axios.defaults.baseURL + '/auth/recovery', resetForm)
+          .then((response) => {
+              if (response.data.error) {
+                  this.apiError = response.data.error
+                  console.log(this.apiError)
+                } else {
+                  this.alertMessage = "Password reset and email sent!";
+                  this.$emit('updatedRecipeComponents');
+                }
+          })
+          .catch(response => {
+              this.serverError = response;
+            console.log(response)
+          })
+      }
     }
   }
 
@@ -176,5 +233,9 @@
 
     .content-row {
         padding-top: 15px;
+    }
+
+    .glazy-login-card .card-body .card-title {
+        margin-top: 0;
     }
 </style>
