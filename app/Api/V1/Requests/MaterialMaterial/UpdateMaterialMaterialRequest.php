@@ -19,7 +19,9 @@ class UpdateMaterialMaterialRequest extends ApiFormRequest
         $rules = [];
 
         $rules['materialComponents.*.componentMaterialId'] = 'required|integer';
-        $rules['materialComponents.*.percentageAmount'] = 'required|numeric';
+        // Not sure what to do for European-style numbers (e.g. 1.200,8)
+        // Don't really want to add a complicated regex for both European & 1,200.8 style numbers.
+        //$rules['materialComponents.*.percentageAmount'] = 'required|numeric';
 
         return $rules;
     }
