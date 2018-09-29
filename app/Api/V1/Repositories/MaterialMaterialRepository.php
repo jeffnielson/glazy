@@ -45,6 +45,13 @@ class MaterialMaterialRepository extends Repository
         // Entries without amounts are removed
         $compactedData = [];
         foreach ($componentData as $componentMaterialData) {
+
+            // 20180929 Fix for European float formatting (e.g. 111.332,29)
+            if (isset($componentMaterialData['percentageAmount'])) {
+                $componentMaterialData['percentageAmount'] =
+                    $this->floatValue($componentMaterialData['percentageAmount']);
+            }
+
             if (isset($componentMaterialData['componentMaterialId'])
                 && isset($componentMaterialData['percentageAmount'])
                 && $componentMaterialData['percentageAmount'] > 0)
@@ -206,6 +213,13 @@ class MaterialMaterialRepository extends Repository
             $material->base_composite_hash = null;
             $material->additive_composite_hash = null;
         }
+    }
+
+    protected function floatValue($val){
+        // https://stackoverflow.com/questions/4325363/converting-a-number-with-comma-as-decimal-point-to-float
+        $val = str_replace(",",".",$val);
+        $val = preg_replace('/\.(?=.*\.)/', '', $val);
+        return floatval($val);
     }
 
 }
