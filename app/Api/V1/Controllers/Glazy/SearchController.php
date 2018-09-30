@@ -110,7 +110,9 @@ class SearchController extends ApiBaseController
                 $searchUser = User::with('profile')
                     ->with(['collections' => function ($q) {
                         $q->orderBy('name', 'asc');
-                    }])->find($search_user_id);
+                    }])
+                    ->whereNull('deleted_at')
+                    ->find($search_user_id);
             } else {
                 // this is an alphanumeric username
                 $searchUser = User::with('profile')
@@ -120,7 +122,9 @@ class SearchController extends ApiBaseController
                         $q->orderBy('name', 'asc');
                     }])->whereHas('profile', function($q) use ($search_user_id) {
                         $q->where('username', $search_user_id);
-                    })->first();
+                    })
+                    ->whereNull('deleted_at')
+                    ->first();
 
                 if ($searchUser) {
                     $search_user_id = (int)$searchUser->id;
