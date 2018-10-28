@@ -17,5 +17,12 @@ Homestead.yaml
 /database/seeds/Glazy/glaze_data_seeder_no_create.sql
 /resources/assets/sass/glazy/nowui
 /resources/assets/sass/glazy/nowui.tgz
+/resources/assets/sass/glazy/nowui_1.2.2
 npm-debug.log
 yarn-error.log
+
+public/css/app.css
+
+public/css/app.css
+
+resources/assets/js/app.js

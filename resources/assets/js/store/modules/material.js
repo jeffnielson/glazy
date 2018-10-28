@@ -28,12 +28,13 @@ const mutations = {
 }
 
 const actions = {
+
   resetError (context) {
     context.commit('setServerError', null)
     context.commit('setApiError', null)
   },
+
   copy (context, payload) {
-    // Don't know if this is worthwhile.. maybe just do in component
     context.commit('isProcessing')
     context.dispatch('resetError')
 
@@ -70,6 +71,7 @@ const actions = {
       })
     })
   }
+
 }
 
 export default {

@@ -4,7 +4,7 @@
             <thead>
             <tr>
                 <th>Material</th>
-                <th>% Amount</th>
+                <th>Amt.</th>
                 <th v-for="oxideName in presentOxides">
                     <span v-html="OXIDE_NAME_DISPLAY[oxideName]"
                         v-bind:class="'oxide-colors-' + oxideName"></span>
@@ -94,7 +94,9 @@
                 <td>
                 </td>
                 <td v-for="oxideName in presentOxides">
-                  {{ parseFloat(originalAdjustedPercentageAnalysis.getOxide(oxideName)-adjustedPercentageAnalysis.getOxide(oxideName)).toFixed(precision) }}
+                    <span v-if="!isNaN(originalAdjustedPercentageAnalysis.getOxide(oxideName)-adjustedPercentageAnalysis.getOxide(oxideName))">
+                        {{ parseFloat(originalAdjustedPercentageAnalysis.getOxide(oxideName)-adjustedPercentageAnalysis.getOxide(oxideName)).toFixed(precision) }}
+                    </span>
                 </td>
                 <td v-if="!isFormula"></td>
             </tr>

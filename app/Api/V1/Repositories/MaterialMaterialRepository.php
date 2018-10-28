@@ -82,6 +82,7 @@ class MaterialMaterialRepository extends Repository
         }
 
         $componentMaterials = [];
+        $userMaterialRepository = new UserMaterialRepository();
 
         // Now add child materials
         foreach ($compactedData as $componentMaterialData)
@@ -93,6 +94,10 @@ class MaterialMaterialRepository extends Repository
             $componentMaterial->is_additional = $componentMaterialData['isAdditional'];
             $componentMaterial->save();
             $componentMaterials[] = $componentMaterial;
+            // We are updating a Composite Material's component materials (ingredients).
+            // Automatically add the component materials to this user's inventory for future use.
+            // TODO: Make more efficient
+            $userMaterialRepository->addMaterial($componentMaterial->component_material_id);
         }
 
         // We have modified the materials, now need to re-calculate total analysis

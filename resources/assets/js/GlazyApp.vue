@@ -1,7 +1,5 @@
 <template>
-  <div v-if="$auth.ready()">
-    <router-view></router-view>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>

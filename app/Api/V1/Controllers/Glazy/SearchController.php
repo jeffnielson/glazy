@@ -92,6 +92,7 @@ class SearchController extends ApiBaseController
         $g = null;
         $b = null;
         $is_image_search = $request->input('images');
+        $ids = $request->input('id');
 
         $order_id = $request->input('order');
         $view_option = $request->input('view');
@@ -200,6 +201,8 @@ class SearchController extends ApiBaseController
         $query->ofCountry($country_id);
 
         $query->ofUser($username);
+
+        $query->ofIds($ids);
 
 //        $query->where('materials.is_analysis', false);
 

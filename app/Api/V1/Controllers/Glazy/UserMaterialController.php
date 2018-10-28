@@ -50,12 +50,14 @@ class UserMaterialController extends ApiBaseController
         return $this->manager->createData($resource)->toArray();
     }
 
-    public function editMaterialList($id = null)
+    public function editMaterialList(Request $request)
     {
         $userMaterials = null;
 
+        $ids = $request->input('id');
+
         if (Auth::guard()->user()) {
-            $userMaterials = $this->userMaterialRepository->getEditMaterialList($id);
+            $userMaterials = $this->userMaterialRepository->getEditMaterialList($ids);
         }
         else {
             // Unauthenticated user is just using the calculator without a recipe

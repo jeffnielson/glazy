@@ -10,13 +10,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-//@import "/node_modules/vue-multiselect/dist/vue-multiselect.min.css";
 
 @import "glazy-nowui";
 
 @import "loader";
 
+//@import "/node_modules/vue-multiselect/dist/vue-multiselect.min.css";
 @import "vue-multiselect";
+//@import "vue-multiselect.min.css";
 
 a {
   color: #2488cf;
@@ -75,6 +76,7 @@ a:hover, a:focus {
 
 .btn-sm, .btn-group-sm > .btn {
   font-size: 0.875rem;
+  padding: 5px 10px;
 }
 
 // https://www.materialpalette.com/colors

@@ -1,5 +1,6 @@
 <template>
-    <div class="container-fluid app-container">
+    <div v-if="$auth.ready()"
+        class="container-fluid app-container">
         <AppHeader/>
         <transition
             name="fade"
@@ -24,6 +25,7 @@ export default {
 
 <style>
 .app-container {
+    min-height: 100%;
 }
 
 .fade-enter-active,

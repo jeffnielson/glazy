@@ -1,7 +1,7 @@
 <template>
     <div class="table-responsive umf-traditional-container">
         <table class="umf-traditional" v-if="isLoaded">
-            <thead v-if="showLegend || showSimpleLegend">
+            <thead v-if="hasOxides && (showLegend || showSimpleLegend)">
             <tr class="legend-row">
                 <th colspan="2">
                     <span v-if="!showSimpleLegend" class="subtitle">FLUXES</span>
@@ -71,6 +71,10 @@
         type: Object,
         default: null
       },
+      umfAnalysis: {
+        type: Object,
+        default: null
+      },
       showLegend: {
         type: Boolean,
         default: true
@@ -79,9 +83,9 @@
         type: Boolean,
         default: false
       },
-      isSmall: {
-        type: Boolean,
-        default: false
+      size: {
+        type: String,
+        default: ''
       }
     },
 
@@ -95,8 +99,25 @@
     computed: {
 
       umf: function () {
-        return this.material.analysis.umfAnalysis
-        // return this.material.getROR2OUnityFormulaAnalysis();
+        if (this.umfAnalysis) {
+          return this.umfAnalysis;
+        }
+        if (this.material) {
+          return this.material.analysis.umfAnalysis;
+        }
+        return null;
+      },
+
+      hasOxides: function () {
+        let hasOxides = false;
+        if (this.umf) {
+          Analysis.OXIDE_NAMES.forEach((oxideName) => {
+            if (this.umf[oxideName]) {
+              hasOxides = true;
+            }
+          });
+        }
+        return hasOxides;
       },
 
       fluxes: function () {
@@ -116,17 +137,14 @@
       },
 
       isLoaded: function () {
-        if (this.material) {
+        if (this.material || this.umfAnalysis) {
           return true;
         }
         return false;
       },
 
       cssClassString: function () {
-        if (this.isSmall) {
-          return 'bs'
-        }
-        return 'b'
+        return 'b' + this.size;
       }
 
     },
@@ -194,17 +212,31 @@
         margin: 0; width: 6px;
     }
     /* Regular size: */
-    .fa-b1 { font-size: 22px; line-height: 22px; }
-    .fa-b2 { font-size: 44px; line-height: 44px; }
-    .fa-b3 { font-size: 66px; line-height: 66px; }
-    .fa-b4 { font-size: 88px; line-height: 88px; }
-    .fa-b5 { font-size: 110px; line-height: 110px; }
-    .fa-b6 { font-size: 132px; line-height: 132px; }
-    .fa-b7 { font-size: 154px; line-height: 154px; }
-    .fa-b8 { font-size: 176px; line-height: 176px; }
-    .fa-b9 { font-size: 198px; line-height: 198px; }
-    .fa-b10 { font-size: 220px; line-height: 220px; }
-    .fa-b11 { font-size: 242px; line-height: 242px; }
+    .fa-bl1 { font-size: 22px; line-height: 22px; }
+    .fa-bl2 { font-size: 44px; line-height: 44px; }
+    .fa-bl3 { font-size: 66px; line-height: 66px; }
+    .fa-bl4 { font-size: 88px; line-height: 88px; }
+    .fa-bl5 { font-size: 110px; line-height: 110px; }
+    .fa-bl6 { font-size: 132px; line-height: 132px; }
+    .fa-bl7 { font-size: 154px; line-height: 154px; }
+    .fa-bl8 { font-size: 176px; line-height: 176px; }
+    .fa-bl9 { font-size: 198px; line-height: 198px; }
+    .fa-bl10 { font-size: 220px; line-height: 220px; }
+    .fa-bl11 { font-size: 242px; line-height: 242px; }
+
+    /* Medium size: */
+    .fa-bm1 { font-size: 18px; line-height: 18px; }
+    .fa-bm2 { font-size: 36px; line-height: 36px; }
+    .fa-bm3 { font-size: 54px; line-height: 54px; }
+    .fa-bm4 { font-size: 72px; line-height: 72px; }
+    .fa-bm5 { font-size: 90px; line-height: 90px; }
+    .fa-bm6 { font-size: 108px; line-height: 108px; }
+    .fa-bm7 { font-size: 126px; line-height: 126px; }
+    .fa-bm8 { font-size: 144px; line-height: 144px; }
+    .fa-bm9 { font-size: 162px; line-height: 162px; }
+    .fa-bm10 { font-size: 180px; line-height: 180px; }
+    .fa-bm11 { font-size: 198px; line-height: 198px; }
+
     /* Small size: */
     .fa-bs1 { font-size: 13px; line-height: 13px; }
     .fa-bs2 { font-size: 26px; line-height: 26px; }

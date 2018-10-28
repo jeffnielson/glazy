@@ -4,7 +4,7 @@
 // import GlazyConstants from 'ceramicscalc-js/src/helpers/GlazyConstants'
 // import MaterialTypes from 'ceramicscalc-js/src/material/MaterialTypes'
 
-window.GLAZY_APP_URL = 'http://homestead.test'
+window.GLAZY_APP_URL = 'http://glazy.test';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -22,7 +22,6 @@ require('./bootstrap');
 
 //Vue.component('example', require('./components/Example.vue'));
 
-
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -33,8 +32,20 @@ import Meta from 'vue-meta'
 Vue.use(Meta)
 import SocialSharing from 'vue-social-sharing'
 Vue.use(SocialSharing);
+
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
+
+/**
+ Currently used Bootstrap-vue components:
+
+ b-alert	b-btn	b-button	b-button-group	b-card	b-checkbox	b-col	b-collapse
+ b-dropdown	b-dropdown-item	b-field	b-form	b-form-checkbox	b-form-checkbox-group
+ b-form-feedback	b-form-group	b-form-input	b-form-radio	b-form-radio-group
+ b-form-select	b-form-textarea	b-icon	b-input	b-modal	b-nav-item	b-nav-item-dropdown
+ b-navbar	b-navbar-brand	b-navbar-nav	b-navbar-toggle	b-row	b-select	b-tab
+ b-tabs	b-textarea
+ */
 
 //import VueI18n from 'vue-i18n'
 //Vue.use(VueI18n)

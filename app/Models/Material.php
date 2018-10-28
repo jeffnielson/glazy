@@ -592,4 +592,28 @@ class Material extends Model
         return $query;
     }
 
+    public function scopeOfIds($query, $ids) {
+
+        if (empty($ids)) {
+            return $query;
+        }
+        if (is_array($ids)) {
+            foreach($ids as $id) {
+                if (!is_numeric($id)) {
+                    // Something wrong with this array,
+                    // should only contain integer ID's
+                    return $query;
+                }
+            }
+            // Search for multiple ID's
+            $query->whereIn('materials.id', $ids);
+        }
+        else if (is_numeric($ids)) {
+            // Search for a single ID
+            $query->where('materials.id', '=', (int) $ids);
+        }
+
+        return $query;
+    }
+
 }

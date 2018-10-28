@@ -78,7 +78,7 @@ class UserMaterialRepository extends Repository
      *
      *
      */
-    public function getEditMaterialList($id = null)
+    public function getEditMaterialList($ids = null)
     {
         $user_id =  Auth::user()->id;
 
@@ -97,12 +97,23 @@ class UserMaterialRepository extends Repository
                 ->from('user_materials')
                 ->where('user_id', $user_id);
         });
-        if ($id) {
-            $query->orWhereIn('id', function($query) use ($id) {
-                $query->selectRaw('component_material_id')
-                    ->from('material_materials')
-                    ->where('parent_material_id', $id);
-            });
+        if (!empty($ids)) {
+            if (is_array($ids)) {
+                // Search for multiple ID's
+                $query->orWhereIn('id', function($query) use ($ids) {
+                    $query->selectRaw('component_material_id')
+                        ->from('material_materials')
+                        ->whereIn('parent_material_id', $ids);
+                });
+            }
+            else if (is_numeric($ids)) {
+                // Search for a single ID
+                $query->orWhereIn('id', function($query) use ($ids) {
+                    $query->selectRaw('component_material_id')
+                        ->from('material_materials')
+                        ->where('parent_material_id', $ids);
+                });
+            }
         }
         $query->with('analysis');
         $query->with('material_type');

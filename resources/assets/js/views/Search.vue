@@ -171,6 +171,7 @@
                 variant="link"
                 text="With Selected">
                 <b-dropdown-item @click="collectSelectedMaterialsSelect()">Bookmark</b-dropdown-item>
+                <b-dropdown-item @click="editSelectedMaterialsSelect()">Calculate</b-dropdown-item>
             </b-dropdown>
           </b-button-group>
         </div>
@@ -842,6 +843,19 @@
         }
         if (hasMaterial) {
           this.$refs.collectModal.show()
+        }
+      },
+
+      editSelectedMaterialsSelect() {
+        var hasMaterial = false
+        let materialsToEdit = [];
+        for (var materialId in this.selectedMaterials) {
+          if (this.selectedMaterials.hasOwnProperty(materialId)) {
+            materialsToEdit.push(materialId);
+          }
+        }
+        if (materialsToEdit.length) {
+          this.$router.push({ name: 'calculator', query: { id: materialsToEdit }});
         }
       },
 

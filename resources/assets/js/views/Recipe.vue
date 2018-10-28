@@ -1,32 +1,6 @@
 <template>
   <div class="row recipe-component">
-    <nav v-if="isLoaded && searchItems && searchItems.length > 0"
-         class="col-md-3 sidebar d-none d-md-block">
-
-      <h5 class="search-title">Search Results</h5>
-
-      <router-link v-if="searchRoute && (searchRoute.name === 'search' || searchRoute.name === 'materials')"
-                   :to="{ name: searchRoute.name, query: searchRoute.query }">
-        <i class="fa fa-chevron-left"></i> Back to search
-      </router-link>
-
-      <router-link v-if="searchRoute && (searchRoute.name === 'user' || searchRoute.name === 'user-materials')"
-                   :to="{ name: searchRoute.name, params: searchRoute.params, query: searchRoute.query }">
-        <i class="fa fa-chevron-left"></i> Back to search
-      </router-link>
-
-      <section class="row search-results">
-        <div class="col-md-12"
-             v-for="searchMaterial in searchItems">
-          <material-card-detail
-                  :material="searchMaterial"
-                  :currentMaterialId="recipe.id"
-                  :isEmbedded="true"
-          ></material-card-detail>
-        </div>
-      </section>
-    </nav>
-    <main v-bind:class="mainClass" role="main" class="ml-sm-auto recipe-result">
+    <main role="main" class="col-md-12 ml-sm-auto recipe-result">
       <b-alert v-if="apiError" show variant="danger">
         API Error: {{ apiError.message }}
       </b-alert>
@@ -42,14 +16,7 @@
         {{ actionMessage }}
       </b-alert>
 
-      <div v-if="isEditComponents && isLoaded && !isDeleted">
-        <edit-recipe-components :originalMaterial="material"
-                                v-on:isProcessing="isProcessingRecipe"
-                                v-on:updatedRecipeComponents="updatedRecipeComponents"
-                                v-on:editComponentsCancel="editComponentsCancel">
-        </edit-recipe-components>
-      </div>
-      <div v-if="!isEditComponents && isLoaded && !isDeleted">
+      <div v-if="isLoaded && !isDeleted">
 
         <div id="addCollectionAlert" class="alert alert-success fade show" style="display: none;">
           <i class="fa fa-check"></i> Recipe added to collection!
@@ -204,6 +171,9 @@
                         <b-button v-on:click="copyRecipe()">
                           <i class="fa fa-copy" aria-hidden="true"></i> Copy
                         </b-button>
+                        <b-button v-on:click="calculateRecipe()">
+                          <i class="fa fa-calculator" aria-hidden="true"></i> Calculate
+                        </b-button>
                         <b-dropdown left>
                           <span slot=text>
                             <i class="fa fa-cloud-download" aria-hidden="true"></i> Export
@@ -223,10 +193,10 @@
                         <b-button class="btn-info" v-if="!recipe.isPrivate" v-on:click="unpublishRecipe()"><i class="fa fa-eye-slash"></i> Unpublish</b-button>
                         <b-button class="btn-info" v-if="!recipe.isPrivate" v-b-modal.archiveConfirmModal><i class="fa fa-lock"></i> Lock</b-button>
                       </b-button-group>
-                      <b-button-group class="recipe-action-group" v-if="canEdit && !recipe.isArchived">
-                        <b-button class="btn-info" v-on:click="editMeta()"><i class="fa fa-edit"></i> Edit Info</b-button>
-                        <b-button class="btn-info" v-if="!recipe.isPrimitive && !recipe.isAnalysis" v-on:click="editComponents()"><i class="fa fa-list"></i> Edit Recipe</b-button>
-                        <b-button class="btn-danger" v-b-modal.deleteRecipeConfirmModal><i class="fa fa-trash"></i></b-button>
+                      <b-button-group class="recipe-action-group">
+                        <b-button v-if="canEdit && !recipe.isArchived" class="btn-info" v-on:click="editMeta()"><i class="fa fa-edit"></i> Edit Info</b-button>
+                        <b-button class="btn-info" v-if="!recipe.isPrimitive && !recipe.isAnalysis" v-on:click="editComponents()"><i class="fa fa-calculator"></i> Calculator</b-button>
+                        <b-button v-if="canEdit && !recipe.isArchived" class="btn-danger" v-b-modal.deleteRecipeConfirmModal><i class="fa fa-trash"></i></b-button>
                       </b-button-group>
 
                       <b-modal v-if="canEdit"
@@ -684,7 +654,6 @@
         isDeleted: false,
         isRecipeUpdated: false,
         isEditMeta: false,
-        isEditComponents: false,
         infoMessageSeconds: 0,
         isProcessing: false,
         apiError: null,
@@ -736,12 +705,6 @@
         if (this.recipe.isPrimitive) return 'Material'
         if (this.recipe.isAnalysis) return 'Analysis'
         return 'Recipe'
-      },
-      mainClass: function() {
-        if (this.searchItems && this.searchItems.length > 0) {
-          return 'col-md-9'
-        }
-        return 'col-md-12'
       },
       canEdit: function () {
         // Only the creator of a recipe can edit it
@@ -795,6 +758,13 @@
         }
         // This material is not in the users inventory
         return false
+      },
+      originalMaterials () {
+        let originalMaterials = [];
+        if (this.material) {
+          originalMaterials[0] = this.material;
+        }
+        return originalMaterials;
       }
     },
     /*
@@ -803,7 +773,6 @@
     beforeRouteUpdate (to, from, next) {
       // Ensure that the back/forward buttons work within this component/route
       console.log('call beforeRouteUpdate')
-      this.isEditComponents = false
       this.isEditMeta = false
       // this.recipe = null
       this.sendRecipeGetRequest('/recipes/' + to.params.id)
@@ -817,7 +786,6 @@
           // This is only an internal link, no need to requery
           return
         }
-        this.isEditComponents = false
         this.isEditMeta = false
         this.sendRecipeGetRequest('/recipes/' + route.params.id)
         // Go to top of window
@@ -916,7 +884,6 @@
         this.fetchRecipe()
         this.infoMessageSeconds = 5
         this.isRecipeUpdated = true
-        this.isEditComponents = false
       },
 
       imageUpdated: function () {
@@ -933,12 +900,7 @@
       },
 
       editComponents: function () {
-        this.isEditComponents = true
-        window.scrollTo(0, 0)
-      },
-
-      editComponentsCancel: function () {
-        this.isEditComponents = false
+        this.$router.push({ name: 'calculator', query: { id: this.material.id }});
       },
 
       isProcessingRecipe: function () {

@@ -55,7 +55,7 @@
                 v-if="hasUmf"
                 :material="material"
                 :showSimpleLegend="true"
-                :isSmall="true">
+                size="s">
         </umf-traditional-notation>
 
         <div v-if="hasUmf" class="ratios">
