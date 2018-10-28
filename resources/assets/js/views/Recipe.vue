@@ -171,9 +171,6 @@
                         <b-button v-on:click="copyRecipe()">
                           <i class="fa fa-copy" aria-hidden="true"></i> Copy
                         </b-button>
-                        <b-button v-on:click="calculateRecipe()">
-                          <i class="fa fa-calculator" aria-hidden="true"></i> Calculate
-                        </b-button>
                         <b-dropdown left>
                           <span slot=text>
                             <i class="fa fa-cloud-download" aria-hidden="true"></i> Export
