@@ -5,6 +5,7 @@ namespace App\Api\V1\Controllers\Glazy;
 //use App\Api\V1\Controllers\ApiController;
 
 use App\Api\V1\Transformers\Material\MaterialTransformer;
+use App\Api\V1\Transformers\Material\CalculatorCalculatedMaterialTransformer;
 use App\Api\V1\Transformers\Material\GlazeChemMaterialTransformer;
 use App\Api\V1\Transformers\Material\InsightMaterialTransformer;
 
@@ -17,10 +18,12 @@ use App\Api\V1\Requests\Recipe\UpdateRecipeRequest;
 
 use App\Models\MaterialImage;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 use League\Fractal\Resource\Item as FractalItem;
+use League\Fractal\Resource\Collection as FractalCollection;
 use League\Fractal\Manager as FractalManager;
 
 use App\Api\V1\Serializers\GlazySerializer;
@@ -70,6 +73,24 @@ class MaterialController extends ApiBaseController
         }
 
         $resource = new FractalItem($material, new MaterialTransformer());
+
+        return $this->manager->createData($resource)->toArray();
+    }
+
+    public function calculatorSearch(Request $request)
+    {
+        $ids = $request->input('id');
+
+        $materials = $this->materialRepository->getForCalculator($ids);
+
+        if (!$materials)
+        {
+            return $this->respondNotFound('No recipes found.');
+        }
+
+        $this->manager->parseIncludes(['materialComponents']);
+
+        $resource = new FractalCollection($materials, new CalculatorCalculatedMaterialTransformer());
 
         return $this->manager->createData($resource)->toArray();
     }

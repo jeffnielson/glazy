@@ -34,6 +34,7 @@ $api->version('v1', function (Router $api) {
     });
     
     $api->group(['prefix' => 'recipes'], function(Router $api) {
+        $api->get('/calculatorSearch', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@calculatorSearch')->name('calculatorSearch');
         $api->get('/{id}', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@show')->name('show');
 
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {

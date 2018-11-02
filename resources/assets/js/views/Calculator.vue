@@ -82,7 +82,7 @@
 
       <div class="row">
         <div class="col-md-12">
-          Add Materials:
+          Add Materials to Inventory & Calculator:
           <a href="http://help.glazy.org/guide/calculator/#why-are-materials-missing-from-the-calculator" target="_blank">
             <i class="fa fa-question-circle fa-fw"></i>
           </a>
@@ -99,13 +99,13 @@
 
     <main role="main" class="col-md-9 ml-sm-auto calc-results">
 
-      <section v-if="materials && materials.length > 0"
+      <section v-if="isLoaded && materials && materials.length > 0"
                class="row edit-recipe-card-row">
 
         <div v-for="(material, index) in materials"
-             v-bind:class="editRecipeCardColClass">
+             v-bind:class="editRecipeCardColClass(material)">
           <edit-recipe-card
-                  v-if="isLoaded"
+                  v-if="!material.isPrimitive"
                   :selectMaterials="selectMaterials"
                   :material="material"
                   :lookupMaterialLibrary="lookupMaterialLibrary"
@@ -120,6 +120,22 @@
                   v-on:updatedMaterialId="updatedMaterialId"
           >
           </edit-recipe-card>
+          <edit-primitive-material-card
+              v-if="material.isPrimitive"
+              :selectMaterials="selectMaterials"
+              :material="material"
+              :lookupMaterialLibrary="lookupMaterialLibrary"
+              :displayType="displayType"
+              :canRemove="((materials.length - 1) ? true : false)"
+              v-on:materialUpdated="materialUpdated"
+              v-on:checkForDuplicates="checkForDuplicates(index)"
+              v-on:cancelRecipeCard="cancelRecipeCard(index)"
+              v-on:copyMaterial="copyMaterial(index)"
+              v-on:highlightMaterial="highlightMaterial"
+              v-on:unhighlightMaterial="unhighlightMaterial"
+              v-on:updatedMaterialId="updatedMaterialId"
+          >
+          </edit-primitive-material-card>
         </div>
 
       </section>
@@ -228,6 +244,7 @@
   import MaterialCardDetail from '../components/glazy/search/MaterialCardDetail.vue'
 
   import EditRecipeCard from '../components/glazy/recipe/EditRecipeCard.vue'
+  import EditPrimitiveMaterialCard from '../components/glazy/recipe/EditPrimitiveMaterialCard.vue'
 
   import debounce from 'lodash/debounce'
 
@@ -236,7 +253,8 @@
     components: {
       UmfD3Chart,
       MaterialCardDetail,
-      EditRecipeCard
+      EditRecipeCard,
+      EditPrimitiveMaterialCard
     },
     props: {
       //originalMaterials: {
@@ -269,7 +287,6 @@
         chartHeight: 220,
         chartWidth: 0,
         displayType: 'umf',
-        editRecipeCardColClass: 'col-md-12',
         initialized: false,
         apiError: null,
         serverError: null,
@@ -316,12 +333,12 @@
         if (this.$route.query && this.$route.query.id) {
           // http://glazy.test/calculator?id=1&id=2&id=3
           //let querystring = 'id[0]=16830&id[1]=16831';
-          let querystring = 'deep=1&';
+          let querystring = null;
           if (Array.isArray(this.$route.query.id)) {
-            querystring += 'id[]=' + this.$route.query.id.join('&id[]=');
+            querystring = 'id[]=' + this.$route.query.id.join('&id[]=');
           }
           else {
-            querystring += 'id=' + this.$route.query.id;
+            querystring = 'id=' + this.$route.query.id;
           }
 
           let userId = null;
@@ -329,7 +346,7 @@
             userId = this.$auth.user().id;
           }
 
-          Vue.axios.get(Vue.axios.defaults.baseURL + '/search?' + querystring)
+          Vue.axios.get(Vue.axios.defaults.baseURL + '/recipes/calculatorSearch?' + querystring)
             .then((response) => {
               if (response.data.error) {
               }
@@ -338,14 +355,21 @@
                   this.originalMaterials = [];
                   response.data.data.forEach((jsonMaterial) => {
                     let material = Material.createFromJson(jsonMaterial);
-                    if (userId) {
-                      if (jsonMaterial.createdByUserId !== userId) {
-                        material.originalId = material.id; // Save the old id for later
-                        material.id = this.getFakeMaterialId();
-                        material.name = this.getCopyName(material.name);
-                      }
+                    if (jsonMaterial.isAnalysis) {
+                      // Underlying library only supports "primitive".
+                      // Functionally, "analyses" are same as "primitives".
+                      material.isPrimitive = true;
                     }
-                    material.recalculate();
+                    if (!material.isPrimitive) {
+                      if (userId) {
+                        if (jsonMaterial.createdByUserId !== userId) {
+                          material.originalId = material.id; // Save the old id for later
+                          material.id = this.getFakeMaterialId();
+                          material.name = this.getCopyName(material.name);
+                        }
+                      }
+                      material.recalculate();
+                    }
                     this.originalMaterials.push(material);
                     let newMaterial = material.clone();
                     if ('originalId' in material && material.originalId > 0) {
@@ -355,7 +379,6 @@
                     this.chartMaterials.push(newMaterial);
                   });
                   this.fetchPrimitiveMaterials();
-                  this.adjustEditRecipeCardSizes();
                   this.initialized = true;
                 }
                 else {
@@ -379,7 +402,6 @@
             this.materials.push(newMaterial);
             this.chartMaterials.push(newMaterial);
             this.fetchPrimitiveMaterials();
-            this.adjustEditRecipeCardSizes();
             this.initialized = true;
           }
       },
@@ -417,7 +439,6 @@
           this.isProcessing = false
         }
         else {
-          console.log('FETCHING: ' + Vue.axios.defaults.baseURL + materialsListUrl)
           Vue.axios.get(Vue.axios.defaults.baseURL + materialsListUrl)
             .then((response) => {
             if (response.data.error) {
@@ -456,7 +477,6 @@
         // Add all of the materials from the recipes we are editing
         // (If not already in our material library.)
         this.originalMaterials.forEach((material) => {
-          console.log('enter for each with material: ' + material.name);
           if ('materialComponents' in material && material.materialComponents.length > 0) {
             material.materialComponents.forEach(function (materialComponent) {
               if ('material' in materialComponent) {
@@ -561,10 +581,10 @@
 
       addRecipeCard: function () {
         let newMaterial = new Material();
+        newMaterial.isPrimitive = false;
         newMaterial.setName('New Recipe ' + (this.materials.length + 1));
         this.materials.push(newMaterial);
         this.chartMaterials.push(newMaterial);
-        this.adjustEditRecipeCardSizes();
       },
 
       copyMaterial: function (index) {
@@ -580,11 +600,9 @@
           else {
             newMaterial.setName('New Recipe');
           }
-          console.log(newMaterial);
           this.materials.push(newMaterial);
           this.chartMaterials.push(newMaterial);
         }
-        this.adjustEditRecipeCardSizes();
       },
 
       handleResize: function () {
@@ -598,8 +616,6 @@
       },
 
       cancelRecipeCard: function(index) {
-        console.log('cancel the card at index: ' + index);
-        console.log('material name: ' + this.materials[index].name);
         if (this.materials && this.materials.length > index) {
           this.$delete(this.materials, index);
           this.$delete(this.chartMaterials, index);
@@ -624,7 +640,6 @@
         // A material's ID changed.  (It was saved.)
         this.materials.forEach((material, index) => {
           if (material.id === args.originalId) {
-          console.log("ORIGINAL: " + args.originalId + " NEW: " + args.newId);
             material.id = args.newId;
             this.$set(this.materials, index, material);
             this.$set(this.chartMaterials, index, material);
@@ -647,7 +662,6 @@
             // Reset both search items & search user
           } else {
             // Reset both search items & search user
-            console.log(response.data.data);
             this.isProcessingDuplicates = false
             this.primitiveMaterials = response.data.data;
             this.$refs.primitiveMaterialsModalRef.show();
@@ -695,12 +709,15 @@
         })
       },
 
-      adjustEditRecipeCardSizes() {
+      editRecipeCardColClass(material) {
         if (this.materials && this.materials.length > 1) {
-          this.editRecipeCardColClass = 'col-md-6';
+          if (this.materials.length == 2 && this.materials[0].isPrimitive) {
+            return 'col-md-12';
+          }
+          return 'col-md-6';
         }
         else {
-          this.editRecipeCardColClass = 'col-md-12';
+          return 'col-md-12';
         }
       },
 

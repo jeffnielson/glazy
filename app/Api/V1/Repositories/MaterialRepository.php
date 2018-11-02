@@ -65,6 +65,27 @@ class MaterialRepository extends Repository
             ->find($id);
     }
 
+    public function getForCalculator($ids)
+    {
+        $current_user_id = null;
+        if (Auth::check())
+        {
+            $user = Auth::guard('api')->user();
+            $current_user_id = $user->id;
+        }
+
+        return Material::with('analysis')
+            ->with('parent')
+            ->with('components')
+            ->with('thumbnail')
+            ->with('thumbnail.created_by_user')
+            ->with('created_by_user')
+            ->with('created_by_user.profile')
+            ->ofIds($ids)
+            ->ofUserViewable($current_user_id, null)
+            ->get();
+    }
+
     public function getAll()
     {
         return Material::with('analysis')->where('is_primitive', false)->get();

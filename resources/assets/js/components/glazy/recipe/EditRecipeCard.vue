@@ -111,67 +111,67 @@
              v-if="index < numVisibleRows"
              class="d-flex">
 
-                <div class="flex-grow-1 pr-2">
-                    <div class="multiselect-container">
-                        <multiselect
-                            :id="index + '_name'"
-                            :options="selectMaterials"
-                            v-model="materialFieldsId[index]"
-                            @input="focusAmountInput(index)"
-                            :multiple="false"
-                            key="value"
-                            label="label"
-                            selectLabel=""
-                            placeholder="Material"
-                            class="edit-recipe-multiselect"
-                        ></multiselect>
+            <div class="flex-grow-1 pr-2">
+                <div class="multiselect-container">
+                    <multiselect
+                        :id="index + '_name'"
+                        :options="selectMaterials"
+                        v-model="materialFieldsId[index]"
+                        @input="focusAmountInput(index)"
+                        :multiple="false"
+                        key="value"
+                        label="label"
+                        selectLabel=""
+                        placeholder="Material"
+                        class="edit-recipe-multiselect"
+                    ></multiselect>
+                </div>
+            </div>
+
+            <div class="pr-2 amount-container">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button style="min-width: 22px; max-width: 22px; margin: 0; padding: 0;"
+                                class="btn btn-sm btn-increment"
+                                type="button"
+                                tabindex="-1"
+                                @click.stop.prevent="decrementAmount(index)">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                    <input :id="index + '_amount'"
+                           v-model="materialFieldsAmount[index]"
+                           :ref="'amountInputRef' + index"
+                           type="number"
+                           inputmode="numeric"
+                           size="5"
+                           min="0"
+                           placeholder="%"
+                           v-focus="index === focused"
+                           @focus="focused = index"
+                           v-on:blur.native="unfocusAll"
+                           @change="focused = index"
+                           @input="updateMaterial"
+                           class="form-control edit-recipe-amount-input float-left">
+                    <div class="input-group-append">
+                        <button style="min-width: 22px; max-width: 22px; margin: 0; padding: 0;"
+                                class="btn btn-sm btn-increment"
+                                type="button"
+                                tabindex="-1"
+                                @click.stop.prevent="incrementAmount(index)">
+                            <i class="fa fa-plus"></i>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="pr-2 amount-container">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button style="min-width: 22px; max-width: 22px; margin: 0; padding: 0;"
-                                    class="btn btn-sm btn-increment"
-                                    type="button"
-                                    tabindex="-1"
-                                    @click.stop.prevent="decrementAmount(index)">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                        </div>
-                        <input :id="index + '_amount'"
-                               v-model="materialFieldsAmount[index]"
-                               :ref="'amountInputRef' + index"
-                               type="number"
-                               inputmode="numeric"
-                               size="5"
-                               min="0"
-                               placeholder="%"
-                               v-focus="index === focused"
-                               @focus="focused = index"
-                               v-on:blur.native="unfocusAll"
-                               @change="focused = index"
-                               @input="updateMaterial"
-                               class="form-control edit-recipe-amount-input float-left">
-                        <div class="input-group-append">
-                            <button style="min-width: 22px; max-width: 22px; margin: 0; padding: 0;"
-                                    class="btn btn-sm btn-increment"
-                                    type="button"
-                                    tabindex="-1"
-                                    @click.stop.prevent="incrementAmount(index)">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="additional_container">
-                    <b-form-checkbox id="index + '_add'"
-                                     v-model="materialFieldsIsAdditional[index]"
-                                     @input="updateMaterial"
-                                     class="add-check"
-                                     plain />
-                </div>
+            <div class="additional_container">
+                <b-form-checkbox id="index + '_add'"
+                                 v-model="materialFieldsIsAdditional[index]"
+                                 @input="updateMaterial"
+                                 class="add-check"
+                                 plain />
+            </div>
         </div>
         <div class="d-flex justify-content-end">
             <div class="pr-2">
@@ -189,6 +189,7 @@
                        class="form-control edit-recipe-subtotal">
             </div>
         </div>
+
         <div class="d-flex mt-2">
             <b-button-toolbar>
                 <b-button-group size="sm" class="mx-1">
@@ -273,7 +274,6 @@
 
     watch: {
       material: function (val) {
-        console.log('material changed');
         // If the underlying material changes, make sure we reset the component:
         if (this.material) {
           this.originalMaterial = this.material.clone();
@@ -509,7 +509,6 @@
           if ('originalId' in this.material && this.material.originalId > 0) {
             form.originalId = this.material.originalId;
           }
-          console.log('saving with original id of : ' + this.material.originalId);
 
           Vue.axios.post(Vue.axios.defaults.baseURL + '/materialmaterials/', form)
             .then((response) => {
@@ -553,7 +552,6 @@
 
       unfocusAll () {
         this.focused = false;
-        console.log('focusme');
       },
 
       countDownChanged (dismissCountDown) {

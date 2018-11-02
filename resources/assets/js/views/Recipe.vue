@@ -182,17 +182,17 @@
                       <b-button v-if="recipe.isPrimitive && isUserMaterial" class="btn-info" :disabled="true">
                         <i class="fa fa-cubes"></i> In Inventory
                       </b-button>
-                      <b-button v-if="recipe.isPrimitive && !isUserMaterial" class="btn-info" v-on:click="addUserMaterial()">
-                        <i class="fa fa-cubes"></i> Add to Inventory
-                      </b-button>
                       <b-button-group class="recipe-action-group" v-if="canEdit && !recipe.isArchived">
                         <b-button class="btn-info" v-if="recipe.isPrivate" v-on:click="publishRecipe()"><i class="fa fa-eye"></i> Publish</b-button>
                         <b-button class="btn-info" v-if="!recipe.isPrivate" v-on:click="unpublishRecipe()"><i class="fa fa-eye-slash"></i> Unpublish</b-button>
                         <b-button class="btn-info" v-if="!recipe.isPrivate" v-b-modal.archiveConfirmModal><i class="fa fa-lock"></i> Lock</b-button>
                       </b-button-group>
                       <b-button-group class="recipe-action-group">
+                        <b-button v-if="recipe.isPrimitive && !isUserMaterial" class="btn-info" v-on:click="addUserMaterial()">
+                          <i class="fa fa-cubes"></i> Add to Inventory
+                        </b-button>
                         <b-button v-if="canEdit && !recipe.isArchived" class="btn-info" v-on:click="editMeta()"><i class="fa fa-edit"></i> Edit Info</b-button>
-                        <b-button class="btn-info" v-if="!recipe.isPrimitive && !recipe.isAnalysis" v-on:click="editComponents()"><i class="fa fa-calculator"></i> Calculator</b-button>
+                        <b-button class="btn-info" v-on:click="editComponents()"><i class="fa fa-calculator"></i> Calculator</b-button>
                         <b-button v-if="canEdit && !recipe.isArchived" class="btn-danger" v-b-modal.deleteRecipeConfirmModal><i class="fa fa-trash"></i></b-button>
                       </b-button-group>
 
