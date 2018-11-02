@@ -35,7 +35,7 @@ class CollectionTransformer extends Fractal\TransformerAbstract
 
     public function includeCreatedByUser(Collection $collection)
     {
-        if ($collection->created_by_user) {
+        if ($collection->relationLoaded('created_by_user') && $collection->created_by_user) {
             return $this->item($collection->created_by_user, new UserTransformer());
         }
     }
