@@ -3,7 +3,7 @@
 namespace App\Api\V1\Transformers\UserMaterial;
 
 use App\Api\V1\Transformers\User\UserTransformer;
-use App\Api\V1\Transformers\Material\ShallowMaterialTransformer;
+use App\Api\V1\Transformers\Material\CalculatorMaterialTransformer;
 use App\Models\UserMaterial;
 use League\Fractal;
 
@@ -51,7 +51,7 @@ class UserMaterialTransformer extends Fractal\TransformerAbstract
     public function includeMaterial(UserMaterial $userMaterial)
     {
         if ($userMaterial->material) {
-            return $this->item($userMaterial->material, new ShallowMaterialTransformer());
+            return $this->item($userMaterial->material, new CalculatorMaterialTransformer());
         }
     }
 

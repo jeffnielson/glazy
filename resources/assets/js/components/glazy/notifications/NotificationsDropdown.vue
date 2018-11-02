@@ -27,13 +27,14 @@
     },
     computed: {
       unreadNotifications: function () {
-        if (this.$auth.check() &&
-          this.$auth.user() &&
-          this.$auth.user().unread_notifications &&
-          this.$auth.user().unread_notifications.length > 0) {
-          return this.$auth.user().unread_notifications
+        if (!this.$auth.check) {
+          return null;
         }
-        return null
+        let user = this.$auth.user();
+        if (user && 'unreadNotifications' in user && user.unreadNotifications.length > 0) {
+          return user.unreadNotifications;
+        }
+        return null;
       }
     },
     methods: {

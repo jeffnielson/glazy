@@ -2,18 +2,10 @@
 
 namespace App\Api\V1\Transformers\Material;
 
-use App\Api\V1\Transformers\Atmosphere\SimpleAtmosphereTransformer;
-use App\Api\V1\Transformers\MaterialAnalysis\MaterialAnalysisTransformer;
-use App\Api\V1\Transformers\MaterialAnalysis\FullMaterialAnalysisTransformer;
-use App\Api\V1\Transformers\MaterialComponent\ShallowMaterialComponentTransformer;
-use App\Api\V1\Transformers\MaterialImage\ShallowMaterialImageTransformer;
+use App\Api\V1\Transformers\MaterialAnalysis\MaterialPercentageAnalysisTransformer;
 use App\Api\V1\Transformers\User\UserTransformer;
 use App\Models\Material;
 use App\Models\MaterialType;
-use App\Models\OrtonCone;
-use App\Models\SurfaceType;
-use App\Models\TransparencyType;
-use Illuminate\Support\Facades\Log;
 use App\Api\V1\Transformers\JsonDateTransformer;
 
 use League\Fractal;
@@ -44,6 +36,7 @@ class CalculatorMaterialTransformer extends Fractal\TransformerAbstract
 
     protected $defaultIncludes = [
         'analysis',
+        'createdByUser'
     ];
 
     public function transform(Material $material)
@@ -81,7 +74,15 @@ class CalculatorMaterialTransformer extends Fractal\TransformerAbstract
 
     public function includeAnalysis(Material $material)
     {
-        return $this->item($material->analysis, new MaterialAnalysisTransformer());
+        // The calculator ONLY needs percentage analysis.  All other analyses types are
+        // calculated by the javascript front-end.
+        return $this->item($material->analysis, new MaterialPercentageAnalysisTransformer());
     }
+
+    public function includeCreatedByUser(Material $material)
+    {
+        return $this->item($material->created_by_user, new UserTransformer());
+    }
+
 
 }

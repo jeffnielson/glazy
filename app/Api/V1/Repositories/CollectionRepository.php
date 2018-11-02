@@ -48,15 +48,18 @@ class CollectionRepository extends Repository
         return Collection::get();
     }
 
-    public function create(array $data)
+    public function create(array $data, $user_id = null)
     {
+        if (!$user_id) {
+            $user_id = Auth::user()->id;
+        }
         $collection = $this->getModel();
         
         $collection->fill($data);
 
         $collection->collection_type_id = self::USER_COLLECTION_TYPE_ID;
 
-        $collection->created_by_user_id = Auth::user()->id;
+        $collection->created_by_user_id = $user_id;
 
         $collection->save();
 

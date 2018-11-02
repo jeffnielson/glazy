@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Api\V1\Serializers\GlazySerializer;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -10,6 +11,9 @@ use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\ChangePasswordRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use League\Fractal\Resource\Item as FractalItem;
+use League\Fractal\Manager as FractalManager;
+use App\Api\V1\Transformers\User\DeepUserTransformer;
 use Auth;
 
 use Illuminate\Support\Facades\Log;
@@ -40,7 +44,7 @@ class UserController extends Controller
         $user->load(['collections' => function ($q) {
             $q->orderBy('name', 'asc');
         }])
-        ->load('user_materials')
+        ->load('userMaterials')
         ->load('profile')
         ->load('unreadNotifications');
         //$user->load('profile');
@@ -52,7 +56,12 @@ class UserController extends Controller
             function ($q) {
                 $q->orderBy('name', 'asc');
             }])
-            ->with('user_materials')
+            ->with('userMaterials')
+            ->with('userMaterials.material')
+            ->with('userMaterials.material.analysis')
+            ->with('userMaterials.material.thumbnail')
+            ->with('userMaterials.material.created_by_user')
+            ->with('userMaterials.material.created_by_user.profile')
             ->with('profile')
             ->with(['unreadNotifications' =>
                 function ($q) {
@@ -60,8 +69,11 @@ class UserController extends Controller
                 }])
             ->find($user->id);
 
-        // return response()->json(['data' => Auth::guard()->user()]);
-        return response()->json(['data' => $user]);
+        $resource = new FractalItem($user, new DeepUserTransformer());
+        $manager = new FractalManager();
+        $manager->setSerializer(new GlazySerializer());
+        return $manager->createData($resource)->toArray();
+        //return response()->json(['data' => $user]);
     }
 
     public function changePassword(ChangePasswordRequest $request, JWTAuth $JWTAuth)

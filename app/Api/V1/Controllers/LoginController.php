@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Api\V1\Serializers\GlazySerializer;
 use App\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
@@ -13,6 +14,9 @@ use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\LoginRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use League\Fractal\Resource\Item as FractalItem;
+use League\Fractal\Manager as FractalManager;
+use App\Api\V1\Transformers\User\DeepUserTransformer;
 use Auth;
 
 class LoginController extends Controller
@@ -177,7 +181,7 @@ class LoginController extends Controller
         $user->load(['collections' => function ($q) {
             $q->orderBy('name', 'asc');
         }])
-            ->load('user_materials')
+            ->load('userMaterials')
             ->load('profile')
             ->load('unreadNotifications');
         */
@@ -185,10 +189,15 @@ class LoginController extends Controller
         // Reload the user with required relationships
         // Todo: Move to User class as method
         $user = User::with(['collections' =>
-            function ($q) {
-                $q->orderBy('name', 'asc');
-            }])
-            ->with('user_materials')
+                function ($q) {
+                    $q->orderBy('name', 'asc');
+                }])
+            ->with('userMaterials')
+            ->with('userMaterials.material')
+            ->with('userMaterials.material.analysis')
+            ->with('userMaterials.material.thumbnail')
+            ->with('userMaterials.material.created_by_user')
+            ->with('userMaterials.material.created_by_user.profile')
             ->with('profile')
             ->with(['unreadNotifications' =>
                 function ($q) {
@@ -196,10 +205,14 @@ class LoginController extends Controller
                 }])
             ->find($user->id);
 
+        $resource = new FractalItem($user, new DeepUserTransformer());
+        $manager = new FractalManager();
+        $manager->setSerializer(new GlazySerializer());
+
         return response([
                 'status' => 'success',
                 'expires_in' => Auth::guard()->factory()->getTTL() * 60,
-                'data' => $user
+                'data' => $manager->createData($resource)->toArray()
         ])->header('Access-Control-Expose-Headers', 'Authorization')
             ->header('Authorization', 'Bearer '.$token);
     }

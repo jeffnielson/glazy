@@ -7,6 +7,7 @@ use App\Api\V1\Requests\Search\SimilarUnityFormulaRequest;
 
 use App\Api\V1\Transformers\ChartMaterialTransformer;
 use App\Api\V1\Transformers\Material\ChartPointMaterialTransformer;
+use App\Api\V1\Transformers\Material\MaterialTransformer;
 use App\Api\V1\Transformers\MaterialImage\MaterialImageTransformer;
 use App\Api\V1\Transformers\NoComponentsMaterialTransformer;
 use App\Api\V1\Transformers\Material\ShallowMaterialFromMaterialImageTransformer;
@@ -88,6 +89,9 @@ class SearchController extends ApiBaseController
         $country_id = (int)$request->input('country');
         $username = $request->input('username');
         $hex_color = $request->input('hex_color');
+
+        $is_deep = (int)$request->input('deep'); // 0 == false
+
         $r = null;
         $g = null;
         $b = null;
@@ -209,7 +213,12 @@ class SearchController extends ApiBaseController
         $query->with('analysis');
         $query->with('atmospheres');
         $query->with('material_type');
-        $query->with('shallowComponents');
+        if ($is_deep) {
+            $query->with('components');
+        }
+        else {
+            $query->with('shallowComponents');
+        }
         $query->with('thumbnail');
         $query->with('created_by_user');
         $query->with('created_by_user.profile');
@@ -303,18 +312,6 @@ class SearchController extends ApiBaseController
 
             $query->orderBy('material_images.updated_at', 'DESC');
         }
-
-        /**
-         * TODO: THINK, PROBABLY NOT NEEDED
-        if ($current_user_id) {
-            //$query->select('user_materials.id AS user_materials_id');
-            $query->leftJoin('user_materials', function ($join) use ($current_user_id) {
-                $join->on('materials.id', '=', 'user_materials.material_id')
-                    ->select('user_materials.id AS user_materials_id')
-                    ->where('user_materials.user_id', '=', $current_user_id);
-            });
-        }
-         */
 
         if (!empty($order_id))
         {

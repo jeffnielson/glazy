@@ -21,10 +21,10 @@
                        placeholder="New Name"
                        class="form-control form-control-sm">
             </div>
-            <div v-if="material.materialComponents.length && $auth.check()">
+            <div v-if="material.materialComponents.length">
                 <b-button-toolbar>
                     <b-button-group size="sm">
-                        <button class="btn btn-sm btn-info btn-recipe-action"
+                        <button v-if="$auth.check()" class="btn btn-sm btn-info btn-recipe-action"
                                 @click.prevent="store">
                             <i class="fa fa-save"></i>
                             <span v-if="this.material.id > 0">Update</span>
@@ -195,7 +195,8 @@
                     <b-button v-if="originalMaterial"
                               variant="neutral"
                               @click.prevent="resetRecipe"><i class="fa fa-refresh"></i> Reset</b-button>
-                    <b-button variant="neutral"
+                    <b-button v-if="canRemove"
+                              variant="neutral"
                               @click.prevent="cancelRecipeCard"><i class="fa fa-times"></i> Remove</b-button>
                     <b-button variant="neutral"
                               @click.prevent="checkForDuplicates"><i class="fa fa-search"></i> Search</b-button>
@@ -235,6 +236,10 @@
       displayType: {
         type: String,
         default: 'umf'
+      },
+      canRemove: {
+        type: Boolean,
+        default: true
       }
     },
     directives: { focus: focus },

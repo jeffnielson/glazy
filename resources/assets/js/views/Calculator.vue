@@ -64,7 +64,7 @@
 
           View:
           <select v-model="displayType"
-                  class="form-control">
+                  class="form-control form-control-sm">
             <option value="umf" selected>UMF</option>
             <option value="percentMol">Mol Percent %</option>
             <option value="percent">Percent %</option>
@@ -80,7 +80,20 @@
         </div>
       </div>
 
-      <br/>Can't find a material?  <a href="http://help.glazy.org/guide/calculator/#why-are-materials-missing-from-the-calculator" target="_blank">How to add a material to the calculator.</a>
+      <div class="row">
+        <div class="col-md-12">
+          Add Materials:
+          <a href="http://help.glazy.org/guide/calculator/#why-are-materials-missing-from-the-calculator" target="_blank">
+            <i class="fa fa-question-circle fa-fw"></i>
+          </a>
+          <input type="text"
+                 class="form-control form-control-sm"
+                 v-model="primitiveMaterialSearchKeyword"
+                 placeholder="Name"
+                 @input="updatePrimitiveMaterialsKeywords"
+                 @keydown.enter.prevent="updatePrimitiveMaterialsKeywords">
+        </div>
+      </div>
 
     </nav>
 
@@ -97,6 +110,7 @@
                   :material="material"
                   :lookupMaterialLibrary="lookupMaterialLibrary"
                   :displayType="displayType"
+                  :canRemove="((materials.length - 1) ? true : false)"
                   v-on:materialUpdated="materialUpdated"
                   v-on:checkForDuplicates="checkForDuplicates(index)"
                   v-on:cancelRecipeCard="cancelRecipeCard(index)"
@@ -133,6 +147,73 @@
       </div>
     </b-modal>
 
+
+    <b-modal id="primitiveMaterialsModal"
+             ref="primitiveMaterialsModalRef"
+             size="lg"
+             :title="'Materials matching ' + primitiveMaterialSearchKeyword"
+    >
+      <div v-if="!primitiveMaterials || !primitiveMaterials.length">
+        <p class="description">
+          No matching materials found.
+        </p>
+      </div>
+      <div v-else class="container-fluid">
+        <p class="description">
+          <em>
+            It is best to add <strong>Glazy Admin</strong> materials which will not be deleted or changed.
+          </em>
+        </p>
+        <div class="row">
+          <table class="table table-hover table-sm">
+            <thead>
+            <th colspan="2">Material</th>
+            <th>Author</th>
+            <th>Action</th>
+            </thead>
+            <tbody>
+            <tr class="col-md-12" v-for="material in primitiveMaterials">
+              <td>
+                <router-link :to="{ name: 'material', params: { id: material.id }}">
+                  <img class="img-fluid"
+                       :alt="material.name"
+                       :src="getImageUrl(material, 's')"
+                       width="40" height="40">
+                </router-link>
+              </td>
+              <td>
+                <router-link :to="{ name: 'material', params: { id: material.id }}">
+                  <i v-if="material.isPrivate"
+                     v-b-tooltip.hover title="Private"
+                     class="fa fa-eye-slash"></i>
+                  <i v-if="material.isArchived"
+                     v-b-tooltip.hover title="Archived"
+                     class="fa fa-lock"></i>
+                  {{ material.name }}<em v-if="material.otherNames">, {{ material.otherNames }}</em>
+                </router-link>
+              </td>
+              <td>
+                <div class="author">
+                  <router-link :to="{ name: 'user', params: { id: getUserSearchParam(material.createdByUser) }}">
+                    <img v-if="'profile' in material.createdByUser && 'avatar' in material.createdByUser.profile"
+                         v-bind:src="material.createdByUser.profile.avatar"
+                         class="avatar"/>
+                    <span>{{ material.createdByUser.name }}</span>
+                  </router-link>
+                </div>
+              </td>
+              <td>
+                <b-button class="btn-sm btn-info" v-on:click="addUserMaterial(material.id)">
+                  <i class="fa fa-cubes"></i> Add to Inventory
+                </b-button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -147,6 +228,8 @@
   import MaterialCardDetail from '../components/glazy/search/MaterialCardDetail.vue'
 
   import EditRecipeCard from '../components/glazy/recipe/EditRecipeCard.vue'
+
+  import debounce from 'lodash/debounce'
 
   export default {
     name: 'Calculator',
@@ -177,6 +260,9 @@
         unHighlightedMaterialId: {},
         fakeMaterialIdCounter: 0,
         baseTypeId: MaterialTypes.GLAZE_TYPE_ID,
+        primitiveMaterialSearchKeyword: '',
+        minSearchTextLength: 3,
+        primitiveMaterials: [],
         isProcessing: false,
         isProcessingDuplicates: false,
         similarMaterials: null,
@@ -230,12 +316,12 @@
         if (this.$route.query && this.$route.query.id) {
           // http://glazy.test/calculator?id=1&id=2&id=3
           //let querystring = 'id[0]=16830&id[1]=16831';
-          let querystring = null;
+          let querystring = 'deep=1&';
           if (Array.isArray(this.$route.query.id)) {
-            querystring = 'id[]=' + this.$route.query.id.join('&id[]=');
+            querystring += 'id[]=' + this.$route.query.id.join('&id[]=');
           }
           else {
-            querystring = 'id=' + this.$route.query.id;
+            querystring += 'id=' + this.$route.query.id;
           }
 
           let userId = null;
@@ -302,10 +388,7 @@
         this.isProcessing = true
         let materialsListUrl = '/usermaterials/editList?';
         if (this.originalMaterials && this.originalMaterials.length > 0) {
-          console.log('ORIGIN MAT LEN: ' + this.originalMaterials.length);
           this.originalMaterials.forEach((material) => {
-            console.log('herel....: ');
-            console.log(material);
             if (material.id > 0) {
               materialsListUrl += '&id[]=' + material.id;
             }
@@ -314,9 +397,29 @@
             }
           });
         }
-        console.log('FETCHING: ' + Vue.axios.defaults.baseURL + materialsListUrl)
-        Vue.axios.get(Vue.axios.defaults.baseURL + materialsListUrl)
-          .then((response) => {
+
+        let user = this.$auth.user();
+        if (user && user.userMaterials && user.userMaterials.length > 0) {
+          this.materialLibrary = user.userMaterials;
+          this.lookupMaterialLibrary = {}
+          this.selectMaterials = []
+          for (var i = 0; i < this.materialLibrary.length; i++) {
+            if ('material' in this.materialLibrary[i]) {
+              this.lookupMaterialLibrary[this.materialLibrary[i].material.id] = this.materialLibrary[i].material
+              var fullName = this.materialLibrary[i].material.name;
+              if (this.materialLibrary[i].material.otherNames) {
+                fullName += ', ' + this.materialLibrary[i].material.otherNames
+              }
+              this.selectMaterials.push({value: this.materialLibrary[i].material.id, label: fullName})
+            }
+          }
+          this.addOriginalMaterialComponentsToLibrary();
+          this.isProcessing = false
+        }
+        else {
+          console.log('FETCHING: ' + Vue.axios.defaults.baseURL + materialsListUrl)
+          Vue.axios.get(Vue.axios.defaults.baseURL + materialsListUrl)
+            .then((response) => {
             if (response.data.error) {
               this.apiError = response.data.error
               console.log(this.apiError)
@@ -337,7 +440,7 @@
             }
           })
           .catch(response => {
-            if (response.response && response.response.status) {
+              if (response.response && response.response.status) {
               if (response.response.status === 401) {
                 this.$router.push({ path: '/login', query: { error: 401 }})
               } else {
@@ -346,6 +449,30 @@
             }
             this.isProcessing = false
           })
+        }
+      },
+
+      addOriginalMaterialComponentsToLibrary: function () {
+        // Add all of the materials from the recipes we are editing
+        // (If not already in our material library.)
+        this.originalMaterials.forEach((material) => {
+          console.log('enter for each with material: ' + material.name);
+          if ('materialComponents' in material && material.materialComponents.length > 0) {
+            material.materialComponents.forEach(function (materialComponent) {
+              if ('material' in materialComponent) {
+                let material = materialComponent.material;
+                if (!(material.id in this.lookupMaterialLibrary)) {
+                  this.lookupMaterialLibrary[material.id] = material;
+                  let fullName = material.name;
+                  if (material.otherNames) {
+                    fullName += ', ' + material.otherNames
+                  }
+                  this.selectMaterials.push({value: material.id, label: fullName})
+                }
+              }
+            }.bind(this));
+          }
+        });
       },
 
       materialUpdated: function () {
@@ -387,10 +514,9 @@
           materialComponents: []
         };
 
-        if (this.originalMaterials &&
-          this.originalMaterials.length > 0) {
-          // TODO:
-          form.excludeMaterialId = this.originalMaterials[0].id;
+        if ( this.materials[index].id > 0) {
+          // Don't include this material in the search results.
+          form.excludeMaterialId = this.materials[index].id;
         }
 
         // Check each material component for id and amount
@@ -506,6 +632,69 @@
         });
       },
 
+      updatePrimitiveMaterialsKeywords: debounce(function (e) {
+        if (this.primitiveMaterialSearchKeyword.length >= this.minSearchTextLength) {
+          this.primitiveMaterialSearchKeyword = e.target.value;
+          this.searchPrimitiveMaterials();
+        }
+      }, 1000),
+
+      searchPrimitiveMaterials: function () {
+        this.primitiveMaterials = [];
+        Vue.axios.get(Vue.axios.defaults.baseURL + '/usermaterials/searchNonInventoryUserMaterials?keywords=' + this.primitiveMaterialSearchKeyword)
+          .then((response) => {
+          if (response.data.error) {
+            // Reset both search items & search user
+          } else {
+            // Reset both search items & search user
+            console.log(response.data.data);
+            this.isProcessingDuplicates = false
+            this.primitiveMaterials = response.data.data;
+            this.$refs.primitiveMaterialsModalRef.show();
+          }
+        })
+        .catch(response => {
+          if (response.response && response.response.status) {
+            context.commit('setServerError', response.response.message)
+          }
+          context.commit('isNotProcessing')
+        })
+      },
+
+      addUserMaterial(id) {
+        this.isProcessingLocal = true;
+        Vue.axios.get(Vue.axios.defaults.baseURL + '/usermaterials/addMaterial/' + id)
+          .then((response) => {
+          if (response.data.error) {
+            this.apiError = response.data.error;
+            console.log(this.apiError);
+            this.isProcessingLocal = false;
+            this.$refs.primitiveMaterialsModalRef.hide();
+          } else {
+            this.isProcessingLocal = false;
+            this.actionMessage = 'Material added to your inventory.';
+            this.actionMessageSeconds = 5;
+            // Refresh user inventory materials
+            this.$auth.fetch({
+              success(res) {
+                this.reset();
+                this.$refs.primitiveMaterialsModalRef.hide();
+              },
+              error() {
+                console.log('error fetching user');
+                this.$refs.primitiveMaterialsModalRef.hide();
+              }
+            })
+          }
+        })
+        .catch(response => {
+          this.serverError = response;
+          console.log(response);
+          this.isProcessingLocal = false;
+          this.$refs.primitiveMaterialsModalRef.hide();
+        })
+      },
+
       adjustEditRecipeCardSizes() {
         if (this.materials && this.materials.length > 1) {
           this.editRecipeCardColClass = 'col-md-6';
@@ -523,8 +712,6 @@
         let regex = /^(.*)\(Copy\s*(\d*)\)$/;
         var res = currentName.match(regex);
         if (Array.isArray(res)) {
-          console.log('is array');
-          console.log(res);
           // This is already a copy
           if (res.length === 3 && res[2] && !isNaN(res[2])) {
             return res[1] + '(Copy ' + (parseInt(res[2]) + 1) + ')';
@@ -539,7 +726,33 @@
         else {
           return currentName + ' (Copy)';
         }
+      },
+
+      hasThumbnail: function(recipe) {
+        if (recipe.hasOwnProperty('thumbnail')
+          && recipe.thumbnail.hasOwnProperty('filename')
+          && recipe.thumbnail.filename) {
+          return true;
+        }
+        return false;
+      },
+
+      getImageUrl: function(recipe, size) {
+        if (this.hasThumbnail(recipe)) {
+          var bin = this.getImageBin(recipe.id);
+          return '/storage/uploads/recipes/' + bin + '/' + size + '_' + recipe.thumbnail.filename;
+        }
+        return '/img/recipes/black.png';
+      },
+
+      getUserSearchParam: function (user) {
+        if (!user) { return }
+        if ('profile' in user && 'username' in user.profile && user.profile.username) {
+          return user.profile.username
+        }
+        return user.id
       }
+
     }
   }
 </script>
@@ -651,5 +864,13 @@
   .similar-materials-row {
     margin-top: -400px;
 
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 5px;
   }
 </style>

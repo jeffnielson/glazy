@@ -3,7 +3,7 @@
 namespace App\Api\V1\Controllers\Glazy;
 
 use App\Api\V1\Repositories\UserMaterialRepository;
-use App\Api\V1\Transformers\Material\ShallowMaterialTransformer;
+use App\Api\V1\Transformers\Material\ChartPointMaterialTransformer;
 use App\Api\V1\Transformers\Material\CalculatorMaterialTransformer;
 use App\Api\V1\Transformers\UserMaterial\UserMaterialTransformer;
 use App\Models\Material;
@@ -52,23 +52,46 @@ class UserMaterialController extends ApiBaseController
 
     public function editMaterialList(Request $request)
     {
-        $userMaterials = null;
+        $userPrimitiveMaterials = null;
 
+        // "id" key is an int or array of ints representing the material id's of
+        // materials that are currently being edited.  (thus their component materials
+        // must also be included in the edit list.
         $ids = $request->input('id');
 
         if (Auth::guard()->user()) {
-            $userMaterials = $this->userMaterialRepository->getEditMaterialList($ids);
+            $userPrimitiveMaterials = $this->userMaterialRepository->getEditMaterialList($ids);
         }
         else {
             // Unauthenticated user is just using the calculator without a recipe
-            $userMaterials = $this->userMaterialRepository->getUnauthenticatedMaterialList();
+            $userPrimitiveMaterials = $this->userMaterialRepository->getUnauthenticatedMaterialList($ids);
         }
 
-        //$resource = new FractalCollection($userMaterials, new ShallowMaterialTransformer());
-        $resource = new FractalCollection($userMaterials, new CalculatorMaterialTransformer());
+        //$resource = new FractalCollection($userPrimitiveMaterials, new ShallowMaterialTransformer());
+        $resource = new FractalCollection($userPrimitiveMaterials, new CalculatorMaterialTransformer());
 
         return $this->manager->createData($resource)->toArray();
     }
+
+    public function getPrimitiveMaterialsNotInInventory(Request $request)
+    {
+        $data = $request->all();
+        $materials = null;
+
+        if (Auth::guard()->user()) {
+            $materials = $this->userMaterialRepository->getPrimitiveMaterialsNotInInventory($data);
+        }
+
+        if (!$materials) {
+            return null;
+        }
+
+        $resource = new FractalCollection($materials, new CalculatorMaterialTransformer());
+
+        return $this->manager->createData($resource)->toArray();
+    }
+
+
 
     public function show($id)
     {

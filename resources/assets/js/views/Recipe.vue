@@ -744,9 +744,9 @@
       isUserMaterial() {
         if (this.isLoaded && this.recipe.isPrimitive) {
           var user = this.$auth.user()
-          if (user && user.user_materials && user.user_materials.length > 0) {
-            for (var i = 0, len = user.user_materials.length; i < len; i++) {
-              if (user.user_materials[i].material_id === this.recipe.id) {
+          if (user && user.userMaterials && user.userMaterials.length > 0) {
+            for (var i = 0, len = user.userMaterials.length; i < len; i++) {
+              if (user.userMaterials[i].material_id === this.recipe.id) {
                 // This material id is already in the user's inventory
                 return true
               }

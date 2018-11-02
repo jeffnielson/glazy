@@ -63,6 +63,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'usermaterials'], function(Router $api) {
         $api->get('/editList', 'App\\Api\\V1\\Controllers\\Glazy\\UserMaterialController@editMaterialList')->name('editList');
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
+            $api->get('/searchNonInventoryUserMaterials', 'App\\Api\\V1\\Controllers\\Glazy\\UserMaterialController@getPrimitiveMaterialsNotInInventory')->name('searchNonInventoryUserMaterials');
             $api->get('/addMaterial/{materialId}', 'App\\Api\\V1\\Controllers\\Glazy\\UserMaterialController@addMaterial')->name('addMaterial');
             $api->get('/', 'App\\Api\\V1\\Controllers\\Glazy\\UserMaterialController@index')->name('index');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\Glazy\\UserMaterialController@destroy')->name('destroy');

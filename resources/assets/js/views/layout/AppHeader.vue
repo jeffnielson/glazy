@@ -14,11 +14,6 @@
                         <b-dropdown-item :to="{ name: 'user', params: { id: getUserSearchParam($auth.user()) }}">
                             <i class="fa fa-home fa-fw"></i> My Home
                         </b-dropdown-item>
-                        <!--
-                        <b-dropdown-item :to="{ name: 'user-collections', params: { id: getUserSearchParam($auth.user()) }}">
-                            <i class="fa fa-flask fa-fw"></i> My Collections
-                        </b-dropdown-item>
-                        -->
                         <b-dropdown-item :to="{ name: 'inventory' }">
                             <i class="fa fa-cubes fa-fw"></i> My Inventory
                         </b-dropdown-item>
@@ -153,7 +148,9 @@
       },
 
       getUserSearchParam: function (user) {
-        if (!user) { return }
+        if (!user) {
+          return;
+        }
         if ('profile' in user && user.profile
           && 'username' in user.profile && user.profile.username) {
           return user.profile.username

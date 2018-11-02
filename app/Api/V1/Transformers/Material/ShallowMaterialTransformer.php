@@ -4,6 +4,7 @@ namespace App\Api\V1\Transformers\Material;
 
 use App\Api\V1\Transformers\Atmosphere\SimpleAtmosphereTransformer;
 use App\Api\V1\Transformers\MaterialAnalysis\MaterialUmfAnalysisTransformer;
+use App\Api\V1\Transformers\MaterialComponent\MaterialComponentTransformer;
 use App\Api\V1\Transformers\MaterialComponent\ShallowMaterialComponentTransformer;
 use App\Api\V1\Transformers\MaterialImage\ShallowMaterialImageTransformer;
 use App\Api\V1\Transformers\User\UserTransformer;
@@ -216,15 +217,18 @@ class ShallowMaterialTransformer extends Fractal\TransformerAbstract
 
     public function includeAtmospheres(Material $material)
     {
-        if ($material->atmospheres && count($material->atmospheres) > 0) {
+        if ($material->relationLoaded('atmospheres') && count($material->atmospheres) > 0) {
             return $this->collection($material->atmospheres, new SimpleAtmosphereTransformer());
         }
     }
 
     public function includeMaterialComponents(Material $material)
     {
-        if ($material->shallowComponents && count($material->shallowComponents) > 0) {
+        if ($material->relationLoaded('shallowComponents') && count($material->shallowComponents) > 0) {
             return $this->collection($material->shallowComponents, new ShallowMaterialComponentTransformer());
+        }
+        else if ($material->relationLoaded('components') && count($material->components) > 0) {
+            return $this->collection($material->components, new MaterialComponentTransformer());
         }
     }
 

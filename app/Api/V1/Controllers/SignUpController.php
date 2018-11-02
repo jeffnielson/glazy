@@ -2,7 +2,10 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Api\V1\Repositories\CollectionRepository;
+use App\Api\V1\Repositories\UserMaterialRepository;
 use App\Mail\UserRegistered;
+use App\Models\Collection;
 use Config;
 use App\User;
 use Illuminate\Support\Facades\Mail;
@@ -11,6 +14,7 @@ use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\SignUpRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Auth;
 
 class SignUpController extends Controller
 {
@@ -30,6 +34,18 @@ class SignUpController extends Controller
 
         Mail::send(new UserRegistered($user));
 
+        // For new users, create an initial list of user materials (inventory) they can use in the calculator.
+        $userMaterialRepository = new UserMaterialRepository();
+        $userMaterialRepository->initializeUserMaterials($user->id);
+
+        // For new users, create an initial bookmarks folder
+        $collectionRepository = new CollectionRepository();
+        $defaultCollection = [
+            'name' => 'Bookmarks',
+            'description' => 'Your personal bookmarks'
+        ];
+        $collectionRepository->create($defaultCollection, $user->id);
+
         if(!Config::get('boilerplate.sign_up.release_token')) {
             return response()->json([
                 'status' => 'ok'
@@ -37,12 +53,20 @@ class SignUpController extends Controller
         }
         $token = $JWTAuth->fromUser($user);
 
-        /*
-        return response()->json([
-            'status' => 'ok',
-            'token' => $token
-        ], 201);
-        */
+        // Reload the user with required relationships
+        // Todo: Move to User class as method
+        $user = User::with(['collections' =>
+            function ($q) {
+                $q->orderBy('name', 'asc');
+            }])
+            ->with('userMaterials')
+            ->with('profile')
+            ->with(['unreadNotifications' =>
+                function ($q) {
+                    $q->limit(10);
+                }])
+            ->find($user->id);
+
         return response([
             'status' => 'success',
             'token' => $token,

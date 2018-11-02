@@ -482,10 +482,6 @@ class MaterialRepository extends Repository
     */
     public function similarMaterials(array $data) {
 
-        $excludeMaterialId = null;
-        if (array_key_exists('excludeMaterialId', $data)) {
-            $excludeMaterialId = $data['excludeMaterialId'];
-        }
         $componentData = $data['materialComponents'];
 
         if (count($componentData) < 1) {
@@ -510,8 +506,17 @@ class MaterialRepository extends Repository
 
         $query->ofUserViewable($current_user_id, null);
 
-        if ($excludeMaterialId) {
-            $query->where('id', '<>', $excludeMaterialId);
+        $excludeMaterialId = null;
+        if (array_has($data, 'excludeMaterialId') && !empty($data['excludeMaterialId'])) {
+            $excludeMaterialId = $data['excludeMaterialId'];
+            if (is_array($excludeMaterialId)) {
+                // Don't include multiple ID's
+                $query->orWhereNotIn('id', $excludeMaterialId);
+            }
+            else if (is_numeric($data['excludeMaterialId'])) {
+                // Don't include single ID
+                $query->where('id', '<>', $excludeMaterialId);
+            }
         }
 
         $query->where('is_primitive', false);

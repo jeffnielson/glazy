@@ -4,6 +4,7 @@ namespace App\Api\V1\Transformers\Notification;
 
 use App\Api\V1\Transformers\JsonDateTransformer;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 
 use League\Fractal;
@@ -14,7 +15,7 @@ class NotificationTransformer extends Fractal\TransformerAbstract
 
     protected $defaultIncludes = [];
 
-    public function transform(Notification $notification)
+    public function transform(Model $notification)
     {
         $notification_data = [];
         $notification_data['type'] = $notification['type'];

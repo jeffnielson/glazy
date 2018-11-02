@@ -62,13 +62,36 @@ class UserMaterialRepository extends Repository
         return $userMaterials;
     }
 
-    public function getUnauthenticatedMaterialList()
+    public function getUnauthenticatedMaterialList($ids = null)
     {
-        $query = Material::query();
-        $query->whereIn('id', self::DEFAULT_MATERIALS);
-        $query->with('analysis');
-        $query->with('material_type');
-        $query->orderBy('name', 'asc');
+        $query = Material::query()
+            ->whereIn('id', self::DEFAULT_MATERIALS)
+            ->with('analysis')
+            ->with('material_type')
+            ->with('thumbnail')
+            ->with('created_by_user')
+            ->with('created_by_user.profile')
+            ->orderBy('name', 'asc');
+
+        if (!empty($ids)) {
+            if (is_array($ids)) {
+                // Search for multiple ID's
+                $query->orWhereIn('id', function($query) use ($ids) {
+                    $query->selectRaw('component_material_id')
+                        ->from('material_materials')
+                        ->whereIn('parent_material_id', $ids);
+                });
+            }
+            else if (is_numeric($ids)) {
+                // Search for a single ID
+                $query->orWhereIn('id', function($query) use ($ids) {
+                    $query->selectRaw('component_material_id')
+                        ->from('material_materials')
+                        ->where('parent_material_id', $ids);
+                });
+            }
+        }
+        $query->ofUserViewable(null, null);
         return $query->get();
     }
 
@@ -115,11 +138,61 @@ class UserMaterialRepository extends Repository
                 });
             }
         }
+        $query->ofUserViewable($user_id, null);
         $query->with('analysis');
         $query->with('material_type');
         $query->orderBy('name', 'asc');
         return $query->get();
     }
+
+
+    public function getPrimitiveMaterialsNotInInventory(array $data)
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        if (!array_has($data, 'keywords') || strlen($data['keywords']) < 3) {
+            return;
+        }
+
+        $current_user_id = Auth::guard('api')->user()->id;
+        $keywords = $data['keywords'];
+
+        $query = Material::query();
+        $query->select(
+            'materials.id', 'materials.name',
+            'materials.is_primitive', 'materials.material_type_id',
+            'materials.is_analysis', 'materials.is_theoretical', 'materials.material_state_id',
+            'materials.from_orton_cone_id', 'materials.to_orton_cone_id',
+            'materials.surface_type_id', 'materials.transparency_type_id', 'materials.country_id',
+            'materials.rating_total', 'materials.rating_number', 'materials.rating_average',
+            'materials.rgb_r', 'materials.rgb_g', 'materials.rgb_b', 'materials.thumbnail_id',
+            'materials.is_private', 'materials.is_archived', 'materials.created_by_user_id',
+            'materials.updated_by_user_id', 'materials.created_at', 'materials.updated_at'
+        );
+
+        $query->ofKeywords($keywords);
+        $query->where('materials.is_primitive', true);
+        $query->ofUserViewable($current_user_id, null);
+
+        // Limit query by the materials already in this user's inventory
+        $query->whereNotIn("id", function ($query) use ($current_user_id) {
+            $query->select('material_id')
+                ->from('user_materials')
+                ->where('user_id', $current_user_id);
+        });
+
+        $query->with('analysis');
+        $query->with('material_type');
+        $query->with('thumbnail');
+        $query->with('created_by_user');
+        $query->with('created_by_user.profile');
+
+        $query->orderBy('relevance', 'desc');
+        return $query->get();
+    }
+
 
     /*
      * This is the first time a user has tried to get a list of his/her materials
@@ -128,8 +201,15 @@ class UserMaterialRepository extends Repository
      * See DEFAULT_MATERIALS below
      * TODO: Move these default materials into DB or config
      */
-    protected function initializeUserMaterials() {
-        $user_id =  Auth::user()->id;
+    public function initializeUserMaterials($user_id = null) {
+        if (!$user_id && Auth::check()) {
+            $user_id = Auth::user()->id;
+        }
+
+        if (!$user_id) {
+            // TODO: Throw Exception
+            return null;
+        }
 
         // Get user's existing materials
         $existingUserPrimitiveMaterials = Material::where('is_primitive', true)

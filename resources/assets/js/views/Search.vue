@@ -7,27 +7,28 @@
 
     <nav v-bind:class="sidebarClass" class="sidebar d-none d-md-block">
 
-      <user-profile-card v-if="searchUser"
-                         :searchUser="searchUser"></user-profile-card>
-
-      <div v-if="searchUser" class="form-group">
-        <label for="collectionsSelectSelect">Recipes, Materials & Bookmarks:</label>
-        <b-form-select
-                id="collectionsSelectSelect"
-                size="sm"
-                v-model="selectedSearchTypeOrCollection"
-                :options="collectionsSelect"
-                value-field="id"
-                text-field="name"
-                @input="selectSearchType">
-          <template slot="first">
-            <option value="recipes">{{ isViewingSelfSelectText }} Recipes</option>
-            <option value="materials">{{ isViewingSelfSelectText }} Materials</option>
-            <option value="analyses">{{ isViewingSelfSelectText }} Analyses</option>
-            <option value="images">{{ isViewingSelfSelectText }} Images</option>
-            <option value="null" disabled>-- {{ isViewingSelfSelectText }} Bookmarks: --</option>
-          </template>
-        </b-form-select>
+      <div v-if="searchUser">
+        <user-profile-card v-if="searchUser"
+                           :searchUser="searchUser"></user-profile-card>
+        <div class="form-group mt-4">
+          <label for="collectionsSelectSelect">Recipes, Materials & Bookmarks:</label>
+          <b-form-select
+              id="collectionsSelectSelect"
+              size="sm"
+              v-model="selectedSearchTypeOrCollection"
+              :options="collectionsSelect"
+              value-field="id"
+              text-field="name"
+              @input="selectSearchType">
+            <template slot="first">
+              <option value="recipes">{{ isViewingSelfSelectText }} Recipes</option>
+              <option value="materials">{{ isViewingSelfSelectText }} Materials</option>
+              <option value="analyses">{{ isViewingSelfSelectText }} Analyses</option>
+              <option value="images">{{ isViewingSelfSelectText }} Images</option>
+              <option value="null" disabled>-- {{ isViewingSelfSelectText }} Bookmarks: --</option>
+            </template>
+          </b-form-select>
+        </div>
       </div>
 
       <b-btn

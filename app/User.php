@@ -73,9 +73,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Models\Collection', 'created_by_user_id');
     }
 
-    public function user_materials()
+    public function userMaterials()
     {
-        return $this->hasMany('App\Models\UserMaterial', 'user_id');
+        return $this->hasMany('App\Models\UserMaterial', 'user_id')
+                    ->join('materials', 'materials.id', '=', 'user_materials.material_id')
+                    ->orderBy('materials.name');
     }
 
     public function reviews()
