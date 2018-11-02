@@ -398,12 +398,14 @@
           else {
             // Just start with one new recipe
             let newMaterial = new Material();
+            newMaterial.isPrimitive = false;
+            newMaterial.id = this.getFakeMaterialId();
             newMaterial.setName('New Recipe ' + (this.materials.length + 1));
             this.materials.push(newMaterial);
             this.chartMaterials.push(newMaterial);
             this.fetchPrimitiveMaterials();
             this.initialized = true;
-          }
+        }
       },
 
       fetchPrimitiveMaterials : function() {
@@ -582,6 +584,7 @@
       addRecipeCard: function () {
         let newMaterial = new Material();
         newMaterial.isPrimitive = false;
+        newMaterial.id = this.getFakeMaterialId();
         newMaterial.setName('New Recipe ' + (this.materials.length + 1));
         this.materials.push(newMaterial);
         this.chartMaterials.push(newMaterial);
