@@ -315,7 +315,15 @@ class SearchController extends ApiBaseController
 
         if (!empty($order_id))
         {
-            if ($order_id == 'oldest')
+            if ($order_id == 'az')
+            {
+                $query->orderBy('materials.name', 'ASC');
+            }
+            elseif ($order_id == 'za')
+            {
+                $query->orderBy('materials.name', 'DESC');
+            }
+            elseif ($order_id == 'oldest')
             {
                 $query->orderBy('materials.updated_at', 'ASC');
             }

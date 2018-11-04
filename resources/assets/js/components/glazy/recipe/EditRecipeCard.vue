@@ -146,6 +146,7 @@
                            inputmode="numeric"
                            size="5"
                            min="0"
+                           step="any"
                            placeholder="%"
                            v-focus="index === focused"
                            @focus="focused = index"

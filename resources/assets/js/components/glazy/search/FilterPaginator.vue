@@ -14,6 +14,8 @@
         <div v-if="!isCompact" class="col-md-4 col-sm-5 col-12 text-right">
             <b-button-group class="search-buttons">
                 <b-dropdown size="sm" left text="Sort">
+                    <b-dropdown-item @click="orderRequest('az')">A-Z</b-dropdown-item>
+                    <b-dropdown-item @click="orderRequest('za')">Z-A</b-dropdown-item>
                     <b-dropdown-item @click="orderRequest('newest')">Newest</b-dropdown-item>
                     <b-dropdown-item @click="orderRequest('oldest')">Oldest</b-dropdown-item>
                     <b-dropdown-item @click="orderRequest('best')">Best</b-dropdown-item>
