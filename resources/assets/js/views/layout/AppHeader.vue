@@ -69,7 +69,7 @@
                         <b-dropdown-item href="#">EN</b-dropdown-item>
                     </b-nav-item-dropdown>
                     -->
-                    <b-nav-item href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=derek%40derekau%2enet&lc=US&item_name=Glazy&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" target="_blank">
+                    <b-nav-item href="http://help.glazy.org/support.html" target="_blank">
                         <i class="fa fa-gift fa-fw"></i> Donate!
                     </b-nav-item>
 
