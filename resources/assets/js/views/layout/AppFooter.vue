@@ -1,6 +1,20 @@
 <template>
     <footer class="footer" data-background-color="black">
         <hr/>
+        <div class="row">
+            <div class="col">
+                PATREON SPONSORS
+                <br/><a href="https://www.patreon.com/derekau">SUPPORT GLAZY ON PATREON!</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="https://www.ceramicmaterialsworkshop.com/online-classes.html" target="_blank">
+                    <img src="/img/sponsors/logo_cmw.png" width="200" height="100" alt="Ceramic Materials Workshop"/>
+                </a>
+            </div>
+        </div>
+        <hr/>
         <nav>
             <ul>
                 <li>
@@ -9,7 +23,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="http://help.glazy.org" class="nav-link">
+                    <a href="http://help.glazy.org/guide/" class="nav-link">
                         Help
                     </a>
                 </li>
