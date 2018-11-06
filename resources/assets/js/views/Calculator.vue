@@ -140,6 +140,8 @@
 
       </section>
 
+      <AppFooter/>
+
     </main>
 
     <b-modal id="similarRecipesModal"
@@ -246,6 +248,8 @@
   import EditRecipeCard from '../components/glazy/recipe/EditRecipeCard.vue'
   import EditPrimitiveMaterialCard from '../components/glazy/recipe/EditPrimitiveMaterialCard.vue'
 
+  import AppFooter from './layout/AppFooter.vue'
+
   import debounce from 'lodash/debounce'
 
   export default {
@@ -254,7 +258,8 @@
       UmfD3Chart,
       MaterialCardDetail,
       EditRecipeCard,
-      EditPrimitiveMaterialCard
+      EditPrimitiveMaterialCard,
+      AppFooter
     },
     props: {
       //originalMaterials: {
