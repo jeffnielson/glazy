@@ -8,10 +8,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <a href="https://www.ceramicmaterialsworkshop.com/online-classes.html" target="_blank">
-                    <img src="/img/sponsors/logo_cmw.png" width="200" height="100" alt="Ceramic Materials Workshop"/>
-                </a>
+            <div class="col-12 d-flex justify-content-center">
+                <div class="my-2 mx-4">
+                    <a href="https://www.ceramicmaterialsworkshop.com/online-classes.html" target="_blank">
+                        <img src="/img/sponsors/logo_cmw.png" width="200" height="100" alt="Ceramic Materials Workshop"/>
+                    </a>
+                </div>
+                <div class="my-2 mx-4">
+                    <a href="https://www.mightymudmixer.com" target="_blank">
+                        <img src="/img/sponsors/logo_mighty.png" width="200" height="100" alt="Might Mud Mixer"/>
+                    </a>
+                </div>
             </div>
         </div>
         <hr/>
