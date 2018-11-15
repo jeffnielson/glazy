@@ -112,8 +112,8 @@
                         <div class="form-group">
                             <select v-model="isCumulative"
                                     class="form-control form-control-sm">
-                                <option value="true">Measure ingredients together</option>
-                                <option value="false">Measure ingredients separately</option>
+                                <option value="true">Weigh together</option>
+                                <option value="false">Weigh separately</option>
                             </select>
                         </div>
                     </form>
