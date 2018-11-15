@@ -15,7 +15,17 @@
                                  v-model="query.params.photo"
                                  plain
                                  @input="search">
-                    Must have photo
+                    Has photo
+                </b-form-checkbox>
+            </div>
+
+            <div v-bind:class="sizeMedium" class="form-group">
+                <b-form-checkbox id="must-have-photo"
+                                 v-model="query.params.state"
+                                 value="2"
+                                 plain
+                                 @input="search">
+                    Production only
                 </b-form-checkbox>
             </div>
 
@@ -104,20 +114,6 @@
             </div>
         </div>
         <div v-if="isAdvanced" class="form-row">
-            <div v-bind:class="sizeMedium" class="form-group">
-                <b-form-select
-                        size="sm"
-                        id="stateId"
-                        placeholder="Status"
-                        v-model="query.params.state"
-                        :options="constants.MATERIAL_STATES_SELECT"
-                        @input="search">
-                    <template slot="first">
-                        <option :value="0">All Statuses</option>
-                    </template>
-                </b-form-select>
-            </div>
-
             <div v-bind:class="sizeMedium" class="form-group">
                 <b-form-select
                         size="sm"
