@@ -95,6 +95,11 @@
 
     <main v-bind:class="mainClass" role="main" class="ml-sm-auto search-results">
 
+      <b-alert show variant="success">
+        New! <a href="https://www.facebook.com/groups/glazysupport/" target="_blank">Official Glazy Support on Facebook</a>
+        and <a href="https://wiki.glazy.org" target="_blank">Non-Facebook alternative</a>
+      </b-alert>
+
       <b-alert v-if="apiError" show variant="danger">
         API Error: {{ apiError.message }}
       </b-alert>
