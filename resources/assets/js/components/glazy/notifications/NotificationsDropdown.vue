@@ -1,13 +1,14 @@
 <template>
     <b-nav-item-dropdown v-if="unreadNotifications"
-                         text='<i class="fa fa-bell fa-fw"></i>'>
+                         :text='dropdownText'>
         <b-dropdown-item v-for="(notification, index) in unreadNotifications"
                          v-bind:key="notification.id"
                          :href="notification.data.link">
             <i v-bind:class="'fa-'+notification.data.type" class="fa fa-fw"></i> {{ notification.data.title }}
         </b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item @click.prevent="markAsRead()">
-            <i class="fa fa-bell-off fa-fw"></i> Mark All as Read
+            <span class="text-info"><i class="fa fa-bell-off fa-fw mr-2"></i> <strong>Mark All as Read</strong></span>
         </b-dropdown-item>
     </b-nav-item-dropdown>
 </template>
@@ -35,6 +36,13 @@
           return user.unreadNotifications;
         }
         return null;
+      },
+
+      dropdownText: function () {
+        if (this.unreadNotifications && this.unreadNotifications.length) {
+          return '<i class="fa fa-bell fa-fw mr-2"></i> <span class="badge badge-primary">' +
+            this.unreadNotifications.length + '</span>';
+        }
       }
     },
     methods: {

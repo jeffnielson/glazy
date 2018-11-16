@@ -122,7 +122,7 @@
                     </div>
                   </div>
 
-                  <div class="d-flex flex-row material-metadata">
+                  <div class="d-flex flex-wrap material-metadata">
                     <div class="p-2" v-if="recipe.materialStateId">
                       Status
                       <br/>
