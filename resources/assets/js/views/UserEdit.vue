@@ -127,6 +127,24 @@
                         <b-form-input id="artaxis" v-model.trim="form.artaxis"></b-form-input>
                     </b-form-group>
 
+                    <b-form-checkbox id="checkbox1"
+                                     v-model="form.canEmailNotifications"
+                                     plain
+                                     value="1"
+                                     unchecked-value="0"
+                                     class="mb-2">
+                        Notify me via email when someone messages me, reviews my recipes, or comments on one of my recipes.
+                    </b-form-checkbox>
+
+                    <b-form-checkbox id="checkbox1"
+                                     v-model="form.canEmailMarketing"
+                                     plain
+                                     value="1"
+                                     unchecked-value="0">
+                        Allow occasional promotion emails from Glazy.
+                    </b-form-checkbox>
+
+
                     <b-form-group id="groupButtons1">
                         <b-button class="float-right"
                                   size="sm"
@@ -297,6 +315,8 @@
           _method: 'PATCH',
           id: this.user.id,
           name: this.user.name,
+          canEmailNotifications: this.user.canEmailNotifications,
+          canEmailMarketing: this.user.canEmailMarketing
         }
 
         this.avatar = GlazyHelper.AVATAR_URL

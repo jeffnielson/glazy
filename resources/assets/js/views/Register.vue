@@ -1,74 +1,100 @@
 <template>
 
     <div class="row content-row">
-        <div class="col-md-4 offset-md-4 col-sm-12">
+        <div class="col-md-8 offset-md-2 col-12">
             <b-card title="Join Glazy">
                 <b-alert v-if="serverError" show variant="danger">
                     {{ serverError }}
                 </b-alert>
-
-                <div>
-                    <b-form-group
+                <div class="row">
+                    <div class="col-md-6">
+                        <b-form-group
                             id="nameGroup"
                             label-for="name"
                             label="Your Name">
-                        <b-form-input v-model.trim="form.name"
-                                      type="text"
-                                      id="name"
-                                      :state="nameState"
-                                      aria-describedby="input-help input-feeback"
-                                      placeholder="Jane Doe"></b-form-input>
-                        <b-form-feedback id="name-feedback">
-                            Enter at least three letters.
-                        </b-form-feedback>
-                    </b-form-group>
-                    <b-form-group
+                            <b-form-input v-model.trim="form.name"
+                                          type="text"
+                                          id="name"
+                                          :state="nameState"
+                                          aria-describedby="input-help input-feeback"
+                                          placeholder="Jane Doe"></b-form-input>
+                            <b-form-feedback id="name-feedback">
+                                Enter at least three letters.
+                            </b-form-feedback>
+                        </b-form-group>
+                        <b-form-group
                             id="emailGroup"
                             label-for="email"
                             label="Email Address">
-                        <b-form-input v-model.trim="form.email"
-                                      type="email"
-                                      id="email"
-                                      :state="emailState"
-                                      aria-describedby="input-help input-feeback"
-                                      placeholder="jane@doe.com"></b-form-input>
-                        <b-form-feedback id="email-feedback">
-                            Invalid email address
-                        </b-form-feedback>
-                    </b-form-group>
-                    <b-form-group
+                            <b-form-input v-model.trim="form.email"
+                                          type="email"
+                                          id="email"
+                                          :state="emailState"
+                                          aria-describedby="input-help input-feeback"
+                                          placeholder="jane@doe.com"></b-form-input>
+                            <b-form-feedback id="email-feedback">
+                                Invalid email address
+                            </b-form-feedback>
+                        </b-form-group>
+                        <b-form-group
                             id="passwordGroup"
                             label-for="password"
                             label="Password">
-                        <b-form-input
+                            <b-form-input
                                 id="password"
                                 v-model.trim="form.password"
                                 :state="passwordState"
                                 aria-describedby="input-help input-feeback"
                                 type="password"></b-form-input>
-                        <b-form-feedback id="password-feedback">
-                            Enter at least six characters.
-                        </b-form-feedback>
-                    </b-form-group>
-                    <b-form-group
+                            <b-form-feedback id="password-feedback">
+                                Enter at least six characters.
+                            </b-form-feedback>
+                        </b-form-group>
+                    </div>
+
+                    <div class="col-md-6">
+                        <b-form-group
                             id="allowContactGroup"
                             label-for="accept-terms"
                             label="Accept <a href='http://help.glazy.org/about/terms-of-service.html'>Terms of Service</a> and <a href='http://help.glazy.org/about/privacy.html'>Privacy Policy</a> (Required.)">
-                        <b-form-checkbox plain 
-                                          id="accept-terms"
-                                          v-model="form.acceptTerms"
-                                          value="accepted"
-                                          unchecked-value="not_accepted">
-                                        I accept
-                        </b-form-checkbox>
-                    </b-form-group>
-                    <div>
-                        <b-btn size="sm" class="float-left" variant="secondary" @click="cancelRegister()">
-                            Cancel
-                        </b-btn>
-                        <b-btn v-if="form.acceptTerms" size="sm" class="float-right" variant="info" @click="register()">
-                            Join Now!
-                        </b-btn>
+                            <b-form-checkbox plain
+                                             id="accept-terms"
+                                             v-model="form.acceptTerms"
+                                             value="accepted"
+                                             unchecked-value="not_accepted">
+                                I accept
+                            </b-form-checkbox>
+                        </b-form-group>
+                        <b-form-group
+                            id="canEmailNotificationsGroup"
+                            label-for="canEmailNotifications">
+                            <b-form-checkbox plain
+                                             class="mb-2"
+                                             id="canEmailNotifications"
+                                             v-model="form.canEmailNotifications"
+                                             value="1"
+                                             unchecked-value="0">
+                                Notify me via email when someone messages me, reviews my recipes, or comments on one of my recipes.
+                            </b-form-checkbox>
+                            <b-form-checkbox plain
+                                             id="canEmailMarketing"
+                                             v-model="form.canEmailMarketing"
+                                             value="1"
+                                             unchecked-value="0">
+                                Allow occasional promotion emails from Glazy.
+                            </b-form-checkbox>
+                        </b-form-group>
+                    </div>
+
+                    <div class="col-12">
+                        <div>
+                            <b-btn size="sm" class="float-left" variant="secondary" @click="cancelRegister()">
+                                Cancel
+                            </b-btn>
+                            <b-btn v-if="form.acceptTerms" size="sm" class="float-right" variant="info" @click="register()">
+                                Join Now!
+                            </b-btn>
+                        </div>
                     </div>
                 </div>
             </b-card>
@@ -90,7 +116,9 @@
           name: '',
           email: '',
           password: '',
-          acceptTerms: false
+          acceptTerms: false,
+          canEmailNotifications: 0,
+          canEmailMarketing: 0
         },
         serverError: null,
         errors: null

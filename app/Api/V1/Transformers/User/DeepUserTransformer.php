@@ -47,6 +47,9 @@ class DeepUserTransformer extends Fractal\TransformerAbstract
         $user_data[self::JSON_NAMES[self::DB_CREATED_AT]] = $this->jsonDate($user[self::DB_CREATED_AT]);
         $user_data[self::JSON_NAMES[self::DB_UPDATED_AT]] = $this->jsonDate($user[self::DB_UPDATED_AT]);
 
+        $user_data['canEmailNotifications'] = $user['canEmailNotifications'];
+        $user_data['canEmailMarketing'] = $user['canEmailMarketing'];
+
         return $user_data;
     }
 

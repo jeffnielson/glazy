@@ -82,11 +82,15 @@ class UserProfileController extends ApiBaseController
             $userProfile = $this->userProfileRepository->update($userProfile, $data);
         }
 
-        if (array_key_exists('name', $data) && $data['name'] && $data['name'] !== $user->name) {
+        // Update the user table
+        $user->canEmailNotifications = array_get($data, 'canEmailNotifications');
+        $user->canEmailMarketing = array_get($data, 'canEmailMarketing');
+        if (array_has($data, 'name') && $data['name'] && $data['name'] !== $user->name) {
             // User's name has also been changed
+            // (But name cannot be empty)
             $user->name = $data['name'];
-            $user->save();
         }
+        $user->save();
 
         $resource = new FractalItem($user, new UserTransformer());
 

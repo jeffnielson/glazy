@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'canEmailNotifications', 'canEmailMarketing'
     ];
 
     /**
@@ -88,6 +88,11 @@ class User extends Authenticatable implements JWTSubject
     public function comments()
     {
         return $this->hasMany('App\Models\MaterialComment', 'user_id');
+    }
+
+    public function routeNotificationForMail()
+    {
+        return 'denormalized@gmail.com';
     }
 
 }

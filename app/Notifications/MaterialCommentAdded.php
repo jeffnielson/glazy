@@ -39,6 +39,9 @@ class MaterialCommentAdded extends Notification
      */
     public function via($notifiable)
     {
+        if ($notifiable->canEmailNotifications) {
+            return ['database', 'mail'];
+        }
         return ['database'];
     }
 
@@ -51,9 +54,10 @@ class MaterialCommentAdded extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('A user commented on one of your recipes.')
-                    ->action('View Comment', url('/recipes/'.$this->material->id))
-                    ->line('Thank you for using Glazy!');
+            ->line('A user commented on the recipe: "'.$this->material->name.'"')
+            ->line($this->comment->content)
+            ->action('View Comment', url('/recipes/'.$this->material->id . '#comments'))
+            ->line('Thank you for using Glazy!');
     }
 
     /**
