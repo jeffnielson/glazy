@@ -30,12 +30,12 @@
                                         <textarea class="form-control"
                                                   v-model="comment.content"
                                                   id="commentTextarea"
-                                                  placeholder="" rows="3">
+                                                  placeholder="" rows="5">
                                         </textarea>
                                 </div>
                                 <button v-if="comment.content" @click.prevent="saveComment(comment.id, comment.content)" class="btn btn-info">
                                     <i class="fa fa-save"></i>
-                                    Save
+                                    Update Comment
                                 </button>
                                 <button @click.prevent="cancelEditComment(comment.id)" class="btn btn-cancel">
                                     <i class="fa fa-times"></i>
@@ -43,7 +43,7 @@
                                 </button>
                             </form>
                             <p v-show="!showEditComment(comment.id)"
-                                class="comment-description" 
+                                class="comment-description"
                                 v-html="glazyHelper.getLinkifiedText(comment.content.trim())">
                             </p>
                             <div v-if="!showEditComment(comment.id) && $auth.check() && $auth.user().id === comment.userId"
@@ -77,11 +77,11 @@
                                   v-model="form.content"
                                   id="commentTextarea"
                                   placeholder=""
-                                  rows="3"></textarea>
+                                  rows="5"></textarea>
                     </div>
                     <button v-if="form.content"
                             @click.prevent="saveComment()" class="btn btn-info">
-                        <i class="fa fa-save"></i> Save
+                        <i class="fa fa-save"></i> Post Comment
                     </button>
                 </div>
             </div>

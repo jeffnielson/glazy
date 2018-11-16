@@ -53,15 +53,15 @@
                       <span v-if="recipe.otherNames">
                         Other Names: {{ recipe.otherNames }}
                       </span>
-                      <span>
+                      <div class="recipe-vue-star-rating mb-2">
                         <star-rating v-if="recipe.ratingTotal"
-                                     class="recipe-vue-star-rating"
                                      :rating="Number(recipe.ratingAverage)"
                                      :read-only="true"
                                      :star-size="24"
                                      :show-rating="false"
                                      :increment="0.01"></star-rating>
-                      </span>
+                        <span v-if="recipe.ratingNumber"><a href="#reviews">{{ recipe.ratingNumber }} Reviews</a></span>
+                      </div>
                     </div>
                     <div class="col-md-4 col-sm-4" v-if="!recipe.isPrimitive">
                       <firing-card :recipe="recipe"></firing-card>
@@ -387,7 +387,7 @@
         </div>
 
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-12 col-md-6">
             <div class="card">
               <div class="card-body">
                 <h3 id="reviews">Reviews</h3>
@@ -403,10 +403,7 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
+          <div class="col-12 col-md-6">
             <div class="card">
               <div class="card-body">
                 <h3 id="comments">Comments & Questions</h3>

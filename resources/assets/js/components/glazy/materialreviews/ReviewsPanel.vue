@@ -47,10 +47,10 @@
                 <h4 v-else="currentUserReview">Add a review</h4>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="d-flex">
+            <div class="p-2">
                 <div class="form-group">
-                    <label for="starRating">Rate the glaze from 1 to 5 stars:</label>
+                    <label for="starRating">Click star to rate:</label>
                     <star-rating id="starRating"
                                  @rating-selected="syncRating"
                                  :rating="form.rating"
@@ -63,14 +63,14 @@
                     <a v-if="form.rating" @click.prevent="resetRating">Reset Rating</a>
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="p-2 flex-grow-1">
                 <div class="form-group">
                     <label for="reviewTextarea">Enter your review here:</label>
                     <textarea class="form-control"
                               v-model="form.description"
                               id="reviewTextarea"
                               placeholder="Please let us know about material substitutions, firing conditions, etc."
-                              rows="3"></textarea>
+                              rows="5"></textarea>
                 </div>
                 <button v-if="form.rating > 0 && form.description"
                         @click.prevent="submitReview" class="btn btn-info">
