@@ -1,280 +1,282 @@
 <template>
-<div class="row edit-user">
-    <div class="col-md-12">
-        <b-alert show variant="warning">
-            If you wish to completely delete all of your user data,
-            or if you wish to receive a copy of all of your data,
-            <a href="mailto:derek@glazy.org?Subject=Delete%20User" target="_top">please click here to email your request</a>.
-            Your data request will be fulfilled within 48 hours.
-        </b-alert>
+<div>
+    <div class="row edit-user" v-if="this.$auth.check()">
+        <div class="col-md-12">
+            <b-alert show variant="warning">
+                If you wish to completely delete all of your user data,
+                or if you wish to receive a copy of all of your data,
+                <a href="mailto:derek@glazy.org?Subject=Delete%20User" target="_top">please click here to email your request</a>.
+                Your data request will be fulfilled within 48 hours.
+            </b-alert>
 
-        <b-alert v-if="apiError" show variant="danger">
-            API Error: {{ apiError.message }}
-        </b-alert>
-        <b-alert v-if="serverError" show variant="danger">
-            Server Error: {{ serverError }}
-        </b-alert>
-        <div class="load-container load7 fullscreen" v-if="isProcessing">
-            <div class="loader">Loading...</div>
+            <b-alert v-if="apiError" show variant="danger">
+                API Error: {{ apiError.message }}
+            </b-alert>
+            <b-alert v-if="serverError" show variant="danger">
+                Server Error: {{ serverError }}
+            </b-alert>
+            <div class="load-container load7 fullscreen" v-if="isProcessing">
+                <div class="loader">Loading...</div>
+            </div>
+            <b-alert :show="actionMessageSeconds"
+                     @dismiss-count-down="actionMessageCountdown"
+                     variant="info">
+                {{ actionMessage }}
+            </b-alert>
         </div>
-        <b-alert :show="actionMessageSeconds"
-                 @dismiss-count-down="actionMessageCountdown"
-                 variant="info">
-            {{ actionMessage }}
-        </b-alert>
-    </div>
 
-    <div class="col-md-6 col-sm-12">
-        <div class="card">
-            <div class="card-body">
-                <form  role="form" method="POST" v-if="isLoaded">
-                    <div>
-                        <h3 class="card-title">
-                            Edit Your Glazy Account
-                        </h3>
-                    </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form  role="form" method="POST" v-if="isLoaded">
+                        <div>
+                            <h3 class="card-title">
+                                Edit Your Glazy Account
+                            </h3>
+                        </div>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupName"
                             description="Your full name or handle"
                             label="Your Name"
                             label-for="name"
                             :feedback="feedbackName"
                             :state="stateName"
-                    >
-                        <b-form-input id="name" :state="stateName" v-model.trim="form.name"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="name" :state="stateName" v-model.trim="form.name"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupUsername"
                             description="Cannot be a number.  Please no spaces or special characters"
                             label="Your Glazy Username"
                             label-for="username"
                             :feedback="feedbackUsername"
                             :state="stateUsername"
-                    >
-                        <b-form-input id="username"
-                                      :state="stateUsername"
-                                      :formatter="formatUsername"
-                                      v-model.trim="form.username"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="username"
+                                          :state="stateUsername"
+                                          :formatter="formatUsername"
+                                          v-model.trim="form.username"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupTitle"
                             description="Short description or quote about yourself"
                             label="Quote"
                             label-for="title"
-                    >
-                        <b-form-input id="title" v-model.trim="form.title"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="title" v-model.trim="form.title"></b-form-input>
+                        </b-form-group>
 
-                    <!--
-                    <b-form-group
-                            id="groupDescription"
-                            description="Long introduction of yourself and your work"
-                            label="Bio"
-                    >
-                        <b-form-textarea id="description"
-                                         v-model="form.description"
-                                         :rows="3"
-                                         :max-rows="6">
-                        </b-form-textarea>
-                    </b-form-group>
+                        <!--
+                        <b-form-group
+                                id="groupDescription"
+                                description="Long introduction of yourself and your work"
+                                label="Bio"
+                        >
+                            <b-form-textarea id="description"
+                                             v-model="form.description"
+                                             :rows="3"
+                                             :max-rows="6">
+                            </b-form-textarea>
+                        </b-form-group>
 
 
-                    -->
+                        -->
 
-                    <b-form-group
+                        <b-form-group
                             id="groupUrl"
                             description="Your website address, without the http://"
                             label="Website"
                             label-for="url"
-                    >
-                        <b-form-input id="url" v-model.trim="form.url"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="url" v-model.trim="form.url"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupPinterest"
                             description="Your Pinterest username can be found in the URL, e.g. https://www.pinterest.com/your_username/"
                             label="Pinterest Username"
                             label-for="pinterest"
-                    >
-                        <b-form-input id="pinterest" v-model.trim="form.pinterest"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="pinterest" v-model.trim="form.pinterest"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupFacebook"
                             label="Facebook Username"
                             label-for="facebook"
-                    >
-                        <b-form-input id="facebook" v-model.trim="form.facebook"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="facebook" v-model.trim="form.facebook"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupInstagram"
                             label="Instagram Username"
                             label-for="instagram"
-                    >
-                        <b-form-input id="instagram" v-model.trim="form.instagram"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="instagram" v-model.trim="form.instagram"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupArtaxis"
                             label="Artaxis Username"
                             label-for="artaxis"
                             description="Your Artaxis username can be found in the URL, e.g. https://artaxis.org/your-name/"
-                    >
-                        <b-form-input id="artaxis" v-model.trim="form.artaxis"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="artaxis" v-model.trim="form.artaxis"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-checkbox id="checkbox1"
-                                     v-model="form.canEmailNotifications"
-                                     plain
-                                     value="1"
-                                     unchecked-value="0"
-                                     class="mb-2">
-                        Notify me via email when someone messages me, reviews my recipes, or comments on one of my recipes.
-                    </b-form-checkbox>
+                        <b-form-checkbox id="checkbox1"
+                                         v-model="form.canEmailNotifications"
+                                         plain
+                                         value="1"
+                                         unchecked-value="0"
+                                         class="mb-2">
+                            Notify me via email when someone messages me, reviews my recipes, or comments on one of my recipes.
+                        </b-form-checkbox>
 
-                    <b-form-checkbox id="checkbox1"
-                                     v-model="form.canEmailMarketing"
-                                     plain
-                                     value="1"
-                                     unchecked-value="0">
-                        Allow occasional promotion emails from Glazy.
-                    </b-form-checkbox>
+                        <b-form-checkbox id="checkbox1"
+                                         v-model="form.canEmailMarketing"
+                                         plain
+                                         value="1"
+                                         unchecked-value="0">
+                            Allow occasional promotion emails from Glazy.
+                        </b-form-checkbox>
 
 
-                    <b-form-group id="groupButtons1">
-                        <b-button class="float-right"
-                                  size="sm"
-                                  variant="primary"
-                                  @click.prevent="updateInfo"><i class="fa fa-save"></i> Update Your Account</b-button>
-                        <b-button class="float-right"
-                                  size="sm"
-                                  variant="secondary"
-                                  @click.prevent="cancelEdit()"><i class="fa fa-times"></i> Cancel</b-button>
-                    </b-form-group>
-                </form>
+                        <b-form-group id="groupButtons1">
+                            <b-button class="float-right"
+                                      size="sm"
+                                      variant="primary"
+                                      @click.prevent="updateInfo"><i class="fa fa-save"></i> Update Your Account</b-button>
+                            <b-button class="float-right"
+                                      size="sm"
+                                      variant="secondary"
+                                      @click.prevent="cancelEdit()"><i class="fa fa-times"></i> Cancel</b-button>
+                        </b-form-group>
+                    </form>
+                </div>
             </div>
+
         </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form  role="form" method="POST" v-if="isLoaded">
+                        <div>
+                            <h3 class="card-title">
+                                Reset Glazy Password
+                            </h3>
+                        </div>
 
-    </div>
-    <div class="col-md-6 col-sm-12">
-        <div class="card">
-            <div class="card-body">
-                <form  role="form" method="POST" v-if="isLoaded">
-                    <div>
-                        <h3 class="card-title">
-                            Reset Glazy Password
-                        </h3>
-                    </div>
-
-                    <b-form-group
+                        <b-form-group
                             id="email"
                             label="Email Address"
                             label-for="email"
-                    >
-                        <b-form-input id="email"
-                                      v-model.trim="passwordForm.email"
-                                      type="email"
-                                      autocomplete="username"
-                                      aria-describedby="input-help input-feeback"
-                                      placeholder="jane@doe.com"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="email"
+                                          v-model.trim="passwordForm.email"
+                                          type="email"
+                                          autocomplete="username"
+                                          aria-describedby="input-help input-feeback"
+                                          placeholder="jane@doe.com"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupCurrentPassword"
                             label="Current Password"
                             label-for="currentPassword"
-                    >
-                        <b-form-input id="currentPassword"
-                                      type="password"
-                                      autocomplete="current-password"
-                                      v-model.trim="passwordForm.old_password"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="currentPassword"
+                                          type="password"
+                                          autocomplete="current-password"
+                                          v-model.trim="passwordForm.old_password"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupNewPassword"
                             label="New Password"
                             label-for="newPassword"
-                    >
-                        <b-form-input id="newPassword"
-                                      type="password"
-                                      autocomplete="new-password"
-                                      v-model.trim="passwordForm.password"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="newPassword"
+                                          type="password"
+                                          autocomplete="new-password"
+                                          v-model.trim="passwordForm.password"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupNewPasswordAgain"
                             label="New Password (Again)"
                             label-for="newPasswordAgain"
-                    >
-                        <b-form-input id="newPasswordAgain"
-                                      type="password"
-                                      autocomplete="new-password"
-                                      v-model.trim="passwordForm.password_confirmation"></b-form-input>
-                    </b-form-group>
+                        >
+                            <b-form-input id="newPasswordAgain"
+                                          type="password"
+                                          autocomplete="new-password"
+                                          v-model.trim="passwordForm.password_confirmation"></b-form-input>
+                        </b-form-group>
 
-                    <b-form-group v-if="passwordForm.email && passwordForm.old_password && passwordForm.password && passwordForm.password_confirmation"
-                                  id="groupButtons2">
-                        <b-button class="float-right"
-                                  size="sm"
-                                  variant="primary"
-                                  @click.prevent="updatePassword"><i class="fa fa-save"></i> Reset Password</b-button>
-                        <b-button class="float-right"
-                                  size="sm"
-                                  variant="secondary"
-                                  @click.prevent="cancelEdit()"><i class="fa fa-times"></i> Cancel</b-button>
-                    </b-form-group>
-                </form>
+                        <b-form-group v-if="passwordForm.email && passwordForm.old_password && passwordForm.password && passwordForm.password_confirmation"
+                                      id="groupButtons2">
+                            <b-button class="float-right"
+                                      size="sm"
+                                      variant="primary"
+                                      @click.prevent="updatePassword"><i class="fa fa-save"></i> Reset Password</b-button>
+                            <b-button class="float-right"
+                                      size="sm"
+                                      variant="secondary"
+                                      @click.prevent="cancelEdit()"><i class="fa fa-times"></i> Cancel</b-button>
+                        </b-form-group>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <form role="form" method="POST" v-if="isLoaded">
-                    <h3 class="card-title">
-                        Profile Photo
-                    </h3>
-                    <b-alert v-if="formErrors" show variant="danger">
-                      Errors were found in the form below.
-                    </b-alert>
-                    <b-alert v-if="avatarSuccess" show variant="info">
-                      Your profile photo was successfully changed.
-                    </b-alert>
+            <div class="card">
+                <div class="card-body">
+                    <form role="form" method="POST" v-if="isLoaded">
+                        <h3 class="card-title">
+                            Profile Photo
+                        </h3>
+                        <b-alert v-if="formErrors" show variant="danger">
+                            Errors were found in the form below.
+                        </b-alert>
+                        <b-alert v-if="avatarSuccess" show variant="info">
+                            Your profile photo was successfully changed.
+                        </b-alert>
 
-                    <div v-if="avatar" class="avatar-container">
-                        <img class="img-raised" :src="avatar" />
-                    </div>
+                        <div v-if="avatar" class="avatar-container">
+                            <img class="img-raised" :src="avatar" />
+                        </div>
 
-                    <b-form-group
+                        <b-form-group
                             id="groupImage"
                             label="Choose a Photo (.jpg, .gif, or .png)"
                             label-for="avatarFileInput"
                             description=""
-                    >
-                        <input @change="onFileChange" type="file" id="avatarFileInput"
-                              name="avatarFile" class="form-control-file"
-                              aria-describedby="fileHelp">
-                        <div v-if="formErrors && 'avatarFile' in formErrors" class="form-control-feedback">
-                            <span v-for="error in formErrors.avatarFile">{{ error }}</span>
-                        </div>
-                    </b-form-group>
-                    <b-form-group
+                        >
+                            <input @change="onFileChange" type="file" id="avatarFileInput"
+                                   name="avatarFile" class="form-control-file"
+                                   aria-describedby="fileHelp">
+                            <div v-if="formErrors && 'avatarFile' in formErrors" class="form-control-feedback">
+                                <span v-for="error in formErrors.avatarFile">{{ error }}</span>
+                            </div>
+                        </b-form-group>
+                        <b-form-group
                             id="groupAvatarButtons"
                             description=""
-                    >
-                      <button class="btn btn-cancel btn-sm"
-                              @click.prevent="resetAvatar">
-                          Reset
-                      </button>
-                      <button v-if="files && !formErrors"
-                              class="btn btn-info btn-sm"
-                              @click.prevent="uploadAvatar">
-                          <i class="fa fa-cloud-upload"></i> Upload Photo
-                      </button>
-                    </b-form-group>
-                </form>
+                        >
+                            <button class="btn btn-cancel btn-sm"
+                                    @click.prevent="resetAvatar">
+                                Reset
+                            </button>
+                            <button v-if="files && !formErrors"
+                                    class="btn btn-info btn-sm"
+                                    @click.prevent="uploadAvatar">
+                                <i class="fa fa-cloud-upload"></i> Upload Photo
+                            </button>
+                        </b-form-group>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -309,7 +311,10 @@
       }
     },
     created() {
-      if (this.$auth.check()) {
+      if (!this.$auth.check()) {
+        this.$router.push({ name: 'login' })
+      }
+      else {
         this.user = this.$auth.user()
         this.form = {
           _method: 'PATCH',
