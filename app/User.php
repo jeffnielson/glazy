@@ -90,4 +90,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Models\MaterialComment', 'user_id');
     }
 
+    /* TESTING
+    public function routeNotificationForMail()
+    {
+        return 'denormalized@gmail.com';
+    }
+    */
 }
