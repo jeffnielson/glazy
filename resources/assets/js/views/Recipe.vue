@@ -362,7 +362,7 @@
                 <h3>Similar Base Recipes</h3>
                 <div class="row">
                   <div class="col-sm-12">
-                    <similar-base-components :material="recipe"></similar-base-components>
+                    <similar-base-component-cards :material="recipe"></similar-base-component-cards>
                   </div>
                 </div>
               </div>
@@ -529,7 +529,7 @@
   import SimpleAnalysisTable from '../components/glazy/analysis/SimpleAnalysisTable.vue'
 
   import UmfChart from '../components/glazy/recipe/UmfChart.vue'
-  import SimilarBaseComponents from '../components/glazy/recipe/SimilarBaseComponents.vue'
+  import SimilarBaseComponentCards from '../components/glazy/recipe/SimilarBaseComponentCards.vue'
   import SimilarUnityFormula from '../components/glazy/recipe/SimilarUnityFormula.vue'
   import ContainsMaterial from '../components/glazy/recipe/ContainsMaterial.vue'
 
@@ -617,7 +617,7 @@
       UmfTraditionalNotation,
       ComponentTable,
       SimpleAnalysisTable,
-      SimilarBaseComponents,
+      SimilarBaseComponentCards,
       SimilarUnityFormula,
       ContainsMaterial,
       EditMaterialMetadata,

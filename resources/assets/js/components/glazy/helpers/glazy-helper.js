@@ -212,6 +212,11 @@ export default class GlazyHelper {
     return true;
   }
 
+  roundToTwo(num) {
+    // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
+    return +(Math.round(num + "e+2")  + "e-2");
+  }
+
 }
 
 GlazyHelper.MAX_UPLOAD_SIZE_MB = 6
