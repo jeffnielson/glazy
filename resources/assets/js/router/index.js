@@ -31,7 +31,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'search', query: { base_type: '460', state: '2' } },
+      redirect: { name: 'search', query: { base_type: '460', state: '2', photo: true } },
       name: 'home',
       component: AppLayoutFull,
       children: [
@@ -153,7 +153,7 @@ export default new Router({
         },
         {
           path: '*',
-          redirect: { name: 'search', query: { base_type: '460', state: '2' } }
+          redirect: { name: 'search', query: { base_type: '460', state: '2', photo: true } }
         }
         /*
         {

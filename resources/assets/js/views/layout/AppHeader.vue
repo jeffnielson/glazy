@@ -2,7 +2,7 @@
     <header>
         <b-navbar class="navbar navbar-expand-md fixed-top navbar-light bg-white"
                   toggleable="sm">
-            <b-navbar-brand :to="{ name: 'search' }">
+            <b-navbar-brand :to="{ name: 'search', query: { base_type: '460', state: '2', photo: true } }">
                 <i class="fa fa-glazy glazy-logo"></i>
             </b-navbar-brand>
             <b-navbar-toggle target="nav_dropdown_collapse"></b-navbar-toggle>
@@ -43,7 +43,7 @@
                         </b-dropdown-item>
                     </b-nav-item-dropdown>
 
-                    <b-nav-item :to="{ name: 'search', query: { base_type: '460' } }" >
+                    <b-nav-item :to="{ name: 'search', query: { base_type: '460', state: '2', photo: true } }" >
                         <i class="fa fa-list fa-fw"></i> Recipes
                     </b-nav-item>
                     <b-nav-item :to="{ name: 'materials' }" >

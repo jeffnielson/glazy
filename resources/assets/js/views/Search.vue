@@ -94,7 +94,7 @@
     </nav>
 
     <main v-bind:class="mainClass" role="main" class="ml-sm-auto search-results">
-      
+
       <b-alert v-if="apiError" show variant="danger">
         API Error: {{ apiError.message }}
       </b-alert>
@@ -143,8 +143,8 @@
           </search-form>
         </div>
       </div>
-      <div v-if="$auth.check()" class="row">
-        <div class="col-md-8">
+      <div v-if="$auth.check()" class="d-flex flex-column flex-md-row flex-lg-row flex-xl-row">
+        <div class="flex-grow-1">
           <search-breadcrumbs :searchQuery="searchQuery"
                               :searchUser="searchUser"
                               :isViewingSelf="isViewingSelf"
@@ -152,7 +152,7 @@
                               v-on:deleteCollectionRequest="confirmDeleteCollection"
           ></search-breadcrumbs>
         </div>
-        <div class="col-md-4 text-right">
+        <div class="ml-2 text-right">
           <b-button-group class="checkbox-buttons">
             <b-btn @click="selectAllMaterials()"
                 v-if="!isAllMaterialsSelected"
