@@ -94,12 +94,7 @@
     </nav>
 
     <main v-bind:class="mainClass" role="main" class="ml-sm-auto search-results">
-
-      <b-alert show variant="success">
-        New! <a href="https://www.facebook.com/groups/glazysupport/" target="_blank">Official Glazy Support on Facebook</a>
-        and <a href="https://wiki.glazy.org" target="_blank">Non-Facebook alternative</a>
-      </b-alert>
-
+      
       <b-alert v-if="apiError" show variant="danger">
         API Error: {{ apiError.message }}
       </b-alert>
@@ -978,12 +973,16 @@
       },
 
       copyMaterial: function (id) {
+        let url = Vue.axios.defaults.baseURL + '/recipes/' + id + '/copy';
+        if (this.isViewingSelf && this.searchQuery.params.collection) {
+          url += '/' + this.searchQuery.params.collection;
+        }
+
         if (!id) {
           return
         }
         this.isProcessingLocal = true
-        Vue.axios.get(Vue.axios.defaults.baseURL + '/recipes/' + id + '/copy')
-          .then((response) => {
+        Vue.axios.get(url).then((response) => {
           if (response.data.error) {
             this.apiError = response.data.error
             console.log(this.apiError)

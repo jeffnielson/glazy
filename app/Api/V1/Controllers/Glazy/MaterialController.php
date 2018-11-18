@@ -10,7 +10,9 @@ use App\Api\V1\Transformers\Material\GlazeChemMaterialTransformer;
 use App\Api\V1\Transformers\Material\InsightMaterialTransformer;
 
 use App\Api\V1\Repositories\MaterialRepository;
+use App\Api\V1\Repositories\CollectionMaterialRepository;
 
+use App\Models\Collection;
 use App\Models\Material;
 
 use App\Api\V1\Requests\Recipe\CreateRecipeRequest;
@@ -190,12 +192,11 @@ class MaterialController extends ApiBaseController
     }
 
 
-    public function copy($id)
+    public function copy($materialId, $collectionId = null)
     {
-        $material = $this->materialRepository->get($id);
+        $material = $this->materialRepository->get($materialId);
 
-        if (! $material)
-        {
+        if (! $material) {
             return $this->respondNotFound('Recipe does not exist');
         }
 
@@ -208,6 +209,17 @@ class MaterialController extends ApiBaseController
         }
 
         $copiedMaterial = $this->materialRepository->copy($material);
+
+        if ($collectionId) {
+            $collection = Collection::where('id', $collectionId)->where('created_by_user_id', Auth::guard()->user()->id)->first();
+            if ($collection) {
+                $collectionMaterialRepository = new CollectionMaterialRepository();
+                $collectionMaterialRepository->create([
+                    'collection_id' => $collectionId,
+                    'material_id' => $copiedMaterial->id
+                ]);
+            }
+        }
 
         $resource = new FractalItem($copiedMaterial, new MaterialTransformer());
 

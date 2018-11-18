@@ -41,7 +41,7 @@ $api->version('v1', function (Router $api) {
             $api->post('/', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@store')->name('store');
             $api->patch('/{id}', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@update')->name('update');
             $api->delete('{id}', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@destroy')->name('destroy');
-            $api->get('/{id}/copy', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@copy')->name('copy');
+            $api->get('/{materialId}/copy/{bookmarkId?}', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@copy')->name('copy');
             $api->get('/{id}/publish', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@publish')->name('publish');
             $api->get('/{id}/unpublish', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@unpublish')->name('unpublish');
             $api->get('/{id}/archive', 'App\\Api\\V1\\Controllers\\Glazy\\MaterialController@archive')->name('archive');
