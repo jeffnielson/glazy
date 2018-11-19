@@ -28,6 +28,8 @@
                         </h5>
                         <span class="badge badge-firing"
                               v-html="'&#9651;' + glazyHelper.getConeString(material) + ' ' + glazyHelper.getAtmospheresString(material)"></span>
+                        <span v-if="material.materialStateId === 1" class="badge badge-warning">Test</span>
+                        <span v-else-if="material.materialStateId === 3" class="badge badge-danger">Discontinued</span>
                         <router-link :to="{ name: 'user', params: { id: glazyHelper.getUserProfileUrlId(material.createdByUser) }}">
                             <div class="author">
                                 <span>{{ glazyHelper.getUserDisplayName(material.createdByUser) }}</span>
