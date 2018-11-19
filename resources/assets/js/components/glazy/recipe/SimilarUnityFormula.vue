@@ -42,8 +42,12 @@
                         </td>
                         <td>
                             <span  class="clickable-item">
+                                <i v-if="similar.isPrivate" class="fa fa-eye-slash"></i>
+                                <i v-if="similar.isArchived" class="fa fa-lock"></i>
                                 {{ similar.name }}
                             </span>
+                            <span v-if="similar.materialStateId === 1" class="badge badge-warning">Test</span>
+                            <span v-else-if="similar.materialStateId === 3" class="badge badge-danger">Discontinued</span>
                         </td>
                         <td v-if="isGlaze"
                             v-html="glazyHelper.getConeString(similar)">

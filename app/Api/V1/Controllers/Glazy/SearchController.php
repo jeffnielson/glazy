@@ -224,8 +224,9 @@ class SearchController extends ApiBaseController
         $query->with('created_by_user.profile');
 
         // For image searches, we don't care if the materials are primitive or not.
+        // 20181119: For Collections, also don't limit by primitive/analysis
         // All other searches should filter by primitive:
-        if (!$is_image_search) {
+        if (!$is_image_search && !$collection_id) {
             if ($is_primitive) {
                 $query->where('materials.is_primitive', true);
             }
