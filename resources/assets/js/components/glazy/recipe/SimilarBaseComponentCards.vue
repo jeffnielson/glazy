@@ -20,7 +20,7 @@
                     </div>
                     <div class="p-2 flex-grow-1">
                         <h5 class="">
-                            <router-link :to="{ name: linkName, params: { id: material.id }}">
+                            <router-link :to="{ name: linkName(material), params: { id: material.id }}">
                                 <i v-if="material.isPrivate" class="fa fa-eye-slash"></i>
                                 <i v-if="material.isArchived" class="fa fa-lock"></i>
                                 {{ material.name }}
