@@ -10,7 +10,7 @@
                 <div class="d-flex flex-row similar-base-card">
                     <div class="p-2">
                         <router-link :to="{ name: linkName(material), params: { id: material.id }}"
-                                     class="">
+                                     class="nav-link">
                             <img
                                 class="img img-raised img-similar rounded"
                                 :src="glazyHelper.getSmallImageUrl(material, material.thumbnail)"

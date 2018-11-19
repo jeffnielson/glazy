@@ -20,10 +20,9 @@
                 <tbody>
                     <tr class="table-info">
                         <td>
-                            <img class="img-fluid"
+                            <img class="img img-similar-unity rounded"
                                     :alt="material.name"
-                                    :src="glazyHelper.getSmallThumbnailUrl(material)"
-                                    width="40" height="40">
+                                    :src="glazyHelper.getSmallThumbnailUrl(material)">
                         </td>
                         <td>
                             {{ material.name }}
@@ -37,10 +36,9 @@
                     </tr>
                     <tr class="clickable-row" v-for="similar in materialList"  @click="materialLink(similar)">
                         <td>      
-                            <img class="img-fluid"
+                            <img class="img img-similar-unity rounded"
                                     :alt="similar.name"
-                                    :src="glazyHelper.getSmallImageUrl(similar, similar.selectedImage)"
-                                    width="40" height="40">
+                                    :src="glazyHelper.getSmallImageUrl(similar, similar.selectedImage)">
                         </td>
                         <td>
                             <span  class="clickable-item">
@@ -205,5 +203,10 @@ export default {
 }
 .clickable-item:hover {
   border-color: #2488cf;
+}
+.img-similar-unity {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
 }
 </style>
