@@ -67,13 +67,37 @@
                     </b-form-select>
                 </b-col>
                 <b-col md="6" v-if="subTypeOptions && subTypeOptions.length > 0">
-                    <label for="materialTypeIdSelect">Subtype</label>
+                    <label for="materialTypeIdSelect">
+                      Subtype
+                      <a target="_blank"
+                         class="help-link"
+                         href="http://help.glazy.org/guide/materials/#subtype">
+                        <i class="fa fa-question-circle fa-fw"></i>
+                      </a>
+                    </label>
                     <b-form-select
                             class="col"
                             id="materialTypeIdSelect"
                             v-model="form.materialTypeId"
+                            @input="getParentOptions"
                             :options="subTypeOptions">
                     </b-form-select>
+                </b-col>
+                <b-col md="6" v-if="material.isPrimitive && this.parentOptions">
+                  <label for="materialParentIdSelect">
+                    Parent Material (Optional)
+                    <a target="_blank"
+                       class="help-link"
+                       href="http://help.glazy.org/guide/materials/#parent-material">
+                      <i class="fa fa-question-circle fa-fw"></i>
+                    </a>
+                  </label>
+                  <b-form-select
+                      class="col"
+                      id="materialParentIdSelect"
+                      v-model="form.materialParentId"
+                      :options="parentOptions">
+                  </b-form-select>
                 </b-col>
             </b-row>
 
@@ -144,7 +168,14 @@
 
             <b-row class="mt-2">
                 <b-col md="6">
-                    <label for="materialStateId">Status</label>
+                    <label for="materialStateId">
+                      Status
+                      <a target="_blank"
+                         class="help-link"
+                         href="http://help.glazy.org/guide/materials/#status">
+                        <i class="fa fa-question-circle fa-fw"></i>
+                      </a>
+                    </label>
                     <b-form-select
                             id="materialStateId"
                             placeholder="Status"
@@ -157,7 +188,14 @@
                     </b-form-select>
                 </b-col>
                 <b-col md="6">
-                    <label for="countryId">Country (Optional)</label>
+                    <label for="countryId">
+                      Country (Optional)
+                      <a target="_blank"
+                         class="help-link"
+                         href="http://help.glazy.org/guide/materials/#country">
+                        <i class="fa fa-question-circle fa-fw"></i>
+                      </a>
+                    </label>
                     <b-form-select
                             class="col"
                             id="countryId"
@@ -339,6 +377,7 @@
           description: '',
           baseTypeId: null,
           materialTypeId: null,
+          materialParentId: null,
           transparencyTypeId: null,
           surfaceTypeId: null,
           fromOrtonConeId: null,
@@ -358,6 +397,7 @@
         loiWeightSelector: 'loi',
         oxideWeight: 0.0,
         unityType: 'auto',
+        parentOptions: null,
         // isPrimitive: false,
         errors: [],
         apiError: null,
@@ -381,6 +421,7 @@
           description: this.material.description,
           baseTypeId: this.material.baseTypeId,
           materialTypeId: this.material.materialTypeId,
+          materialParentId: this.material.parentId,
           transparencyTypeId: this.material.transparencyTypeId,
           surfaceTypeId: this.material.surfaceTypeId,
           fromOrtonConeId: this.material.fromOrtonConeId,
@@ -394,6 +435,9 @@
         if (!this.material.isPrimitive && !this.material.baseTypeId) {
           // Default to "Glaze" if no base type set:
           this.form.baseTypeId = 460;
+        }
+        if (this.material.isPrimitive && this.material.materialTypeId) {
+          this.getParentOptions();
         }
         if (!this.material.materialStateId) {
           // Default material state to "test" (1):
@@ -466,6 +510,33 @@
       */
     },
     methods: {
+
+      getParentOptions: function () {
+        if (!this.isLoaded || !this.material.isPrimitive || !this.form.materialTypeId) {
+          return null;
+        }
+        this.isProcessing = true;
+        var url = Vue.axios.defaults.baseURL + '/recipes/parentOptions/' + this.form.materialTypeId;
+        Vue.axios.get(url).then((response) => {
+          this.isProcessing = false
+          if (response.data.error) {
+            this.apiError = response.data.error;
+          } else {
+            this.parentOptions = response.data.data;
+            this.parentOptions.unshift({ value: 0, text: 'No Parent Material'})
+          }
+         }).catch(response => {
+          this.isProcessing = false
+          if (response.response && response.response.status) {
+            if (response.response.status === 401) {
+              this.$router.push({ path: '/login', query: { error: 401 }})
+            } else {
+              this.serverError = response.response.data.error.message;
+            }
+          }
+        });
+      },
+
       save: function () {
         if (this.isLoaded) {
           window.scrollTo(0, 0)

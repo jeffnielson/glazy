@@ -122,6 +122,7 @@ class MaterialRepository extends Repository
      */
     public function createOrUpdate(Model $material, array $jsonData)
     {
+        $mustUpdateHashes = false;
         if ($material->is_archived) {
             // Archived materials cannot be updated
             return false;
@@ -167,6 +168,16 @@ class MaterialRepository extends Repository
                 $data['material_type_id'] = $jsonData['materialTypeId'];
             } else {
                 $data['material_type_id'] = null;
+            }
+        }
+        if (array_key_exists('materialParentId', $jsonData)) {
+            if ($jsonData['materialParentId']) {
+                $data['parent_id'] = $jsonData['materialParentId'];
+                if ($material->parent_id !== $data['parent_id']) {
+                    $mustUpdateHashes = true;
+                }
+            } else {
+                $data['parent_id'] = null;
             }
         }
         if (array_key_exists('transparencyTypeId', $jsonData)) {
@@ -358,6 +369,10 @@ class MaterialRepository extends Repository
             // For primitive materials, automatically add to this users UserMaterials (Inventory)
             $userMaterialRepository = new UserMaterialRepository();
             $userMaterial = $userMaterialRepository->addMaterial($material->id);
+
+            if ($mustUpdateHashes) {
+                $this->updateMaterialHashes($material->id);
+            }
         }
 
         return $material;
@@ -984,4 +999,49 @@ class MaterialRepository extends Repository
         return $query->limit(100)->get();
 
     }
+
+    public function parentMaterialOptions($material_type_id)
+    {
+        $current_user_id = null;
+        if (Auth::check())
+        {
+            $user = Auth::guard('api')->user();
+            $current_user_id = $user->id;
+        }
+        $query = Material::query()
+            ->ofUserViewable($current_user_id, null)
+            ->where('is_primitive', true)
+            ->where(function ($query) use ($current_user_id) {
+                $query->where('created_by_user_id', 1);
+                $query->orWhere('created_by_user_id', $current_user_id);
+            })
+            ->whereNull('parent_id')
+            ->with('created_by_user');
+        if ($material_type_id > 0) {
+            $query->where('material_type_id', $material_type_id);
+        }
+        return $query->orderBy('name', 'ASC')->get();
+    }
+
+    protected function updateMaterialHashes($materialId) {
+        $materials = Material::query()
+            ->with('components')
+            ->whereExists(function ($query) use ($materialId) {
+                $query->select(DB::raw(1))
+                    ->from('material_materials')
+                    ->whereRaw('material_materials.parent_material_id = materials.id')
+                    ->whereRaw('material_materials.component_material_id = '.$materialId);
+            })
+            ->get();
+
+        if ($materials) {
+            $materialMaterialRepository = new MaterialMaterialRepository();
+            foreach($materials as $material) {
+                $materialMaterialRepository->setComponentHashes($material);
+                $material->timestamps = false;
+                $material->save();
+            }
+        }
+    }
+
 }

@@ -332,4 +332,24 @@ class MaterialController extends ApiBaseController
 
     }
 
+    public function parentMaterialOptions($material_type_id)
+    {
+        $materials = $this->materialRepository->parentMaterialOptions($material_type_id);
+        $vals = [];
+        foreach($materials as $material) {
+            $text = $material->name;
+            if ($material->is_theoretical) {
+                $text .= ' (Theoretical)';
+            }
+            if ($material->created_by_user_id === 1) {
+                $text .=  ' by Admin';
+            }
+            $vals[] = [
+                'value' => $material->id,
+                'text' => $text
+            ];
+        }
+        return [ 'data' => $vals ];
+    }
+
 }

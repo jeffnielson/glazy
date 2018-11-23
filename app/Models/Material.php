@@ -63,6 +63,7 @@ class Material extends Model
         'other_names',
         'description',
         'material_type_id',
+        'parent_id',
         'is_analysis',
         'from_orton_cone_id',
         'to_orton_cone_id',
