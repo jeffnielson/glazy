@@ -21,11 +21,11 @@ body {
 
 a {
   color: #2488cf;
+  word-break: break-all; // Wrap long URL's
 }
 a:hover, a:focus {
   color: #2488cf;
 }
-
 
 .navbar {
   min-height: 50px;
