@@ -254,6 +254,46 @@
 
   export default {
     name: 'Calculator',
+    metaInfo () {
+      return {
+        title: this.title,
+        meta: [
+          {
+            'vmid': "description",
+            'property': 'description',
+            'content': 'Glazy Recipe Calculator'
+          },
+          {
+            'property': 'og:description',
+            'content': 'Glazy Recipe Calculator'
+          },
+          {
+            'property': 'og:title',
+            'content': 'Glazy Recipe Calculator'
+          },
+          {
+            'property': 'og:url',
+            'content': GLAZY_APP_URL + this.$route.fullPath
+          },
+          {
+            'property': 'og:image',
+            'content': 'https://glazy.org/img/logoPromo.png'
+          },
+          {
+            'property': 'og:image:width',
+            'content': 400
+          },
+          {
+            'property': 'og:image:height',
+            'content': 400
+          },
+          {
+            'property': 'twitter:description',
+            'content': 'Glazy Recipe Calculator'
+          }
+        ]
+      }
+    },
     components: {
       UmfD3Chart,
       MaterialCardDetail,
