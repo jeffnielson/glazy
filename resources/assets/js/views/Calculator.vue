@@ -256,7 +256,7 @@
     name: 'Calculator',
     metaInfo () {
       return {
-        title: this.title,
+        title: 'Recipe Calculator',
         meta: [
           {
             'vmid': "description",
