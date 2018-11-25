@@ -364,6 +364,9 @@
                       // Underlying library only supports "primitive".
                       // Functionally, "analyses" are same as "primitives".
                       material.isPrimitive = true;
+                      // WRONG!  Inteface needs to know whether it's an analysis or primitive for routing
+                      // TODO: Not working: Vue.set(material, 'isAnalysis', true);
+                      // Underlying Material class should support isAnalysis
                     }
                     if (!material.isPrimitive) {
                       if (userId) {

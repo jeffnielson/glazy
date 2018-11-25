@@ -8,7 +8,7 @@
         <div class="d-flex mb-2">
             <div v-if="this.material.id > 0"
                  class="flex-grow-1 pr-2">
-                <router-link :to="{ name: 'material', params: { id: material.id }}" class="">
+                <router-link :to="{ name: 'recipes', params: { id: material.id }}" class="">
                     {{ this.material.name }}
                 </router-link>
             </div>
