@@ -83,9 +83,13 @@
         type: Boolean,
         default: false
       },
+      isBlackWhite: {
+        type: Boolean,
+        default: false
+      },
       size: {
         type: String,
-        default: ''
+        default: 'l'
       }
     },
 
@@ -155,7 +159,10 @@
         var oxides = []
         searchOxides.forEach((oxideName) => {
           if (this.umf[oxideName] && Number(this.umf[oxideName]).toFixed(2) > 0) {
-            var str = '<span class="oxide-colors-' + oxideName + '">'
+            let str = '<span>';
+            if (!this.isBlackWhite) {
+              str = '<span class="oxide-colors-' + oxideName + '">'
+            }
             str += Number(this.umf[oxideName]).toFixed(2) + ' '
             str += Analysis.OXIDE_NAME_DISPLAY[oxideName]
             str += '</span>'
