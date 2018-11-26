@@ -74,7 +74,7 @@
                           <img v-bind:src="glazyHelper.getUserAvatar(recipe.createdByUser)"
                                class="avatar"/> {{ recipe.createdByUser.name }}
                         </router-link>,
-                        <timeago :since="recipe.updatedAt"></timeago>
+                        {{moment.utc(recipe.updatedAt).fromNow()}}
                       </div>
                     </div>
                     <div v-if="!recipe.isPrivate"
@@ -546,8 +546,6 @@
 
   import AppFooter from './layout/AppFooter.vue'
 
-  import VueTimeago from 'vue-timeago'
-
   import Vue from 'vue'
 
   export default {
@@ -625,7 +623,6 @@
       MaterialCollectionsPanel,
       ReviewsPanel,
       CommentsPanel,
-      VueTimeago,
       MaterialCardDetail,
       AppFooter
     },

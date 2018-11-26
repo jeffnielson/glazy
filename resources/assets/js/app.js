@@ -36,6 +36,9 @@ Vue.use(SocialSharing);
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 
+import moment from 'moment';
+Vue.prototype.moment = moment;
+
 /**
  Currently used Bootstrap-vue components:
 
@@ -86,6 +89,7 @@ Vue.use(VueAuth, {
 
 Vue.config.productionTip = false
 
+/*
 import VueTimeago from 'vue-timeago'
 Vue.use(VueTimeago, {
   name: 'timeago', // component name, `timeago` by default
@@ -95,6 +99,7 @@ Vue.use(VueTimeago, {
     'en-US': require('vue-timeago/locales/en-US.json')
   }
 })
+*/
 
 import VueProgressiveImage from 'vue-progressive-image'
 Vue.use(VueProgressiveImage, {

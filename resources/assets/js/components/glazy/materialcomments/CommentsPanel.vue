@@ -23,7 +23,7 @@
                                 <a :href="glazyHelper.getUserProfileUrl(comment.user)">
                                     {{ glazyHelper.getUserDisplayName(comment.user) }}
                                 </a>
-                                <small class="text-muted"> <timeago :since="comment.updatedAt"></timeago></small>
+                                <small class="text-muted">{{moment.utc(comment.updatedAt).fromNow()}}</small>
                             </h5>
                             <form v-show="showEditComment(comment.id)">
                                 <div class="form-group">
@@ -89,13 +89,11 @@
     </div>
 </template>
 <script>
-  import VueTimeago from 'vue-timeago'
   import GlazyHelper from '../helpers/glazy-helper'
 
   export default {
     name: 'CommentsPanel',
     components: {
-      VueTimeago
     },
     props: {
       material: {

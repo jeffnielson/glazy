@@ -13,12 +13,9 @@
     </b-nav-item-dropdown>
 </template>
 <script>
-  import VueTimeago from 'vue-timeago'
-
   export default {
     name: 'NotificationsDropdown',
     components: {
-      VueTimeago
     },
     props: {},
     data() {

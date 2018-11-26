@@ -14,7 +14,7 @@
                                 <router-link :to="{ name: 'user', params: { id: review.user.id }}">
                                     {{ glazyHelper.getUserDisplayName(review.user) }}
                                 </router-link>
-                                <small class="text-muted"><timeago :since="review.updatedAt"></timeago></small>
+                                <small class="text-muted">{{moment.utc(review.updatedAt).fromNow()}}</small>
                             </h5>
                             <star-rating :rating="Number(review.rating)"
                                          :read-only="true"
@@ -85,14 +85,12 @@
 </template>
 <script>
   import StarRating from 'vue-star-rating'
-  import VueTimeago from 'vue-timeago'
   import GlazyHelper from '../helpers/glazy-helper'
 
   export default {
     name: 'ReviewsPanel',
     components: {
-      StarRating,
-      VueTimeago
+      StarRating
     },
     props: {
       material: {

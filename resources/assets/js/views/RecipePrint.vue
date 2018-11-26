@@ -68,12 +68,22 @@
             User: <strong>{{ recipe.createdByUser.name }}</strong>
           </div>
           <div>
-            Created: {{ recipe.createdAt }}
+            Created:
+            {{moment.utc(recipe.createdAt).format('MMMM DD YYYY')}}
           </div>
           <div>
-            Updated: {{ recipe.updatedAt }}
+            Updated:
+            {{moment.utc(recipe.updatedAt).format('MMMM DD YYYY')}}
           </div>
-
+          <div class="mt-3">
+            Current User:
+            <br/>
+            <strong>{{ this.$auth.user().name }}</strong>
+            <br/>
+            Current Date:
+            <br/>
+            <strong>{{moment().format('MMMM DD YYYY')}}</strong>
+          </div>
         </div>
         <div class="col-md-9 col-lg-8">
           <div v-if="!recipe.isPrimitive">
@@ -202,8 +212,6 @@
   import MaterialCardDetail from '../components/glazy/search/MaterialCardDetail.vue'
 
   import AppFooter from './layout/AppFooter.vue'
-
-  import VueTimeago from 'vue-timeago'
 
   import Vue from 'vue'
 
