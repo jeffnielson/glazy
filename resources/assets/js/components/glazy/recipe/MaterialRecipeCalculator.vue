@@ -30,13 +30,19 @@
             <tr v-for="(materialComponent, index) in this.materialComponents"
                 v-if="!materialComponent.isAdditional">
                 <td class="align-middle">
-                    <div class="d-none d-none d-sm-block float-left">
+                    <div v-if="!isPrint"
+                         class="d-none d-none d-sm-block float-left">
                         <img class="rounded-circle mr-1"
                              width="34" height="34"
                              v-if="materialComponent.material.thumbnail"
                              :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
                     </div>
-                    <div>
+                    <div v-if="isPrint">
+                        {{ materialComponent.material.name }}
+                        <span v-if="materialComponent.material.materialStateId === 1" >(Test)</span>
+                        <span v-else-if="materialComponent.material.materialStateId === 3">(Discontinued)</span>
+                    </div>
+                    <div v-else>
                         <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
                         <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
                         <span v-if="materialComponent.material.materialStateId === 1" class="badge badge-warning">Test</span>
@@ -47,11 +53,15 @@
                     {{ parseFloat(materialComponent.percentageAmount) }}
                 </td>
                 <td v-if="batchValues"
-                    class="text-right batch" :id="'batch_' + materialComponent.material.id">
+                    class="text-right"
+                    v-bind:class="isPrint ? '' : 'batch'"
+                    :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
                 <td v-if="batchValues && isCumulative === 'true'"
-                    class="text-right subtotal" :id="'subtotal_' + materialComponent.material.id">
+                    class="text-right"
+                    v-bind:class="isPrint ? '' : 'subtotal'"
+                    :id="'subtotal_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.subtotalRows[index]) }}
                 </td>
                 <td v-else-if="batchValues && tareSize"
@@ -59,7 +69,9 @@
                     {{ parseFloat(batchValues.batchTareRows[index]) }}
                 </td>
             </tr>
-            <tr v-if="hasAdditional" class="align-middle total">
+            <tr v-if="hasAdditional"
+                v-bind:class="isPrint ? '' : 'total'"
+                class="align-middle">
                 <td>Total Base Recipe</td>
                 <td class="text-right">{{ parseFloat(baseRecipeAmount) }}</td>
                 <td v-if="batchValues" class="text-right">{{ parseFloat(this.batchSize.toFixed(2)) }}</td>
@@ -68,15 +80,20 @@
 
             <tr v-for="(materialComponent, index) in this.materialComponents"
                 v-if="materialComponent.isAdditional"
-                class="table-info">
+                v-bind:class="isPrint ? '' : 'table-info'">
                 <td class="align-middle">
-                    <div class="d-inline d-none d-sm-block float-left">
+                    <div v-if="!isPrint"
+                         class="d-inline d-none d-sm-block float-left">
                         <img class="rounded-circle mr-1"
                              width="34" height="34"
                              v-if="materialComponent.material.thumbnail"
                              :src="glazyHelper.getSmallImageUrl(materialComponent.material, materialComponent.material.thumbnail)"/>
                     </div>
-                    <div>
+                    <div v-if="isPrint">
+                        <i class="fa fa-plus"></i>
+                        {{ materialComponent.material.name }}
+                    </div>
+                    <div v-else>
                         <i class="fa fa-plus"></i>
                         <router-link v-if="materialComponent.material.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
                         <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.material.id }}">{{ materialComponent.material.name }}</router-link>
@@ -86,11 +103,15 @@
                     {{ parseFloat(materialComponent.percentageAmount) }}
                 </td>
                 <td v-if="batchValues"
-                    class="text-right batch" :id="'batch_' + materialComponent.material.id">
+                    class="text-right"
+                    v-bind:class="isPrint ? '' : 'batch'"
+                    :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
                 <td v-if="batchValues && isCumulative === 'true'"
-                    class="text-right subtotal" :id="'subtotal_' + materialComponent.material.id">
+                    class="text-right"
+                    v-bind:class="isPrint ? '' : 'subtotal'"
+                    :id="'subtotal_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.subtotalRows[index]) }}
                 </td>
                 <td v-else-if="batchValues && tareSize"
@@ -99,15 +120,19 @@
                 </td>
             </tr>
 
-            <tr class="align-middle total">
+            <tr class="align-middle" v-bind:class="isPrint ? '' : 'total'">
                 <td>Total</td>
                 <td class="text-right">{{ parseFloat(totalRecipeAmount) }}</td>
                 <td v-if="batchValues" class="text-right">{{ parseFloat(totalBatchAmount) }}</td>
                 <td v-if="batchValues && (isCumulative === 'true' || tareSize)"></td>
             </tr>
 
-            <tr class="batch_form">
+            <tr class="batch_form" v-if="!isPrint">
                 <td v-bind:colspan="numColumns">
+                    <button class="btn btn-sm btn-default btn-print"
+                            @click="openPrintView()">
+                        <i class="fa fa-print"></i> Print
+                    </button>
                     <form class="form-inline float-right mt-1">
                         <div class="form-group">
                             <select v-model="isCumulative"
@@ -159,6 +184,14 @@ export default {
     materialComponents: {
       type: Array,
       default: null
+    },
+    isPrint: {
+      type: Boolean,
+      default: false
+    },
+    initialBatchSize: {
+      type: String,
+      default: null
     }
   },
 
@@ -170,7 +203,11 @@ export default {
       isCumulative: "true"
     }
   },
-
+  mounted() {
+    if (this.initialBatchSize) {
+      this.batchSize = Number(this.initialBatchSize);
+    }
+  },
   computed: {
     isLoaded: function () {
       if (this.materialComponents) {
@@ -248,6 +285,9 @@ export default {
         }
       })
       return hasAdditional
+    },
+    openPrintView: function () {
+      this.$router.push({ name: 'recipe-print', params: { amount: this.batchSize }})
     }
   }
 }
@@ -296,10 +336,9 @@ export default {
         width: 90px;
     }
 
-    .material-recipe-calculator-tare-input {
-    }
-
-    .material-recipe-calculator-batch-input {
+    .btn-print {
+        padding: 6px 8px;
+        margin-top: 4px;
     }
 
 </style>

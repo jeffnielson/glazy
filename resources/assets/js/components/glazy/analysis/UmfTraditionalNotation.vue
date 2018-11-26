@@ -83,7 +83,7 @@
         type: Boolean,
         default: false
       },
-      isBlackWhite: {
+      isPrint: {
         type: Boolean,
         default: false
       },
@@ -160,7 +160,7 @@
         searchOxides.forEach((oxideName) => {
           if (this.umf[oxideName] && Number(this.umf[oxideName]).toFixed(2) > 0) {
             let str = '<span>';
-            if (!this.isBlackWhite) {
+            if (!this.isPrint) {
               str = '<span class="oxide-colors-' + oxideName + '">'
             }
             str += Number(this.umf[oxideName]).toFixed(2) + ' '

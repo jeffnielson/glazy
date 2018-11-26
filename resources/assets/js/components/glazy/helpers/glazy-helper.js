@@ -115,6 +115,19 @@ export default class GlazyHelper {
     return str
   }
 
+  getAtmospheresLongString (material) {
+    var str = '';
+    if (material.atmospheres) {
+      material.atmospheres.forEach((atmosphere) => {
+        if (str.length) {
+        str += ', '
+      }
+      str += GlazyConstants.ATMOSPHERE_LOOKUP[atmosphere.id]
+    })
+    }
+    return str
+  }
+
   getUserProfileUrlId (user) {
     if (user.hasOwnProperty('profile') &&
       user.profile.hasOwnProperty('username') &&

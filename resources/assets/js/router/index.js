@@ -9,6 +9,7 @@ import Register from '../views/Register'
 import Search from '../views/Search'
 import Calculator from '../views/Calculator'
 import Recipe from '../views/Recipe'
+import RecipePrint from '../views/RecipePrint'
 import MaterialCreate from '../views/MaterialCreate'
 import UserMaterial from '../views/UserMaterial'
 import UserEdit from '../views/UserEdit'
@@ -29,6 +30,11 @@ export default new Router({
     }
   },
   routes: [
+    {
+      path: '/recipes/:id/print/:amount?',
+      name: 'recipe-print',
+      component: RecipePrint
+    },
     {
       path: '/',
       redirect: { name: 'search', query: { base_type: '460', state: '2', photo: true } },

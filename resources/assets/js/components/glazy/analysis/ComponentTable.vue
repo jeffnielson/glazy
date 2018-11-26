@@ -6,8 +6,11 @@
                 <th>Material</th>
                 <th>Amt.</th>
                 <th v-for="oxideName in presentOxides">
-                    <span v-html="OXIDE_NAME_DISPLAY[oxideName]"
-                        v-bind:class="'oxide-colors-' + oxideName"></span>
+                    <span v-if="isPrint"
+                          v-html="OXIDE_NAME_DISPLAY[oxideName]"></span>
+                    <span v-else
+                          v-html="OXIDE_NAME_DISPLAY[oxideName]"
+                          v-bind:class="'oxide-colors-' + oxideName"></span>
                 </th>
                 <th v-if="!isFormula">LOI</th>
             </tr>
@@ -15,7 +18,10 @@
             </thead>
             <tbody>
             <tr v-for="materialComponent in componentContributions" v-bind:class="{ info : materialComponent.isAdditional }">
-                <td>
+                <td v-if="isPrint">
+                    {{ materialComponent.name }}
+                </td>
+                <td v-else>
                     <router-link v-if="materialComponent.isPrimitive" :to="{ name: 'material', params: { id: materialComponent.id }}">{{ materialComponent.name }}</router-link>
                     <router-link v-else :to="{ name: 'recipes', params: { id: materialComponent.id }}">{{ materialComponent.name }}</router-link>
                 </td>
@@ -35,7 +41,7 @@
                 </td>
 
             </tr>
-            <tr class="table-secondary">
+            <tr v-bind:class="isPrint ? '' : 'table-secondary'">
                 <td>
                     Total
                 </td>
@@ -55,7 +61,7 @@
                     </span>
                 </td>
             </tr>
-            <tr class="table-info">
+            <tr v-bind:class="isPrint ? '' : 'table-info'">
                 <td v-if="isFormula">
                     Mol % Formula
                 </td>
@@ -127,6 +133,10 @@
       isFormula: {
         type: Boolean,
         default: true
+      },
+      isPrint: {
+        type: Boolean,
+        default: false
       },
       precision: {
         type: Number,
