@@ -20,6 +20,15 @@
                class="fa fa-lock"></i>
             {{ recipe.name }}
           </h1>
+        </div>
+        <div>
+          <h1>
+            &#9651;{{ glazyHelper.getConeString(recipe) }}
+          </h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 col-lg-4">
           <span v-if="recipe.otherNames">
             Other Names: {{ recipe.otherNames }}
           </span>
@@ -33,21 +42,6 @@
               </router-link>
             </div>
           </div>
-
-          <div v-if="!recipe.isPrimitive">
-            <material-recipe-calculator
-                :materialComponents="recipe.materialComponents"
-                :initialBatchSize="batchAmount"
-                :isPrint="true">
-            </material-recipe-calculator>
-          </div>
-
-        </div>
-
-        <div class="ml-4">
-          <h1>
-            &#9651;{{ glazyHelper.getConeString(recipe) }}
-          </h1>
 
           <div>
             Atmospheres: <strong>{{ glazyHelper.getAtmospheresLongString(recipe) }}</strong>
@@ -80,7 +74,15 @@
             Updated: {{ recipe.updatedAt }}
           </div>
 
-
+        </div>
+        <div class="col-md-9 col-lg-8">
+          <div v-if="!recipe.isPrimitive">
+            <material-recipe-calculator
+                :materialComponents="recipe.materialComponents"
+                :initialBatchSize="batchAmount"
+                :isPrint="true">
+            </material-recipe-calculator>
+          </div>
         </div>
       </div>
 

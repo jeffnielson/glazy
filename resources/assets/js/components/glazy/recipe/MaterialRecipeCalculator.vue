@@ -54,7 +54,7 @@
                 </td>
                 <td v-if="batchValues"
                     class="text-right"
-                    v-bind:class="isPrint ? '' : 'batch'"
+                    v-bind:class="isPrint ? 'batch-print' : 'batch'"
                     :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
@@ -104,7 +104,7 @@
                 </td>
                 <td v-if="batchValues"
                     class="text-right"
-                    v-bind:class="isPrint ? '' : 'batch'"
+                    v-bind:class="isPrint ? 'batch-print' : 'batch'"
                     :id="'batch_' + materialComponent.material.id">
                     {{ parseFloat(batchValues.batchRows[index]) }}
                 </td>
@@ -127,9 +127,10 @@
                 <td v-if="batchValues && (isCumulative === 'true' || tareSize)"></td>
             </tr>
 
-            <tr class="batch_form" v-if="!isPrint">
+            <tr class="batch_form">
                 <td v-bind:colspan="numColumns">
-                    <button class="btn btn-sm btn-default btn-print"
+                    <button v-if="!isPrint"
+                            class="btn btn-sm btn-default btn-print"
                             @click="openPrintView()">
                         <i class="fa fa-print"></i> Print
                     </button>
@@ -285,7 +286,9 @@ export default {
         }
       })
       return hasAdditional
-    },
+    }
+  },
+  methods : {
     openPrintView: function () {
       this.$router.push({ name: 'recipe-print', params: { amount: this.batchSize }})
     }
@@ -314,6 +317,10 @@ export default {
 
     .material-recipe-calculator-table tr td.batch {
         color: #009900;
+    }
+
+    .material-recipe-calculator-table tr td.batch-print {
+        font-weight: bold;
     }
 
     .material-recipe-calculator-table tr td.subtotal {
