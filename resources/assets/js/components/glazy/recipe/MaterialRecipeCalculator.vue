@@ -129,11 +129,6 @@
 
             <tr class="batch_form">
                 <td v-bind:colspan="numColumns">
-                    <button v-if="!isPrint"
-                            class="btn btn-sm btn-default btn-print"
-                            @click="openPrintView()">
-                        <i class="fa fa-print"></i> Print
-                    </button>
                     <form class="form-inline float-right mt-1">
                         <div class="form-group">
                             <select v-model="isCumulative"
@@ -289,9 +284,6 @@ export default {
     }
   },
   methods : {
-    openPrintView: function () {
-      this.$router.push({ name: 'recipe-print', params: { amount: this.batchSize }})
-    }
   }
 }
 

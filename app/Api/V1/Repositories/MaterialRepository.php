@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Log;
 
 class MaterialRepository extends Repository
 {
+    const DEFAULT_ITEMS_PER_PAGE = 48;
+
     public function getModel()
     {
         return new Material();
@@ -83,12 +85,13 @@ class MaterialRepository extends Repository
             ->with('created_by_user.profile')
             ->ofIds($ids)
             ->ofUserViewable($current_user_id, null)
+            ->limit(self::DEFAULT_ITEMS_PER_PAGE)
             ->get();
     }
 
     public function getAll()
     {
-        return Material::with('analysis')->where('is_primitive', false)->get();
+        //return Material::with('analysis')->where('is_primitive', false)->get();
     }
 
     public function create(array $data)
@@ -1020,7 +1023,7 @@ class MaterialRepository extends Repository
         if ($material_type_id > 0) {
             $query->where('material_type_id', $material_type_id);
         }
-        return $query->orderBy('name', 'ASC')->get();
+        return $query->orderBy('name', 'ASC')->limit(100)->get();
     }
 
     protected function updateMaterialHashes($materialId) {

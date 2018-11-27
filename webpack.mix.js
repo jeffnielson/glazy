@@ -19,7 +19,6 @@ if (mix.inProduction()) {
     'vform',
     'axios',
     'vuex',
-    'vue-i18n',
     'vue-meta',
     'js-cookie',
     'popper.js',

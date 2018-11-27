@@ -173,6 +173,8 @@
                 text="With Selected">
                 <b-dropdown-item @click="collectSelectedMaterialsSelect()">Bookmark</b-dropdown-item>
                 <b-dropdown-item @click="editSelectedMaterialsSelect()">Calculate</b-dropdown-item>
+                <b-dropdown-item @click="printSelectedMaterialsSelect(false)">Print</b-dropdown-item>
+                <b-dropdown-item @click="printSelectedMaterialsSelect(true)">Print Simple</b-dropdown-item>
             </b-dropdown>
           </b-button-group>
         </div>
@@ -857,6 +859,19 @@
         }
         if (materialsToEdit.length) {
           this.$router.push({ name: 'calculator', query: { id: materialsToEdit }});
+        }
+      },
+
+      printSelectedMaterialsSelect(isSimple) {
+        var hasMaterial = false
+        let materialsToPrint = [];
+        for (var materialId in this.selectedMaterials) {
+          if (this.selectedMaterials.hasOwnProperty(materialId)) {
+            materialsToPrint.push(materialId);
+          }
+        }
+        if (materialsToPrint.length) {
+          this.$router.push({ name: 'print', query: { id: materialsToPrint, simple: isSimple }});
         }
       },
 

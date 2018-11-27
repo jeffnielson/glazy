@@ -73,8 +73,10 @@
                         <router-link :to="{ name: 'user', params: { id: glazyHelper.getUserProfileUrlId(recipe.createdByUser) }}">
                           <img v-bind:src="glazyHelper.getUserAvatar(recipe.createdByUser)"
                                class="avatar"/> {{ recipe.createdByUser.name }}
-                        </router-link>,
-                        {{moment.utc(recipe.updatedAt).fromNow()}}
+                        </router-link>
+                        <br/>
+                        Created on {{moment.utc(recipe.createdAt).format('MMMM DD YYYY')}},
+                        updated {{moment.utc(recipe.updatedAt).fromNow()}}
                       </div>
                     </div>
                     <div v-if="!recipe.isPrivate"
@@ -175,6 +177,8 @@
                           <span slot=text>
                             <i class="fa fa-cloud-download" aria-hidden="true"></i> Export
                           </span>
+                          <b-dropdown-item v-on:click="printRecipe(true)">Simple Label</b-dropdown-item>
+                          <b-dropdown-item v-on:click="printRecipe(false)">Label</b-dropdown-item>
                           <b-dropdown-item v-on:click="exportRecipe('Insight')">Insight</b-dropdown-item>
                           <b-dropdown-item v-on:click="exportRecipe('GlazeChem')">GlazeChem</b-dropdown-item>
                         </b-dropdown>
@@ -839,6 +843,10 @@
           this.serverError = response;
           this.isProcessing = false
         })
+      },
+
+      printRecipe: function (isSimple) {
+        this.$router.push({ name: 'print', query: { id: this.recipe.id, simple: isSimple }});
       },
 
       copyRecipe: function () {
