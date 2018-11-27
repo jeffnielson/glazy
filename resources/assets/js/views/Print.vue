@@ -343,20 +343,19 @@
     page-break-after: always;
   }
 
-  .material-recipe-calculator-table tbody tr td {
-    font-size: 1.2rem;
-    line-height: 1.8rem;
-  }
-
   @media print {
-    .no-print {
-      display: none;
-    }
     body {
       margin-top: 10mm;
       margin-bottom: 5mm;
       margin-left: 5mm;
       margin-right: 5mm;
+    }
+    .no-print {
+      display: none;
+    }
+    .material-recipe-calculator-table tbody tr td {
+      font-size: 1.2rem;
+      line-height: 1.8rem;
     }
   }
 
