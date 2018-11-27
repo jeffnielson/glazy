@@ -16,7 +16,7 @@
     "ceramicscalc-js": "github:derekphilipau/ceramicscalc-js",
     "js-cookie": "^2.1.4",
     "lodash.debounce": "^4.0.8",
-    "moment": "^2.22.2",
+    "moment-mini": "^2.22.1",
     "popper.js": "^1.14.4",
     "tween.js": "^16.6.0",
     "vform": "^0.8.2",
