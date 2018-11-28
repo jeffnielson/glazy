@@ -10,6 +10,24 @@
     </div>
 
     <div v-if="isLoaded">
+      <div v-if="recipes.length > 1"
+           class="no-print">
+        <div class="form-group row">
+          <label for="batchAmountInputId" class="col-sm-2 col-form-label">Set Amount:</label>
+          <div class="col-sm-10">
+            <input type="number"
+                   inputmode="numeric"
+                   size="4"
+                   maxlength="10"
+                   placeholder="0.0"
+                   id="batchAmountInputId"
+                   class="form-control form-control-sm"
+                   @input="globalBatchAmountInput"
+                   v-model.number="globalBatchAmount">
+          </div>
+        </div>
+      </div>
+
       <div v-for="recipe in recipes"
            v-bind:class="isSimple ? 'recipe-print-multiple' : 'recipe-print-item'">
         <div class="d-flex justify-content-between">
@@ -28,17 +46,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-3 col-lg-4">
-            <div v-if="recipe.parentId && recipe.parentName"
-                 class="row">
-              <div class="col-12">
-                Parent Material:
-                <router-link :to="{ name: 'material', params: { id: recipe.parentId }}">
-                  {{ recipe.parentName }}
-                </router-link>
-              </div>
+          <div class="col-3 col-lg-4">
+            <div v-if="recipe.parentId && recipe.parentName">
+                Parent Material: <strong>{{ recipe.parentName }}</strong>
             </div>
-
             <div>
               Atmospheres: <strong>{{ glazyHelper.getAtmospheresLongString(recipe) }}</strong>
             </div>
@@ -81,12 +92,13 @@
               <strong>{{moment().format('MMMM DD YYYY')}}</strong>
             </div>
           </div>
-          <div class="col-md-9 col-lg-8">
+          <div class="col-9 col-lg-8">
             <div v-if="!recipe.isPrimitive">
               <material-recipe-calculator
-                  :materialComponents="recipe.materialComponents"
-                  :initialBatchSize="batchAmount"
-                  :isPrint="true">
+                  :material="recipe"
+                  :initialBatchSize="globalBatchAmount"
+                  :isPrint="true"
+                  v-on:batchInput="batchInput">
               </material-recipe-calculator>
             </div>
           </div>
@@ -165,6 +177,54 @@
         </div>
         <hr class="mb-4 no-print"/>
       </div>
+
+      <div v-if="recipes.length > 1"
+           class="batch-report">
+        <h1>Batch Report</h1>
+        <table class="table batch-report-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th class="text-right">Batch Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="recipe in recipes">
+              <td>{{ recipe.id }}</td>
+              <td>{{ recipe.name }}</td>
+              <td class="amount">{{ recipe.batchSize.toFixed(2) }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Total</td>
+              <td class="amount"><strong>{{ this.batchTotal.toFixed(2) }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table batch-report-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th class="text-right">Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="batch in batchComponentMaterials">
+            <td>{{ batch.id }}</td>
+            <td>{{ batch.name }}</td>
+            <td class="amount">{{ batch.amount.toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Total</td>
+            <td class="amount"><strong>{{ this.componentTotal.toFixed(2) }}</strong></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </main>
@@ -236,8 +296,11 @@
 
     data() {
       return {
+        batchComponentMaterials: [],
+        globalBatchAmount: '',
+        batchTotal: 0,
+        componentTotal: 0,
         isSimple: this.$route.query.simple,
-        batchAmount: this.$route.query.amount,
         materialIds: this.$route.query.id,
         recipes: null,
         materials: null,
@@ -250,7 +313,10 @@
     },
 
     mounted() {
-      this.fetchRecipe()
+      if (this.$route.query.amount) {
+        this.globalBatchAmount = this.$route.query.amount;
+      }
+      this.fetchRecipe();
     },
     computed : {
       isLoaded: function() {
@@ -267,6 +333,8 @@
         };
         return meta
       }
+    },
+    watch: {
     },
     methods : {
 
@@ -306,6 +374,31 @@
                 else {
                   recipe.material = Material.createFromJson(recipe, true)
                 }
+                Vue.set(recipe, 'batchSize', 0);
+                if ('materialComponents' in recipe && recipe.materialComponents.length > 0) {
+                  let totalBaseAmount = 0;
+                  recipe.materialComponents.forEach((component) => {
+                    if (!component.isAdditional) {
+                      totalBaseAmount += parseFloat(component.percentageAmount);
+                    }
+                  });
+                  Vue.set(recipe, 'totalBaseAmount', totalBaseAmount);
+                  recipe.materialComponents.forEach((component) => {
+                    let material = this.batchComponentMaterials.find(material => material.id == component.material.id);
+                    let amount = parseFloat(component.percentageAmount) * parseFloat(recipe.batchSize) / recipe.totalBaseAmount;
+                    this.componentTotal += amount;
+                    if (material) {
+                      Vue.set(material, 'amount', amount);
+                    }
+                    else {
+                      this.batchComponentMaterials.push({
+                        id: component.material.id,
+                        name: component.material.name,
+                        amount: amount
+                      });
+                    }
+                  });
+                }
               });
             }
           }
@@ -321,6 +414,47 @@
           }
           this.isProcessing = false
         })
+      },
+
+      batchInput: function (event) {
+        if (this.recipes) {
+          let recipe = this.recipes.find(recipe => recipe.id == event.materialId);
+          if (recipe) {
+            Vue.set(recipe, 'batchSize', event.batchSize);
+          }
+        }
+        this.recalculateComponentMaterials();
+      },
+
+      globalBatchAmountInput: function(val) {
+        if (this.recipes && this.recipes.length) {
+          this.recipes.forEach((recipe) => {
+            Vue.set(recipe, 'batchSize', this.globalBatchAmount);
+          });
+          this.recalculateComponentMaterials();
+        }
+      },
+
+      recalculateComponentMaterials: function() {
+        this.batchTotal = 0;
+        this.componentTotal = 0;
+        this.batchComponentMaterials.forEach((material) => {
+          Vue.set(material, 'amount', 0);
+        });
+        this.recipes.forEach((recipe) => {
+          this.batchTotal += recipe.batchSize;
+          if ('materialComponents' in recipe && recipe.materialComponents.length > 0) {
+            recipe.materialComponents.forEach((component) => {
+              let material = this.batchComponentMaterials.find(material => material.id == component.material.id);
+              let amount = parseFloat(component.percentageAmount) * parseFloat(recipe.batchSize) / recipe.totalBaseAmount;
+              this.componentTotal += amount;
+              Vue.set(material, 'amount', material.amount + amount);
+            });
+          }
+        });
+        this.batchComponentMaterials.sort(function(a, b) {
+          return b.amount - a.amount;
+        });
       },
 
       getLink: function (material) {
@@ -359,6 +493,19 @@
 
   .recipe-print-multiple:nth-child(even){
     page-break-after: always;
+  }
+
+  .batch-report {
+    page-break-before: always;
+  }
+
+  .batch-report-table tbody tr td {
+    padding: 0;
+  }
+
+  .batch-report-table tbody tr td.amount {
+    font-family: monospace;
+    text-align: right !important;
   }
 
   @media print {

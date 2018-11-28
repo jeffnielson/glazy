@@ -229,7 +229,7 @@
 
                     <div class="col-md-12 mt-4">
                       <material-recipe-calculator
-                              :materialComponents="recipe.materialComponents"></material-recipe-calculator>
+                              :material="recipe"></material-recipe-calculator>
                     </div>
 
                   </div>

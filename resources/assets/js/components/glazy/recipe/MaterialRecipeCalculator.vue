@@ -147,6 +147,7 @@
                                    maxlength="10"
                                    placeholder="0.0"
                                    id="tareSize"
+                                   @input="batchInput"
                                    class="form-control form-control-sm material-recipe-calculator-tare-input mr-2"
                                    v-model.number="tareSize">
                         </div>
@@ -158,6 +159,7 @@
                                    maxlength="10"
                                    placeholder="0.0"
                                    id="batchSize"
+                                   @input="batchInput"
                                    class="form-control form-control-sm material-recipe-calculator-batch-input"
                                    v-model.number="batchSize">
                         </div>
@@ -177,8 +179,8 @@ export default {
   name: 'MaterialRecipeCalculator',
 
   props: {
-    materialComponents: {
-      type: Array,
+    material: {
+      type: Object,
       default: null
     },
     isPrint: {
@@ -186,8 +188,8 @@ export default {
       default: false
     },
     initialBatchSize: {
-      type: String,
-      default: null
+      type: Number,
+      default: 0
     }
   },
 
@@ -201,10 +203,21 @@ export default {
   },
   mounted() {
     if (this.initialBatchSize) {
-      this.batchSize = Number(this.initialBatchSize);
+      this.batchSize = this.initialBatchSize;
+    }
+  },
+  watch: {
+    initialBatchSize: function(val) {
+      this.batchSize = this.initialBatchSize;
     }
   },
   computed: {
+    materialComponents: function() {
+      if (this.material && 'materialComponents' in this.material) {
+        return this.material.materialComponents;
+      }
+      return null;
+    },
     isLoaded: function () {
       if (this.materialComponents) {
         return true;
@@ -284,6 +297,13 @@ export default {
     }
   },
   methods : {
+    batchInput: function () {
+      this.$emit('batchInput', {
+        'materialId': this.material.id,
+        'tareSize': this.tareSize,
+        'batchSize': this.batchSize
+      });
+    }
   }
 }
 
