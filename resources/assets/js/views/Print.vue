@@ -197,7 +197,7 @@
             </tr>
             <tr>
               <td></td>
-              <td>Total</td>
+              <td>Total (Excluding additional materials)</td>
               <td class="amount"><strong>{{ this.batchTotal.toFixed(2) }}</strong></td>
             </tr>
           </tbody>
