@@ -344,9 +344,10 @@
 </script>
 
 
-<style>
+<style scoped>
 
   .recipe-print-container {
+    min-width: 7in !important;
     background-color: #ffffff;
     margin-top: -50px;
     padding: 20px;
@@ -366,6 +367,7 @@
       margin-bottom: 5mm;
       margin-left: 5mm;
       margin-right: 5mm;
+      min-width: 7in;
     }
     .no-print {
       display: none;
