@@ -241,8 +241,8 @@
           ></material-card-thumb>
         </div>
       </section>
-      <section class="row detail-results-row flex-nowrap" v-else-if="(searchQuery.params.view === 'details')">
-        <div v-bind:class="detailCardClass" class="detail-col"
+      <section class="row search-results-row" v-else-if="(searchQuery.params.view === 'details')">
+        <div v-bind:class="detailCardClass"
              v-for="(material, index) in searchItems">
           <material-card-detail
                   :material="material"
@@ -1112,17 +1112,6 @@
     padding-left: 10px;
   }
 
-  .detail-results-row {
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .detail-col {
-    display: inline-block;
-    float: none;
-    white-space: normal;
-  }
-  
   .sidebar {
     background-color: #efefef;
     position: fixed;

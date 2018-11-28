@@ -23,8 +23,7 @@
             <h4 class="mt-2">{{ getLink(recipe) }}</h4>
           </div>
           <div>
-            <h1>
-              &#9651;{{ glazyHelper.getConeString(recipe) }}
+            <h1 v-html="'&#9651;' + glazyHelper.getConeString(recipe)">
             </h1>
           </div>
         </div>
