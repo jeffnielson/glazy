@@ -177,8 +177,8 @@
                           <span slot=text>
                             <i class="fa fa-cloud-download" aria-hidden="true"></i> Export
                           </span>
-                          <b-dropdown-item v-on:click="printRecipe(true)">Simple Label</b-dropdown-item>
-                          <b-dropdown-item v-on:click="printRecipe(false)">Label</b-dropdown-item>
+                          <b-dropdown-item v-on:click="printRecipe(false)">Print Label</b-dropdown-item>
+                          <b-dropdown-item v-on:click="printRecipe(true)">Print Simple Label</b-dropdown-item>
                           <b-dropdown-item v-on:click="exportRecipe('Insight')">Insight</b-dropdown-item>
                           <b-dropdown-item v-on:click="exportRecipe('GlazeChem')">GlazeChem</b-dropdown-item>
                         </b-dropdown>

@@ -14,12 +14,13 @@
            v-bind:class="isSimple ? 'recipe-print-multiple' : 'recipe-print-item'">
         <div class="d-flex justify-content-between">
           <div class="flex-grow-1">
-            <h1>
+            <h1 class="mb-2">
               {{ recipe.name }}
             </h1>
             <span v-if="recipe.otherNames">
               Other Names: {{ recipe.otherNames }}
             </span>
+            <h4 class="mt-2">{{ getLink(recipe) }}</h4>
           </div>
           <div>
             <h1>
@@ -321,6 +322,23 @@
           }
           this.isProcessing = false
         })
+      },
+
+      getLink: function (material) {
+        let link = 'https://glazy.org/';
+        if (material) {
+          if (material.isPrimitive) {
+            link += 'materials';
+          }
+          else if (material.isAnalysis) {
+            link += 'analyses';
+          }
+          else {
+            link += 'recipes';
+          }
+          link += '/' + material.id;
+        }
+        return link;
       }
     }
   }
