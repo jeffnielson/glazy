@@ -458,7 +458,8 @@
         actionMessageSeconds: 0,
         selectedSearchTypeOrCollection: null,
         selectedMaterials: {},
-        isAllMaterialsSelected: false
+        isAllMaterialsSelected: false,
+        timeout: null
       }
     },
     computed: {
@@ -698,10 +699,14 @@
       }
     },
     mounted() {
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
           this.handleResize()
         }, 2000)
       window.addEventListener('resize', this.handleResize)
+    },
+    beforeDestroy() {
+      clearTimeout(this.timeout);
+      window.removeEventListener('resize', this.handleResize);
     },
     methods: {
 
@@ -783,10 +788,9 @@
         }
         this.isMapExpanded = !this.isMapExpanded
         this.$root.$emit('bv::hide::tooltip')
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
           this.handleResize()
         }, 300)
-
       },
 
       thumbnailView () {

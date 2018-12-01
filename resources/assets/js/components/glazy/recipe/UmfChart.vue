@@ -185,7 +185,8 @@
         unHighlightedRecipeId: 0,
         showModeBar: 'false',
         clickedRecipe: null,
-        currentPage: 1
+        currentPage: 1,
+        timeout: null
       }
     },
     computed: {
@@ -243,12 +244,15 @@
       //this.chartHeight = document.getElementById('umf-d3-chart-container').clientHeight
       //this.chartWidth = document.getElementById('umf-d3-chart-container').clientWidth
 
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.handleResize()
       }, 500);
       window.addEventListener('resize', this.handleResize)
     },
-
+    beforeDestroy() {
+      clearTimeout(this.timeout);
+      window.removeEventListener('resize', this.handleResize);
+    },
     watch: {
       material: function (val) {
         if (this.material) {

@@ -335,6 +335,7 @@
         initialized: false,
         apiError: null,
         serverError: null,
+        timeout: null
       };
     },
     computed : {
@@ -361,13 +362,15 @@
     mounted() {
       this.reset();
 
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.handleResize()
       }, 300);
       window.addEventListener('resize', this.handleResize)
     },
-
-
+    beforeDestroy() {
+      clearTimeout(this.timeout);
+      window.removeEventListener('resize', this.handleResize);
+    },
     methods: {
 
       reset: function () {
