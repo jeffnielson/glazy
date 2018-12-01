@@ -403,18 +403,18 @@ class Material extends Model
             // 20181124 Use Boolean pattern matching for partial matches
             $search_str = substr(addslashes($keywords), 0, 50);
             $individualWords = preg_split('/ +/', $search_str);
-            $search_str = '';
-            foreach($individualWords as $word) {
-                $search_str .= '+' . $word . '* ';
-            }
-            //$search_str = substr($keywords, 0, 50);
-            //$search_str = preg_replace('/\s+/',',',$search_str);
-            //$search_str = addslashes($search_str);
 
-            $selectWords = 'MATCH (materials.description, materials.name, materials.other_names) AGAINST (\''.$search_str.'\' IN BOOLEAN MODE) AS relevance';
-            $query->selectRaw($selectWords);
-            $query->whereRaw($whereID.'MATCH (materials.description, materials.name, materials.other_names) AGAINST (\''.$search_str.'\' IN BOOLEAN MODE) > 0'.$whereIDend);
-            $query->orderByRaw('relevance DESC');
+            if ($search_str && $individualWords) {
+                $search_str = '"'.$search_str.'" (';
+                foreach($individualWords as $word) {
+                    $search_str .= '+' . $word . '* ';
+                }
+                $search_str .= ')';
+                $selectWords = 'MATCH (materials.description, materials.name, materials.other_names) AGAINST (\''.$search_str.'\' IN BOOLEAN MODE) AS relevance';
+                $query->selectRaw($selectWords);
+                $query->whereRaw($whereID.'MATCH (materials.description, materials.name, materials.other_names) AGAINST (\''.$search_str.'\' IN BOOLEAN MODE) > 0'.$whereIDend);
+                $query->orderByRaw('relevance DESC');
+            }
         }
 
         return $query;
