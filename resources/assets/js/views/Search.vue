@@ -339,30 +339,14 @@
 
 <script>
 
-  import Analysis from 'ceramicscalc-js/src/analysis/Analysis'
-  import PercentageAnalysis from 'ceramicscalc-js/src/analysis/PercentageAnalysis'
-  import Material from 'ceramicscalc-js/src/material/Material'
-  import GlazyConstants from 'ceramicscalc-js/src/helpers/GlazyConstants'
-  import MaterialTypes from 'ceramicscalc-js/src/material/MaterialTypes'
-
   import UmfD3Chart from 'vue-d3-stull-charts/src/components/UmfD3Chart.vue'
-
-  import MaterialAnalysisTableCompare from '../components/glazy/analysis/MaterialAnalysisTableCompare.vue';
-  import MaterialAnalysisUmfSpark2Single from '../components/glazy/analysis/MaterialAnalysisUmfSpark2Single.vue';
-  import MaterialAnalysisPercentTableCompare from '../components/glazy/analysis/MaterialAnalysisPercentTableCompare.vue';
-
   import MaterialCardThumb from '../components/glazy/search/MaterialCardThumb.vue'
   import MaterialCardDetail from '../components/glazy/search/MaterialCardDetail.vue'
-  // import MaterialCardRow from '../components/glazy/search/MaterialCardRow.vue'
-
   import SearchBreadcrumbs from '../components/glazy/search/SearchBreadcrumbs.vue'
-
   import SearchForm from '../components/glazy/search/SearchForm.vue'
   import SearchQuery from '../components/glazy/search/search-query'
   import FilterPaginator from '../components/glazy/search/FilterPaginator.vue'
-
   import UserProfileCard from '../components/glazy/search/UserProfileCard.vue'
-
   import AppFooter from './layout/AppFooter.vue'
 
   import Vue from 'vue'

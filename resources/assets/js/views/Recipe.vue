@@ -1096,31 +1096,10 @@
 
 <style>
 
-  .sidebar {
-    background-color: #efefef;
-    position: fixed;
-    top: 50px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    padding: 15px 15px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-  }
-
   .recipe-result {
     background-color: #dedede;
     padding-top: 15px;
     padding-bottom: 64px;
-  }
-
-  .sidebar .search-title {
-    margin-bottom: 0;
-  }
-
-  .sidebar .search-results {
-    margin-top: 5px;
-    background-color: #efefef;
   }
 
   .recipe-info-card .card-description {

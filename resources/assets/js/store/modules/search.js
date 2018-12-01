@@ -1,5 +1,6 @@
 const state = {
   query: null,
+  querystring: null,
   isPrimitive: false,
   isAnalysis: false,
   searchItems: [],
@@ -13,6 +14,9 @@ const state = {
 const getters = {
   query(state) {
     return state.query
+  },
+  querystring(state) {
+    return state.querystring
   },
   isPrimitive(state) {
     return state.isPrimitive
@@ -37,6 +41,9 @@ const getters = {
 const mutations = {
   setQuery(state, payload) {
     state.query = payload
+  },
+  setQuerystring(state, payload) {
+    state.querystring = payload
   },
   setIsPrimitive(state, payload) {
     state.isPrimitive = payload
@@ -74,6 +81,18 @@ const actions = {
     context.commit('setApiError', null)
   },
   search (context, payload) {
+    // Don't search if not necessary
+    var oldQuerystring = context.getters.querystring;
+    if (oldQuerystring) {
+      var newQuery = payload.query.getMinimalQuery();
+      if (payload.isPrimitive) { newQuery.primitive = 1; }
+      if (payload.isAnalysis) { newQuery.analysis = 1; }
+      var newQuerystring = payload.query.toQuerystring(newQuery);
+      if (newQuerystring === oldQuerystring) {
+        // No need to perform search
+        return;
+      }
+    }
     context.commit('setQuery', payload.query)
     context.commit('setIsPrimitive', payload.isPrimitive)
     context.commit('setIsAnalysis', payload.isAnalysis)
@@ -103,6 +122,7 @@ const actions = {
     }
 
     var querystring = query.toQuerystring(myQuery)
+    context.commit('setQuerystring', querystring);
 
     Vue.axios.get(Vue.axios.defaults.baseURL + '/search?' + querystring)
       .then((response) => {
