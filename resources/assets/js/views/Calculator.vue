@@ -678,11 +678,10 @@
         // A material's ID changed.  (It was saved.)
         this.materials.forEach((material, index) => {
           if (material.id === args.originalId) {
-            material.id = args.newId;
-            this.$set(this.materials, index, material);
-            this.$set(this.chartMaterials, index, material);
+            this.$set(material, 'id', args.newId);
           }
         });
+        this.materialUpdated();
       },
 
       updatePrimitiveMaterialsKeywords: debounce(function (e) {
