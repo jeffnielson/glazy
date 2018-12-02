@@ -104,6 +104,8 @@ const actions = {
     // Let components know we are processing a request
     context.commit('isProcessing')
 
+    context.commit('setSearchItems', [])
+
     // Clear out all old errors and search user
     // context.commit('setSearchUser', null)
     context.dispatch('resetError')
@@ -134,13 +136,11 @@ const actions = {
       .then((response) => {
       if (response.data.error) {
         // Reset both search items & search user
-        context.commit('setSearchItems', [])
         context.commit('setSearchUser', null)
         context.commit('setApiError', response.data.error)
         context.commit('isNotProcessing')
       } else {
         // Reset both search items & search user
-        context.commit('setSearchItems', [])
         context.commit('setSearchUser', null)
         if (response.data.data) {
           context.commit('setSearchItems', response.data.data)
@@ -154,7 +154,6 @@ const actions = {
     })
     .catch(response => {
       // Reset both search items & search user
-      context.commit('setSearchItems', [])
       context.commit('setSearchUser', null)
       if (response.response && response.response.status) {
         if (response.response.status === 401) {

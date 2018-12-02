@@ -192,3 +192,9 @@ export default {
 }
 
 </script>
+
+<style>
+    .page-item .page-link {
+        white-space: nowrap;
+    }
+</style>

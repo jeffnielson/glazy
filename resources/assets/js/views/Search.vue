@@ -41,7 +41,6 @@
               class="expand-button"
               v-html="expandButtonText">
       </b-btn>
-
       <div v-if="hasResults" id="umf-d3-chart-container">
         <umf-d3-chart
                 :recipeData="searchItems"
@@ -636,7 +635,6 @@
         this.$store.dispatch('search/search', {
           query: this.searchQuery, isPrimitive: isPrimitive, isAnalysis: isAnalysis
         })
-
         this.setSelectedSearchType(route.name);
 
         // Clear out the selected materials
