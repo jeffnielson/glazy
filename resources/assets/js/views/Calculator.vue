@@ -12,7 +12,7 @@
 
     <nav class="col-md-3 calc-sidebar d-none d-md-block">
 
-      <div v-if="materials && materials.length > 0 && isLoaded"
+      <div v-if="chartMaterials && chartMaterials.length > 0 && isLoaded"
            id="umf-d3-chart-container">
         <umf-d3-chart
                 :recipeData="chartMaterials"
@@ -26,29 +26,6 @@
                 :showStullLabels="false"
                 :axisLabelFontSize="'0.75rem'"
                 :stullLabelsFontSize="'0.5rem'"
-                :showZoomButtons="false"
-                :showAxesLabels="true"
-                :xOxide="'SiO2'"
-                :yOxide="'Al2O3'"
-                :highlightedRecipeId="highlightedMaterialId"
-                :unHighlightedRecipeId="unHighlightedMaterialId"
-        >
-        </umf-d3-chart>
-      </div>
-      <div v-if="materials && materials.length === 0 && isLoaded"
-           id="umf-d3-chart-container">
-        <umf-d3-chart
-                :recipeData="chartMaterials"
-                :width="chartWidth"
-                :height="chartHeight"
-                :chartDivId="'umf-d3-chart-container'"
-                :colortype="'r2o'"
-                :showRecipes="true"
-                :showCones="false"
-                :showStullChart="true"
-                :showStullLabels="false"
-                :axisLabelFontSize="'1rem'"
-                :stullLabelsFontSize="'0.75rem'"
                 :showZoomButtons="false"
                 :showAxesLabels="true"
                 :xOxide="'SiO2'"
