@@ -1,3 +1,5 @@
+import SearchQuery from '../../components/glazy/search/search-query'
+
 const state = {
   query: null,
   querystring: null,
@@ -106,8 +108,11 @@ const actions = {
     // context.commit('setSearchUser', null)
     context.dispatch('resetError')
 
-    var query = context.getters.query
-    var myQuery = query.getMinimalQuery()
+    var query = context.getters.query;
+    var myQuery = {};
+    if (query) {
+      myQuery = query.getMinimalQuery();
+    }
 
     var isPrimitive = context.getters.isPrimitive
 
@@ -121,7 +126,8 @@ const actions = {
       myQuery.analysis = 1
     }
 
-    var querystring = query.toQuerystring(myQuery)
+    const mySearchQuery = new SearchQuery();
+    var querystring = mySearchQuery.toQuerystring(myQuery)
     context.commit('setQuerystring', querystring);
 
     Vue.axios.get(Vue.axios.defaults.baseURL + '/search?' + querystring)

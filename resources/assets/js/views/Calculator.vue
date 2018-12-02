@@ -554,22 +554,6 @@
         this.materials.forEach((material) => {
           this.chartMaterials.push(material);
         });
-        /*
-        if (this.originalMaterials &&
-          this.originalMaterials.length > 0) {
-          this.chartMaterials = [];
-          //this.chartMaterials = [this.originalMaterials[0]];
-          this.materials.forEach((material) => {
-            this.chartMaterials.push(material);
-          });
-        }
-        else {
-          this.chartMaterials = [];
-          this.materials.forEach((material) => {
-            this.chartMaterials.push(material);
-          });
-        }
-        */
       },
 
       checkForDuplicates: function(index) {
