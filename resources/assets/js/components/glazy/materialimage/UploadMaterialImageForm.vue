@@ -101,7 +101,6 @@ export default {
   data() {
     return {
       form: {
-        materialId: this.material.id,
         title: '',
         description: '',
         ortonConeId: 0,
@@ -126,7 +125,6 @@ export default {
       return false;
     }
   },
-
   methods: {
 
     upload: function (e) {
@@ -136,7 +134,7 @@ export default {
 
       this.isProcessing = true;
       var formData = new FormData();
-      formData.append('materialId', this.form.materialId);
+      formData.append('materialId', this.material.id);
       formData.append('title', this.form.title);
       formData.append('description', this.form.description);
       formData.append('ortonConeId', this.form.ortonConeId);
