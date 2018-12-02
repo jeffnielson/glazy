@@ -582,6 +582,7 @@
               } else {
                 this.recipe = null
                 this.recipe = response.data.data
+                this.$store.dispatch('search/refresh');
                 if ('data' in response.data && 'id' in response.data.data) {
                   // Emit with the ID of the updated/saved recipe/material/analysis
                   var recipeType = 'recipes'

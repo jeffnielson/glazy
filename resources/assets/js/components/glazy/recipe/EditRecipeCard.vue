@@ -485,6 +485,8 @@
             } else {
               this.alertMessage = "Recipe Updated";
               this.dismissCountDown = this.dismissSecs;
+              // We will need to update the last search
+              this.$store.dispatch('search/refresh');
               this.$emit('updatedRecipeComponents');
             }
           })
@@ -521,6 +523,8 @@
                 // Unhighlight this material's id (it's been replaced):
                 this.unhighlightMaterial(this.material.id);
                 this.$emit('updatedMaterialId', {'originalId': this.material.id, 'newId': response.data.data.id});
+                // We will need to update the last search
+                this.$store.dispatch('search/refresh');
                 this.alertMessage = "Recipe Saved";
                 this.dismissCountDown = this.dismissSecs;
               }
