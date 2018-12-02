@@ -459,14 +459,11 @@
         selectedSearchTypeOrCollection: null,
         selectedMaterials: {},
         isAllMaterialsSelected: false,
-        timeout: null
+        timeout: null,
+        isLoaded: false
       }
     },
     computed: {
-      isLoaded () {
-        return true;
-      },
-
       searchItems () {
         return this.$store.getters['search/searchItems']
       },
@@ -578,18 +575,14 @@
     },
 
     created() {
-
-      //this.searchUser = null
-      this.searchQuery = new SearchQuery(this.$route.query)
-      var isPrimitive = false
-      var isAnalysis = false
-      if (this.$route.name === 'materials' ||
-        this.$route.name === 'user-materials') {
-        isPrimitive = true
+      this.searchQuery = new SearchQuery(this.$route.query);
+      var isPrimitive = false;
+      var isAnalysis = false;
+      if (this.$route.name === 'materials' || this.$route.name === 'user-materials') {
+        isPrimitive = true;
       }
-      if (this.$route.name === 'analyses' ||
-        this.$route.name === 'user-analyses') {
-        isAnalysis = true
+      if (this.$route.name === 'analyses' || this.$route.name === 'user-analyses') {
+        isAnalysis = true;
       }
       if (this.$route.params && this.$route.params.id) {
         this.searchQuery.params.u = this.$route.params.id
@@ -602,63 +595,37 @@
         query: this.searchQuery, isPrimitive: isPrimitive, isAnalysis: isAnalysis
       })
 
-      if (this.$route.name === 'user-materials') {
-        this.selectedSearchTypeOrCollection = 'materials'
-      }
-      else if (this.$route.name === 'user-analyses') {
-        this.selectedSearchTypeOrCollection = 'analyses'
-      }
-      else if (this.$route.name === 'user-images') {
-        this.selectedSearchTypeOrCollection = 'images'
-      }
-      else if (this.$route.name === 'user' &&
-        (
-          !('collection' in this.searchQuery.params) ||
-          ('collection' in this.searchQuery.params && !this.searchQuery.params.collection)
-        )
-      ) {
-        this.selectedSearchTypeOrCollection = 'recipes'
-      }
-      else if (this.$route.name === 'user' &&
-        'collection' in this.searchQuery.params &&
-        this.searchQuery.params.collection) {
-        // We're looking at a user collection
-        this.selectedSearchTypeOrCollection = this.searchQuery.params.collection
-      }
-    },
-    /*
-    beforeRouteUpdate (to, from, next) {
-      console.log('$$$$$$$$$$$$$$$$$ before route update')
+      this.setSelectedSearchType(this.$route.name);
 
-      this.searchUser = null
-      this.searchQuery = new SearchQuery(to.query)
-      if (!this.searchQuery.params.base_type) {
-        this.searchQuery.params.base_type = this.materialTypes.GLAZE_TYPE_ID
-      }
-      if ('params' in to && to.params.id) {
-        this.searchQuery.params.u = to.params.id
-      }
-      this.fetchitemlist()
-      next()
+      // Clear out the selected materials
+      this.selectedMaterials = {};
+      this.isAllMaterialsSelected = false;
     },
-    */
     watch: {
       $route (route) {
+        this.isLoaded = false;
         if (route.hash) {
           // This is only an internal link, no need to requery
           return
         }
-        //this.searchUser = null
-        this.searchQuery = new SearchQuery(route.query)
-        var isPrimitive = false
-        var isAnalysis = false
-        if (route.name === 'materials' ||
-          route.name === 'user-materials') {
-          isPrimitive = true
+        if (route.name !== 'search'
+          && route.name !== 'user'
+          && route.name !== 'user-materials'
+          && route.name !== 'user-analyses'
+          && route.name !== 'user-images'
+          && route.name !== 'materials'
+          && route.name !== 'analyses') {
+          return; // we're not interested in non-search routes
         }
-        if (route.name === 'analyses' ||
-          route.name === 'user-analyses') {
-          isAnalysis = true
+
+        this.searchQuery = new SearchQuery(route.query)
+        var isPrimitive = false;
+        var isAnalysis = false;
+        if (route.name === 'materials' || route.name === 'user-materials') {
+          isPrimitive = true;
+        }
+        if (route.name === 'analyses' || route.name === 'user-analyses') {
+          isAnalysis = true;
         }
         if ('params' in route && route.params.id) {
           this.searchQuery.params.u = route.params.id
@@ -670,32 +637,12 @@
           query: this.searchQuery, isPrimitive: isPrimitive, isAnalysis: isAnalysis
         })
 
-        if (route.name === 'user-materials') {
-          this.selectedSearchTypeOrCollection = 'materials'
-        }
-        else if (route.name === 'user-analyses') {
-          this.selectedSearchTypeOrCollection = 'analyses'
-        }
-        else if (route.name === 'user-images') {
-          this.selectedSearchTypeOrCollection = 'images'
-        }
-        else if (route.name === 'user' &&
-          (
-            !('collection' in this.searchQuery.params) ||
-            ('collection' in this.searchQuery.params && !this.searchQuery.params.collection)
-          )
-        ) {
-          this.selectedSearchTypeOrCollection = 'recipes'
-        }
-        else if (route.name === 'user' &&
-          'collection' in this.searchQuery.params &&
-          this.searchQuery.params.collection) {
-          // We're looking at a user collection
-          this.selectedSearchTypeOrCollection = this.searchQuery.params.collection
-        }
+        this.setSelectedSearchType(route.name);
+
         // Clear out the selected materials
-        this.selectedMaterials = {}
-        this.isAllMaterialsSelected = false
+        this.selectedMaterials = {};
+        this.isAllMaterialsSelected = false;
+        this.isLoaded = true;
       }
     },
     mounted() {
@@ -711,7 +658,8 @@
     methods: {
 
       newSearch () {
-        var myQuery = this.searchQuery.getMinimalQuery()
+        var myParams = this.searchQuery.params;
+        const myQuery = this.searchQuery.getMinimalQuery()
         if ('u' in myQuery) {
           delete myQuery.u // 'u' param is in the route
         }
@@ -720,6 +668,31 @@
         }
         // Update the route.  Actual search triggered in beforeRouteUpdate
         this.$router.push({path: this.$route.path, query: myQuery})
+      },
+      setSelectedSearchType (routeName) {
+        if (routeName === 'user-materials') {
+          this.selectedSearchTypeOrCollection = 'materials'
+        }
+        else if (routeName === 'user-analyses') {
+          this.selectedSearchTypeOrCollection = 'analyses'
+        }
+        else if (routeName === 'user-images') {
+          this.selectedSearchTypeOrCollection = 'images'
+        }
+        else if (routeName === 'user' &&
+          (
+            !('collection' in this.searchQuery.params) ||
+            ('collection' in this.searchQuery.params && !this.searchQuery.params.collection)
+          )
+        ) {
+          this.selectedSearchTypeOrCollection = 'recipes'
+        }
+        else if (routeName === 'user' &&
+          'collection' in this.searchQuery.params &&
+          this.searchQuery.params.collection) {
+          // We're looking at a user collection
+          this.selectedSearchTypeOrCollection = this.searchQuery.params.collection
+        }
       },
       selectSearchType () {
         if (this.selectedSearchTypeOrCollection === 'recipes') {
@@ -750,11 +723,12 @@
       },
       search (query) {
         this.searchQuery.setFromSearchForm(query.params)
-
         // New search, so reset the page number
         this.searchQuery.params.p = null
-
-        this.newSearch()
+        this.$nextTick(function () {
+          // TODO: Investigate why nextTick is needed here.
+          this.newSearch()
+        })
       },
       pageRequest (p) {
         this.searchQuery.params.p = p
@@ -1046,7 +1020,6 @@
       },
 
       deleteCollection: function(id) {
-        console.log('delete collection')
         if (this.toDeleteCollectionId) {
           Vue.axios.delete(Vue.axios.defaults.baseURL + '/collections/' + this.toDeleteCollectionId)
             .then((response) => {
@@ -1057,9 +1030,7 @@
             } else {
               // Refresh user collections
               this.$auth.fetch({
-                success(res) {
-                  console.log('user id: ' + this.$auth.user().id)
-                },
+                success(res) {},
                 error() {
                   console.log('error fetching user');
                 }

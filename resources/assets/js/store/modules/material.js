@@ -41,7 +41,6 @@ const actions = {
     if (!payload.id) {
       return
     }
-    console.log('VUEX MATERIAL COPY: ' + payload.id)
 
     return new Promise((resolve, reject) => {
       // Do something here... lets say, a http call using vue-resource

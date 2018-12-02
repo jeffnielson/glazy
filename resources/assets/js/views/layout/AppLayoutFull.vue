@@ -6,7 +6,9 @@
             name="fade"
             mode="out-in"
         >
-            <router-view/>
+            <keep-alive include="Search">
+                <router-view/>
+            </keep-alive>
         </transition>
     </div>
 </template>

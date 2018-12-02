@@ -1,12 +1,12 @@
 <template>
-    <form class="search-form">
+    <form v-if="isLoaded" class="search-form">
         <div class="form-row">
             <div v-bind:class="sizeMedium" class="form-group">
                 <input type="text"
                        class="form-control form-control-sm"
                        v-model="query.params.keywords"
                        placeholder="Search Term"
-                       @input="updateKeywords"
+                       @change="updateKeywords"
                        @keydown.enter.prevent="updateKeywords">
             </div>
 
@@ -14,7 +14,7 @@
                 <b-form-checkbox id="must-have-photo"
                                  v-model="query.params.photo"
                                  plain
-                                 @input="search">
+                                 @change="search">
                     Has photo
                 </b-form-checkbox>
             </div>
@@ -24,7 +24,7 @@
                                  v-model="query.params.state"
                                  value="2"
                                  plain
-                                 @input="search">
+                                 @change="search">
                     Production only
                 </b-form-checkbox>
             </div>
@@ -36,7 +36,7 @@
                         placeholder="Type"
                         v-model="query.params.base_type"
                         :options="baseTypeOptions"
-                        @input="searchBaseType">
+                        @change="searchBaseType">
                     <template slot="first">
                         <option :value="0">All Types</option>
                     </template>
@@ -50,7 +50,7 @@
                         placeholder="Subtype"
                         v-model="query.params.type"
                         :options="subTypeOptions"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Subtypes</option>
                     </template>
@@ -65,7 +65,7 @@
                         placeholder="Temp"
                         v-model="query.params.cone"
                         :options="constants.ORTON_CONES_SELECT_TEXT"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Temps</option>
                     </template>
@@ -78,7 +78,7 @@
                         placeholder="Atmosphere"
                         v-model="query.params.atmosphere"
                         :options="constants.ATMOSPHERE_SELECT"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Atmospheres</option>
                     </template>
@@ -93,7 +93,7 @@
                         placeholder="Surface"
                         v-model="query.params.surface"
                         :options="constants.SURFACE_SELECT"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Surfaces</option>
                     </template>
@@ -106,7 +106,7 @@
                         placeholder="Transparency"
                         v-model="query.params.transparency"
                         :options="constants.TRANSPARENCY_SELECT"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Transparencies</option>
                     </template>
@@ -121,7 +121,7 @@
                         placeholder="Country"
                         v-model="query.params.country"
                         :options="countries"
-                        @input="search">
+                        @change="search">
                     <template slot="first">
                         <option :value="0">All Countries</option>
                     </template>
@@ -132,7 +132,7 @@
                        class="form-control form-control-sm"
                        v-model="query.params.username"
                        placeholder="User's Name (e.g. Jane)"
-                       @input="updateUsername"
+                       @change="updateUsername"
                        @keydown.enter.prevent="updateUsername">
             </div>
             <div class="form-group col">
@@ -142,7 +142,7 @@
                         placeholder="Y Oxide"
                         v-model="query.params.y"
                         :options="oxides"
-                        @input="search">
+                        @change="search">
                 </b-form-select>
             </div>
             <div class="form-group col">
@@ -152,7 +152,7 @@
                         placeholder="X Oxide"
                         v-model="query.params.x"
                         :options="oxides"
-                        @input="search">
+                        @change="search">
                 </b-form-select>
             </div>
         </div>
@@ -220,6 +220,7 @@ export default {
   data() {
     return {
       // query: new SearchQuery(),
+      query: null,
       previousBaseTypeId: null,
       constants: GlazyConstants,
       countries: GlazyConstants.COUNTRY_SELECT,
@@ -240,25 +241,12 @@ export default {
     }
   },
   computed: {
-
-    query: function () {
-      var query = new SearchQuery()
-      if (this.searchQuery) {
-        // var myParams = this.searchQuery.params
-        // query.setParams(myParams)
-        query.setParams(this.searchQuery.params)
-        /*
-        if (query.params.collection && this.$auth.check()) {
-          if (this.$auth.user().id === query.params.u) {
-            query.params.collection = query.userSelfSearchString
-          }
-        }
-        */
+    isLoaded: function() {
+      if (this.searchQuery && this.query) {
+        return true;
       }
-
-      return query
+      return false;
     },
-
     isPrimitiveSearch: function () {
       if (this.$route.name === 'materials' ||
         this.$route.name === 'user-materials') {
@@ -364,10 +352,22 @@ export default {
 
   },
   created() {
+    this.query = new SearchQuery();
+    if (this.searchQuery) {
+      this.query.setParams(this.searchQuery.params)
+    }
+  },
+  watch: {
+    searchQuery () {
+      if (this.searchQuery) {
+        this.query = new SearchQuery();
+        this.query.setParams(this.searchQuery.params)
+      }
+    }
   },
   methods: {
     search: function () {
-      this.$emit('searchrequest', this.query.params);
+      this.$emit('searchrequest', this.query);
     },
 
     updateKeywords: debounce(function (e) {

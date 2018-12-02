@@ -196,7 +196,6 @@ export default class SearchQuery {
   }
 
   // https://stackoverflow.com/questions/1714786/query-string-encoding-of-a-javascript-object
-  // console.log(serialize({foo: "hi there", bar: "100%" }));
   serialize (obj) {
     var str = [];
     for(var p in obj)

@@ -87,7 +87,6 @@
         /*
         this.$emit('input', material_data);
 
-        console.log('TYPE: update base type: ' + value);
         this.value = {};
         this.value.base_id = Number(value);
         this.value.id = null;
@@ -101,7 +100,6 @@
         this.value = {};
         this.value.base_id = tmpBaseId;
         this.value.id = Number(value);
-        console.log('TYPE: update sub type: ' + value + ' actual var val:' + this.value.id);
         this.updateValue();
         */
       },
@@ -117,7 +115,6 @@
         if (this.value.id == null && this.value.base_id != null) {
           material_data.id = this.value.base_id;
         }
-        console.log('TYPE Emit: id:' + material_data.id + 'base_id' + material_data.base_id);
         this.$emit('input', material_data);
       }
 

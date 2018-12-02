@@ -141,24 +141,19 @@
       },
 
       deleteComment(id) {
-        console.log('derelete: ' + id)
         this.isProcessing = true;
         Vue.axios.delete(Vue.axios.defaults.baseURL + '/materialcomments/' + id)
           .then((response) => {
-          console.log(2)
           if (response.data.error) {
-            console.log(3)
             this.apiError = response.data.error
             this.isProcessing = false
             console.log(this.apiError)
           } else {
-            console.log(4)
             this.resetForm();
             this.isProcessing = false;
             this.$emit('commentsmodified');
           }
         }).catch(response => {
-          console.log(5)
           this.serverError = response;
           this.isProcessing = false
         })
