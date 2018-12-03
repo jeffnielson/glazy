@@ -439,7 +439,7 @@ class SearchController extends ApiBaseController
         $material_id = (int)$request->input('material_id');
         $material_type_id = (int)$request->input('material_type_id');
         $orton_cone_id = $request->input('cone');
-
+        $isMine = $request->input('isMine');
         $xOxide = $request->input('x');
         $yOxide = $request->input('y');
 
@@ -524,7 +524,12 @@ class SearchController extends ApiBaseController
             $user = Auth::guard('api')->user();
             $current_user_id = $user->id;
         }
-        $query->ofUserViewable($current_user_id, null);
+        if ($isMine && $current_user_id) {
+            $query->ofUser($current_user_id);
+        }
+        else {
+            $query->ofUserViewable($current_user_id, null);
+        }
 
         // Exclude the original material id
         $query->where('materials.id', '<>', $material_id);

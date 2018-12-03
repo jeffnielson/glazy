@@ -114,6 +114,15 @@
                         </b-form-checkbox>
                     </div>
 
+
+                    <div v-if="$auth.check()" class="col-md-12 form-group">
+                        <b-form-checkbox id="isMineCheckbox"
+                                         v-model="isMine"
+                                         plain>
+                            Only show my items
+                        </b-form-checkbox>
+                    </div>
+
                 </div>
                 <div class="col-sm-12">
                     <div v-if="clickedRecipe"
@@ -171,6 +180,7 @@
         showStullChart: true,
         isZoomable: false,
         isShowClosestChartImages: false,
+        isMine: false,
         chartHeight: 340,
         chartWidth: 0,
         chartMargin: {
@@ -262,6 +272,9 @@
           this.isZoomable = false
           this.fetchRecipeList()
         }
+      },
+      isMine: function (val) {
+        this.fetchRecipeList();
       }
     },
 
@@ -279,6 +292,9 @@
         }
         if (this.cone_id) {
           recipeUrl += '&cone=' + this.cone_id;
+        }
+        if (this.isMine) {
+          recipeUrl += '&isMine=true';
         }
 
         Vue.axios.get(recipeUrl)

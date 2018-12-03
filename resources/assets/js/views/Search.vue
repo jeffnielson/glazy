@@ -41,31 +41,33 @@
               class="expand-button"
               v-html="expandButtonText">
       </b-btn>
-      <div v-if="hasResults" id="umf-d3-chart-container">
-        <umf-d3-chart
-                :recipeData="searchItems"
-                :width="chartWidth"
-                :height="chartHeight"
-                :margin="chartMargin"
-                :axisLabelFontSize="'0.75rem'"
-                :stullLabelsFontSize="'0.5rem'"
-                :chartDivId="'umf-d3-chart-container'"
-                :baseTypeId="searchQuery.params.base_type"
-                :colortype="'r2o'"
-                :showRecipes="true"
-                :showCones="false"
-                :showImages="isShowChartImages"
-                :showStullChart="true"
-                :showStullLabels="false"
-                :showZoomButtons="false"
-                :showAxesLabels="true"
-                :highlightedRecipeId="highlightedMaterialId"
-                :unHighlightedRecipeId="unHighlightedMaterialId"
-                :xOxide="searchQuery.params.x"
-                :yOxide="searchQuery.params.y"
-                v-on:clickedUmfD3Recipe="clickedD3Chart"
-        >
-        </umf-d3-chart>
+      <div >
+        <div id="umf-d3-chart-container">
+          <umf-d3-chart
+              :recipeData="searchItems"
+              :width="chartWidth"
+              :height="chartHeight"
+              :margin="chartMargin"
+              :axisLabelFontSize="'0.75rem'"
+              :stullLabelsFontSize="'0.5rem'"
+              :chartDivId="'umf-d3-chart-container'"
+              :baseTypeId="searchQuery.params.base_type"
+              :colortype="'r2o'"
+              :showRecipes="true"
+              :showCones="false"
+              :showImages="isShowChartImages"
+              :showStullChart="true"
+              :showStullLabels="false"
+              :showZoomButtons="false"
+              :showAxesLabels="true"
+              :highlightedRecipeId="highlightedMaterialId"
+              :unHighlightedRecipeId="unHighlightedMaterialId"
+              :xOxide="searchQuery.params.x"
+              :yOxide="searchQuery.params.y"
+              v-on:clickedUmfD3Recipe="clickedD3Chart"
+          >
+          </umf-d3-chart>
+        </div>
       </div>
 
       <div class="row">
