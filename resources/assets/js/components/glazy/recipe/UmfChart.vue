@@ -35,6 +35,7 @@
                             :height="chartHeight"
                             :margin="chartMargin"
                             :chartDivId="'umf-d3-chart-container'"
+                            :tooltipDivId="'umf-d3-recipe-tooltip'"
                             :currentRecipeId="material.id"
                             :baseTypeId="baseTypeId"
                             :colortype="'r2o'"
