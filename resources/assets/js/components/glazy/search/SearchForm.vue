@@ -6,7 +6,7 @@
                        class="form-control form-control-sm"
                        v-model="query.params.keywords"
                        placeholder="Search Term"
-                       @change="updateKeywords"
+                       @input="updateKeywords"
                        @keydown.enter.prevent="updateKeywords">
             </div>
 
@@ -132,7 +132,7 @@
                        class="form-control form-control-sm"
                        v-model="query.params.username"
                        placeholder="User's Name (e.g. Jane)"
-                       @change="updateUsername"
+                       @input="updateUsername"
                        @keydown.enter.prevent="updateUsername">
             </div>
             <div class="form-group col">
@@ -371,6 +371,7 @@ export default {
     },
 
     updateKeywords: debounce(function (e) {
+      console.log('debounce key')
       if (this.query.params.keywords.length >= this.minSearchTextLength) {
         this.query.params.keywords = e.target.value
         this.search()
@@ -380,7 +381,7 @@ export default {
         this.query.params.keywords = ''
         this.search()
       }
-    }, 1000),
+    }, 1400),
 
     updateUsername: debounce(function (e) {
       if (this.query.params.username.length >= this.minSearchTextLength) {
@@ -392,7 +393,7 @@ export default {
         this.query.params.username = ''
         this.search()
       }
-    }, 1000),
+    }, 1400),
 
     searchBaseType: function () {
       this.query.params.type = 0
