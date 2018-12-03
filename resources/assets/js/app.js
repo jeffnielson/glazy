@@ -36,8 +36,8 @@ Vue.use(SocialSharing);
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 
-import moment from 'moment-mini';
-Vue.prototype.moment = moment;
+//import moment from 'moment-mini';
+//Vue.prototype.moment = moment;
 
 /**
  Currently used Bootstrap-vue components:

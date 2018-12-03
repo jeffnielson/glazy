@@ -76,11 +76,11 @@
             </div>
             <div>
               Created:
-              {{moment.utc(recipe.createdAt).format('MMMM DD YYYY')}}
+              {{ glazyHelper.getFormattedDate(recipe.createdAt) }}
             </div>
             <div>
               Updated:
-              {{moment.utc(recipe.updatedAt).format('MMMM DD YYYY')}}
+              {{ glazyHelper.getFormattedDate(recipe.updatedAt) }}
             </div>
             <div class="mt-3">
               Current User:
@@ -89,7 +89,7 @@
               <br/>
               Current Date:
               <br/>
-              <strong>{{moment().format('MMMM DD YYYY')}}</strong>
+              {{ glazyHelper.getFormattedNow() }}
             </div>
           </div>
           <div class="col-9 col-lg-8">

@@ -14,7 +14,7 @@
                                 <router-link :to="{ name: 'user', params: { id: review.user.id }}">
                                     {{ glazyHelper.getUserDisplayName(review.user) }}
                                 </router-link>
-                                <small class="text-muted">{{moment.utc(review.updatedAt).fromNow()}}</small>
+                                <small class="text-muted">{{ glazyHelper.getTimeAgo(review.updatedAt) }} ago.</small>
                             </h5>
                             <star-rating :rating="Number(review.rating)"
                                          :read-only="true"

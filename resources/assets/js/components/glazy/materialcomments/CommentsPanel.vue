@@ -23,7 +23,7 @@
                                 <a :href="glazyHelper.getUserProfileUrl(comment.user)">
                                     {{ glazyHelper.getUserDisplayName(comment.user) }}
                                 </a>
-                                <small class="text-muted">{{moment.utc(comment.updatedAt).fromNow()}}</small>
+                                <small class="text-muted">{{ glazyHelper.getTimeAgo(comment.updatedAt) }} ago.</small>
                             </h5>
                             <form v-show="showEditComment(comment.id)">
                                 <div class="form-group">

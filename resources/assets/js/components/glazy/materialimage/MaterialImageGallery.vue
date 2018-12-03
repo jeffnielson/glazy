@@ -120,7 +120,7 @@
                                          class="avatar"/>
                                     <span>
                                         {{ glazyHelper.getUserDisplayName(currentImage.createdByUser) }},
-                                        {{moment.utc(currentImage.updatedAt).fromNow()}}
+                                        {{ glazyHelper.getTimeAgo(currentImage.updatedAt) }} ago.
                                     </span>
                                 </div>
                             </router-link>

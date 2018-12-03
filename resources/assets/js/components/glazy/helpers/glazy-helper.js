@@ -1,3 +1,5 @@
+import { distanceInWordsToNow, format } from 'date-fns'
+
 import GlazyConstants from 'ceramicscalc-js/src/helpers/GlazyConstants'
 import MaterialTypes from 'ceramicscalc-js/src/material/MaterialTypes'
 
@@ -228,6 +230,22 @@ export default class GlazyHelper {
   roundToTwo(num) {
     // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
     return +(Math.round(num + "e+2")  + "e-2");
+  }
+
+  getFormattedDate (mysqlTimestamp) {
+    if (mysqlTimestamp) {
+      return format(new Date(mysqlTimestamp + 'Z'), 'D MMMM YYYY');
+    }
+  }
+
+  getFormattedNow () {
+      return format(new Date(), 'D MMMM YYYY');
+  }
+
+  getTimeAgo (mysqlTimestamp) {
+    if (mysqlTimestamp) {
+      return distanceInWordsToNow(new Date(mysqlTimestamp + 'Z'));
+    }
   }
 
 }

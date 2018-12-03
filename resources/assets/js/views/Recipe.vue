@@ -75,8 +75,8 @@
                                class="avatar"/> {{ recipe.createdByUser.name }}
                         </router-link>
                         <br/>
-                        Created on {{moment.utc(recipe.createdAt).format('MMMM DD YYYY')}},
-                        updated {{moment.utc(recipe.updatedAt).fromNow()}}
+                        Created on {{ glazyHelper.getFormattedDate(recipe.createdAt)}},
+                        updated {{ glazyHelper.getTimeAgo(recipe.updatedAt)}} ago.
                       </div>
                     </div>
                     <div v-if="!recipe.isPrivate"
@@ -515,7 +515,6 @@
 </template>
 
 <script>
-
   import StarRating from 'vue-star-rating'
   import Material from 'ceramicscalc-js/src/material/Material'
 
