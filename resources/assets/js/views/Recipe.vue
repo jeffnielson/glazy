@@ -183,9 +183,6 @@
                           <b-dropdown-item v-on:click="exportRecipe('GlazeChem')">GlazeChem</b-dropdown-item>
                         </b-dropdown>
                       </b-button-group>
-                      <b-button v-if="recipe.isPrimitive && isUserMaterial" class="btn-info" :disabled="true">
-                        <i class="fa fa-cubes"></i> In Inventory
-                      </b-button>
                       <b-button-group class="recipe-action-group" v-if="canEdit && !recipe.isArchived">
                         <b-button class="btn-info" v-if="recipe.isPrivate" v-on:click="publishRecipe()"><i class="fa fa-eye"></i> Publish</b-button>
                         <b-button class="btn-info" v-if="!recipe.isPrivate" v-on:click="unpublishRecipe()"><i class="fa fa-eye-slash"></i> Unpublish</b-button>
@@ -194,6 +191,9 @@
                       <b-button-group class="recipe-action-group">
                         <b-button v-if="recipe.isPrimitive && !isUserMaterial" class="btn-info" v-on:click="addUserMaterial()">
                           <i class="fa fa-cubes"></i> Add to Inventory
+                        </b-button>
+                        <b-button v-if="recipe.isPrimitive && isUserMaterial" class="btn-info" :disabled="true">
+                          <i class="fa fa-cubes"></i> In Inventory
                         </b-button>
                         <b-button v-if="canEdit && !recipe.isArchived" class="btn-info" v-on:click="editMeta()"><i class="fa fa-edit"></i> Edit Info</b-button>
                         <b-button class="btn-info" v-on:click="editComponents()"><i class="fa fa-calculator"></i> Calculator</b-button>
@@ -742,12 +742,17 @@
         if (this.isLoaded && this.recipe.isPrimitive) {
           var user = this.$auth.user()
           if (user && user.userMaterials && user.userMaterials.length > 0) {
+            if (user.userMaterials.some( material => material.materialId === this.recipe.id)) {
+              return true;
+            }
+            /*
             for (var i = 0, len = user.userMaterials.length; i < len; i++) {
-              if (user.userMaterials[i].material_id === this.recipe.id) {
+              if (user.userMaterials[i].materialId === this.recipe.id) {
                 // This material id is already in the user's inventory
                 return true
               }
             }
+            */
           }
         }
         // This material is not in the users inventory
@@ -781,7 +786,7 @@
           return
         }
         this.isEditMeta = false
-        this.sendRecipeGetRequest('/recipes/' + route.params.id)
+        this.sendRecipeGetRequest('/recipes/' + route.params.id, null, 0, false)
         // Go to top of window
         window.scrollTo(0, 0)
       }
@@ -789,24 +794,28 @@
     methods : {
 
       fetchRecipe: function (){
-        this.sendRecipeGetRequest('/recipes/' + this.$route.params.id, null, 0)
+        this.sendRecipeGetRequest('/recipes/' + this.$route.params.id, null, 0, false)
+      },
+
+      fetchRecipeAndRefreshSearch: function (){
+        this.sendRecipeGetRequest('/recipes/' + this.$route.params.id, null, 0, true)
       },
 
       publishRecipe: function () {
         if (this.recipe) {
-          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/publish', this.materialTypeName + ' Published!', 5)
+          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/publish', this.materialTypeName + ' Published!', 5, true)
         }
       },
 
       unpublishRecipe: function () {
         if (this.recipe) {
-          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/unpublish', this.materialTypeName + ' Unpublished!', 5)
+          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/unpublish', this.materialTypeName + ' Unpublished!', 5, true)
         }
       },
 
       archiveRecipe: function () {
         if (this.recipe) {
-          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/archive', this.materialTypeName + ' Locked!', 5)
+          this.sendRecipeGetRequest('/recipes/' + this.recipe.id + '/archive', this.materialTypeName + ' Locked!', 5, true)
         }
       },
 
@@ -872,20 +881,20 @@
       },
 
       updatedRecipeMeta: function () {
-        this.fetchRecipe()
+        this.fetchRecipeAndRefreshSearch()
         this.infoMessageSeconds = 5
         this.isRecipeUpdated = true
         this.isEditMeta = false
       },
 
       updatedRecipeComponents: function () {
-        this.fetchRecipe()
+        this.fetchRecipeAndRefreshSearch()
         this.infoMessageSeconds = 5
         this.isRecipeUpdated = true
       },
 
       imageUpdated: function () {
-        this.fetchRecipe()
+        this.fetchRecipeAndRefreshSearch()
       },
 
       editMeta: function () {
@@ -963,7 +972,7 @@
       },
 
       reviewsmodified: function () {
-        this.fetchRecipe();
+        this.fetchRecipeAndRefreshSearch();
       },
 
       deleteRecipe: function () {
@@ -1013,7 +1022,7 @@
             this.$auth.fetch({
               success(res) {
                 // Refresh the recipe
-                this.fetchRecipe()
+                this.fetchRecipeAndRefreshSearch()
               },
               error() {
                 console.log('error fetching user');
@@ -1028,7 +1037,7 @@
         })
       },
 
-      sendRecipeGetRequest: function (url, successMessage, successMessageSeconds) {
+      sendRecipeGetRequest: function (url, successMessage, successMessageSeconds, needsSearchRefresh) {
         this.apiError = null
         this.isProcessing = true
         Vue.axios.get(Vue.axios.defaults.baseURL + url)
@@ -1051,22 +1060,14 @@
               this.material = Material.createFromJson(this.recipe, true)
             }
 
-            //if (this.searchItems && this.searchItems.length > 0) {
-              // doesn't work
-              //this.$router.push({ path: this.$route.path + '#material-card-' + this.recipe.id })
-              //this.$nextTick(() => document.getElementById('#material-card-' + this.recipe.id).scrollIntoView())
-              //Vue.nextTick(function () {
-              //  document.getElementById('#material-card-' + this.recipe.id).scrollIntoView()
-              //}.bind(this))
-              //window.setTimeout(function () {
-              //  document.getElementById('#material-card-' + this.recipe.id).scrollIntoView()
-              //}.bind(this), 2000)
-            //}
-
             if (this.isEditRequest && this.canEdit) {
               // User just created this recipe in calculator
               this.isEditRequest = false
               this.editMeta()
+            }
+
+            if (needsSearchRefresh) {
+              this.$store.dispatch('search/refresh');
             }
 
             if (successMessage && successMessageSeconds) {
