@@ -13,12 +13,12 @@
     <nav class="col-md-3 calc-sidebar d-none d-md-block">
 
       <div v-if="chartMaterials && chartMaterials.length > 0 && isLoaded"
-           id="umf-d3-chart-container">
+           id="calc-d3-chart-container">
         <umf-d3-chart
                 :recipeData="chartMaterials"
                 :width="chartWidth"
                 :height="chartHeight"
-                :chartDivId="'umf-d3-chart-container'"
+                :chartDivId="'calc-d3-chart-container'"
                 :colortype="'r2o'"
                 :showRecipes="true"
                 :showCones="false"
@@ -622,8 +622,8 @@
 
       handleResize: function () {
         if (this.isLoaded) {
-          // this.chartWidth = document.getElementById('umf-d3-chart-container').clientWidth
-          var myContainer = document.getElementById('umf-d3-chart-container')
+          // this.chartWidth = document.getElementById('calc-d3-chart-container').clientWidth
+          var myContainer = document.getElementById('calc-d3-chart-container')
           if (myContainer) {
             this.chartWidth = myContainer.clientWidth
           }
