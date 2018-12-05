@@ -869,6 +869,7 @@
             console.log(this.apiError)
             this.isProcessing = false
           } else {
+            this.$store.dispatch('search/refresh');
             this.isProcessing = false
             var recipeCopy = response.data.data;
             this.$router.push({ name: this.$route.name, params: { id: recipeCopy.id }})
@@ -983,6 +984,7 @@
             console.log(this.apiError)
             this.isProcessing = false
           } else {
+            this.$store.dispatch('search/refresh');
             this.isProcessing = false
             // this.$router.push({ name: 'search' })
             let routeName = 'user'
