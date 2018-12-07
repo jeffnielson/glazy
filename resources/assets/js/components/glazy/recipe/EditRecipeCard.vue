@@ -186,7 +186,7 @@
             <div class="pr-2">
                 <button class="btn btn-sm btn-secondary btn-set-100"
                         @click.prevent="setTo100">
-                    Set 100%
+                    100% Base
                 </button>
             </div>
             <div class="pr-4">
@@ -393,12 +393,14 @@
           }
           if (subtotal > 0) {
             for (var i = 0; i < this.materialFieldsId.length; i++) {
-              var newVal = Math.round(this.materialFieldsAmount[i] / subtotal * 10000) / 100;
-              if (newVal > 0) {
-                this.materialFieldsAmount[i] = newVal;
-              }
-              else {
-                this.materialFieldsAmount[i] = null;
+              if (!this.materialFieldsIsAdditional[i]) {
+                var newVal = Math.round(this.materialFieldsAmount[i] / subtotal * 10000) / 100;
+                if (newVal > 0) {
+                  this.materialFieldsAmount[i] = newVal;
+                }
+                else {
+                  this.materialFieldsAmount[i] = null;
+                }
               }
             }
           }
@@ -437,9 +439,9 @@
       },
 
       removeMaterial (index) {
-        this.materialFieldsId[index] = {};
-        this.materialFieldsAmount[index] = 0;
-        this.materialFieldsIsAdditional[index] = false;
+        this.materialFieldsId.splice(index, 1);
+        this.materialFieldsAmount.splice(index, 1);
+        this.materialFieldsIsAdditional.splice(index, 1);
         this.updateMaterial();
       },
 
