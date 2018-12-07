@@ -110,6 +110,14 @@
         <div v-for="(fieldArray, index) in materialFieldsId"
              v-if="index < numVisibleRows"
              class="d-flex">
+            <div>
+                <button class="btn btn-sm btn-neutral btn-remove-material"
+                        type="button"
+                        tabindex="-1"
+                        @click.stop.prevent="removeMaterial(index)">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
 
             <div class="flex-grow-1 pr-2">
                 <div class="multiselect-container">
@@ -428,6 +436,12 @@
         this.updateMaterial()
       },
 
+      removeMaterial (index) {
+        this.materialFieldsId[index] = {};
+        this.materialFieldsAmount[index] = 0;
+        this.materialFieldsIsAdditional[index] = false;
+        this.updateMaterial();
+      },
 
       updateMaterial () {
         this.material.removeAllMaterialComponents();
@@ -624,6 +638,14 @@
     .btn-recipe-action {
         margin-top: 0;
     }
+
+    .btn-remove-material {
+        color: #888888;
+        font-size: 1rem;
+        margin: 0;
+        padding: 3px;
+    }
+
     .edit-recipe-components-card .btn-toolbar {
         margin: 0;
 
