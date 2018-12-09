@@ -10,11 +10,6 @@
       <div class="load-container load7 fullscreen" v-if="isProcessing">
         <div class="loader">Loading...</div>
       </div>
-      <b-alert :show="actionMessageSeconds"
-               @dismiss-count-down="actionMessageCountdown"
-               variant="info">
-        {{ actionMessage }}
-      </b-alert>
 
       <div v-if="isLoaded && !isDeleted">
 
@@ -658,9 +653,7 @@
         searchRoute: null,
         selectedCollectionId: 0,
         newCollectionName: '',
-        materialToCollect: 0,
-        actionMessage: null,
-        actionMessageSeconds: 0
+        materialToCollect: 0
       }
     },
 
@@ -943,8 +936,10 @@
             this.isProcessingLocal = false
           } else {
             this.isProcessingLocal = false
-            this.actionMessage = 'Collected.'
-            this.actionMessageSeconds = 5
+            this.$notify({
+              message: 'Item bookmarked.',
+              type: 'success'
+            });
             this.fetchRecipe();  // Update Recipe Info
             if (this.newCollectionName) {
               // Refresh user collections
@@ -966,10 +961,6 @@
           this.newCollectionName = ''
           this.materialToCollect = 0
         })
-      },
-
-      actionMessageCountdown(seconds) {
-        this.actionMessageSeconds = seconds
       },
 
       reviewsmodified: function () {
@@ -1018,8 +1009,10 @@
             this.isProcessingLocal = false
           } else {
             this.isProcessingLocal = false
-            this.actionMessage = 'Material added to your inventory.'
-            this.actionMessageSeconds = 5
+            this.$notify({
+              message: 'Added to inventory ',
+              type: 'success'
+            });
             // Refresh user inventory materials
             this.$auth.fetch({
               success(res) {
@@ -1073,8 +1066,11 @@
             }
 
             if (successMessage && successMessageSeconds) {
-              this.actionMessage = successMessage
-              this.actionMessageSeconds = successMessageSeconds
+              this.$notify({
+                message: successMessage,
+                timeout: successMessageSeconds,
+                type: 'success'
+              });
             }
           }
         })

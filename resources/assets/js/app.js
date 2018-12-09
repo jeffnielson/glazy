@@ -89,17 +89,13 @@ Vue.use(VueAuth, {
 
 Vue.config.productionTip = false
 
-/*
-import VueTimeago from 'vue-timeago'
-Vue.use(VueTimeago, {
-  name: 'timeago', // component name, `timeago` by default
-  locale: 'en-US',
-  locales: {
-    // you will need json-loader in webpack 1
-    'en-US': require('vue-timeago/locales/en-US.json')
-  }
-})
-*/
+import Notify from 'vue-notifyjs/dist/vue-notifyjs'
+Vue.use(Notify, {
+  type: 'info',
+  timeout: 5000,
+  horizontalAlign: 'right',
+  verticalAlign: 'top'
+});
 
 import VueProgressiveImage from 'vue-progressive-image'
 Vue.use(VueProgressiveImage, {

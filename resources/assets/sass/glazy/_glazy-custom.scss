@@ -13,11 +13,19 @@ body {
 
 @import "glazy-nowui";
 
+@import "../../../../node_modules/vue-notifyjs/themes/now-ui";
+.vue-notifyjs {
+  .alert {
+    z-index: 1050;
+    &[data-notify="container"] {
+      width: 300px;
+    }
+  }
+}
+
 @import "loader";
 
-//@import "/node_modules/vue-multiselect/dist/vue-multiselect.min.css";
 @import "vue-multiselect";
-//@import "vue-multiselect.min.css";
 
 a {
   color: #2488cf;

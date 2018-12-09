@@ -700,8 +700,10 @@
             this.$refs.primitiveMaterialsModalRef.hide();
           } else {
             this.isProcessingLocal = false;
-            this.actionMessage = 'Material added to your inventory.';
-            this.actionMessageSeconds = 5;
+            this.$notify({
+              message: 'Material added to your inventory.',
+              type: 'success'
+            });
             // Refresh user inventory materials
             this.$auth.fetch({
               success(res) {

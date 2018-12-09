@@ -18,11 +18,6 @@
             <div class="load-container load7 fullscreen" v-if="isProcessing">
                 <div class="loader">Loading...</div>
             </div>
-            <b-alert :show="actionMessageSeconds"
-                     @dismiss-count-down="actionMessageCountdown"
-                     variant="info">
-                {{ actionMessage }}
-            </b-alert>
         </div>
 
         <div class="col-md-6 col-sm-12">
@@ -302,8 +297,6 @@
         apiError: null,
         serverError: null,
         isProcessing: false,
-        actionMessage: null,
-        actionMessageSeconds: 0,
         files: null,
         avatar: null,
         avatarSuccess: false,
@@ -387,8 +380,10 @@
               console.log(this.apiError)
             } else {
               this.$emit('updatedUserProfile')
-              this.actionMessage = 'Success: Your user profile was updated.'
-              this.actionMessageSeconds = 5
+              this.$notify({
+                message: 'Profile Updated',
+                type: 'success'
+              });
               // Refresh the user (and user's profile)
               this.$auth.fetch({
                 success(res) {
@@ -424,8 +419,10 @@
               this.apiError = response.data.error
               console.log(this.apiError)
             } else {
-              this.actionMessage = 'Your password was successfullly changed.'
-              this.actionMessageSeconds = 5
+              this.$notify({
+                message: 'Password changed.',
+                type: 'success'
+              });
               this.passwordForm.email = ''
               this.passwordForm.old_password = ''
               this.passwordForm.password = ''
@@ -483,10 +480,6 @@
       cancelEdit: function () {
         //this.$router.push('search')
         this.$router.go(-1)
-      },
-
-      actionMessageCountdown(seconds) {
-        this.actionMessageSeconds = seconds
       },
 
       formatUsername (value, event) {

@@ -102,11 +102,6 @@
       <b-alert v-if="serverError" show variant="danger">
         Server Error: {{ serverError }}
       </b-alert>
-      <b-alert :show="actionMessageSeconds"
-               @dismiss-count-down="actionMessageCountdown"
-               variant="info">
-        {{ actionMessage }}
-      </b-alert>
 
       <div v-if="searchUser" class="row">
         <div class="col-sm-12 d-xl-none d-lg-none d-md-none">
@@ -455,8 +450,6 @@
         minSearchTextLength: 3,
         apiError: null,
         serverError: null,
-        actionMessage: null,
-        actionMessageSeconds: 0,
         selectedSearchTypeOrCollection: null,
         selectedMaterials: {},
         isAllMaterialsSelected: false,
@@ -864,8 +857,10 @@
             this.isProcessingLocal = false
           } else {
             this.isProcessingLocal = false
-            this.actionMessage = 'Bookmarked.'
-            this.actionMessageSeconds = 5
+            this.$notify({
+              message: 'Bookmarked.',
+              type: 'success'
+            });
             this.$store.dispatch('search/refresh')
             if (this.newCollectionName) {
               // Refresh user collections
@@ -906,8 +901,10 @@
             this.isProcessingLocal = false
           } else {
             this.isProcessingLocal = false
-            this.actionMessage = 'Removed from collection.'
-            this.actionMessageSeconds = 5
+            this.$notify({
+              message: 'Removed from Bookmark Folder ',
+              type: 'success'
+            });
             this.$store.dispatch('search/refresh')
           }
         })
@@ -945,10 +942,6 @@
         }
       },
 
-      actionMessageCountdown(seconds) {
-        this.actionMessageSeconds = seconds
-      },
-
       copyMaterial: function (id) {
         let url = Vue.axios.defaults.baseURL + '/recipes/' + id + '/copy';
         if (this.isViewingSelf && this.searchQuery.params.collection) {
@@ -967,11 +960,11 @@
           } else {
             this.isProcessingLocal = false
             var materialCopy = response.data.data;
-            this.actionMessage = 'Copied ' + materialCopy.name + ' to your recipes.'
-            this.actionMessageSeconds = 5
-            //this.newSearch()
+            this.$notify({
+              message: 'Copied ' + materialCopy.name + ' to your recipes.',
+              type: 'success'
+            });
             this.$store.dispatch('search/refresh')
-            //this.$router.push({ name: 'recipes', params: { id: materialCopy.id }})
           }
         })
         .catch(response => {
@@ -1005,8 +998,10 @@
             } else {
               this.toDeleteMaterialId = 0
               this.isProcessingLocal = false
-              this.actionMessage = 'Deleted from your recipes.'
-              this.actionMessageSeconds = 5
+              this.$notify({
+                message: 'Deleted from your recipes.',
+                type: 'success'
+              });
               this.$store.dispatch('search/refresh')
               // this.newSearch()
             }
@@ -1037,8 +1032,10 @@
               })
               this.toDeleteMaterialId = 0
               this.isProcessingLocal = false
-              this.actionMessage = 'Deleted the collection.'
-              this.actionMessageSeconds = 5
+              this.$notify({
+                message: 'Deleted the collection.',
+                type: 'success'
+              });
               // Update the route to default
               this.$router.push({path: this.$route.path})
             }

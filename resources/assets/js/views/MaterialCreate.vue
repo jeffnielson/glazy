@@ -67,8 +67,6 @@
         isProcessing: false,
         apiError: null,
         serverError: null,
-        actionMessage: null,
-        actionMessageSeconds: 0,
         isNewMaterial: false,
         isNewAnalysis: false
       }
@@ -115,9 +113,6 @@
       }
     },
     methods : {
-      actionMessageCountdown(seconds) {
-        this.actionMessageSeconds = seconds
-      },
       updatedRecipeMeta: function (id, recipeType) {
         this.$router.push({ name: recipeType, params: { id: id }})
       },

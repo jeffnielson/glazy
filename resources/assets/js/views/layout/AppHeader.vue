@@ -76,6 +76,7 @@
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
+        <notifications></notifications>
     </header>
 </template>
 

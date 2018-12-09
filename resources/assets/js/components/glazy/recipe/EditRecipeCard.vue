@@ -40,14 +40,6 @@
             </div>
 
         </div>
-        <b-alert :show="dismissCountDown"
-                 class="alert-edit-recipe-card"
-                 variant="info"
-                 dismissible
-                 @dismissed="dismissCountDown=0"
-                 @dismiss-count-down="countDownChanged">
-            <i class='fa fa-save'></i> {{ alertMessage }}
-        </b-alert>
         <b-alert v-if="apiError" show variant="danger">
             API Error: {{ apiError.message }}
         </b-alert>
@@ -267,9 +259,7 @@
         apiError: null,
         serverError: null,
         alertMessage: null,
-        isProcessing: false,
-        dismissSecs: 10,
-        dismissCountDown: 0
+        isProcessing: false
       }
     },
 
@@ -499,17 +489,24 @@
               this.apiError = response.data.error;
               console.log(this.apiError);
             } else {
-              this.alertMessage = "Recipe Updated";
-              this.dismissCountDown = this.dismissSecs;
               // We will need to update the last search
+              //console.log('UPDATED RECIPE DAU');
+              //console.log(response.data.data);
+              this.originalMaterial = this.material.clone();
               this.$store.dispatch('search/refresh');
               this.$emit('updatedRecipeComponents');
+              this.$notify({
+                message: 'Updated ' + this.material.name,
+                type: 'success'
+              });
             }
           })
           .catch(response => {
             this.serverError = response;
-            this.alertMessage = "Error: " + response;
-            this.dismissCountDown = this.dismissSecs;
+            this.$notify({
+              message: 'Error: ' + response,
+              type: 'danger'
+            });
             this.isProcessing = false;
             console.log('UPDATE ERROR')
             console.log(response.data)
@@ -541,14 +538,18 @@
                 this.$emit('updatedMaterialId', {'originalId': this.material.id, 'newId': response.data.data.id});
                 // We will need to update the last search
                 this.$store.dispatch('search/refresh');
-                this.alertMessage = "Recipe Saved";
-                this.dismissCountDown = this.dismissSecs;
+                this.$notify({
+                  message: 'Saved ' + this.material.name,
+                  type: 'success'
+                });
               }
             })
             .catch(response => {
               this.serverError = response;
-              this.alertMessage = "Error: " + response;
-              this.dismissCountDown = this.dismissSecs;
+              this.$notify({
+                message: 'Error: ' + response,
+                type: 'danger'
+              });
               this.isProcessing = false
               console.log('UPDATE ERROR')
               console.log(response.data)
@@ -573,10 +574,6 @@
 
       unfocusAll () {
         this.focused = false;
-      },
-
-      countDownChanged (dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
       },
 
       highlightMaterial: function (id) {

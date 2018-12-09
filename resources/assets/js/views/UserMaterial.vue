@@ -10,11 +10,6 @@
         <div class="load-container load7 fullscreen" v-if="isProcessing">
             <div class="loader">Loading...</div>
         </div>
-        <b-alert :show="actionMessageSeconds"
-                 @dismiss-count-down="actionMessageCountdown"
-                 variant="info">
-            {{ actionMessage }}
-        </b-alert>
     </div>
 
     <div class="col-lg-12">
@@ -144,9 +139,7 @@
         errors: [],
         apiError: null,
         serverError: null,
-        isProcessing: false,
-        actionMessage: null,
-        actionMessageSeconds: 0
+        isProcessing: false
       }
     },
     created() {
@@ -209,8 +202,10 @@
             console.log(this.apiError)
             this.isProcessing = false
           } else {
-            this.actionMessage = 'Removed material from inventory.'
-            this.actionMessageSeconds = 5
+            this.$notify({
+              message: 'Removed material from inventory.',
+              type: 'success'
+            });
             this.getInventoryMaterials()
             console.log('refresh user materials')
             // Refresh user inventory materials
@@ -263,10 +258,6 @@
           return '/storage/uploads/recipes/' + bin + '/' + size + '_' + recipe.thumbnail.filename;
         }
         return '/img/recipes/black.png';
-      },
-
-      actionMessageCountdown(seconds) {
-        this.actionMessageSeconds = seconds
       }
 
     }
