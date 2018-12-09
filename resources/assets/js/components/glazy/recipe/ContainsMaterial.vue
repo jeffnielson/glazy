@@ -89,10 +89,14 @@
     mounted() {
       this.containsMaterials();
     },
+    watch: {
+      material() {
+        this.containsMaterials();
+      }
+    },
     methods: {
         containsMaterials : function(page_num){
             this.isProcessing = true
-            // console.log('Searching for recipes containing material...');
 
             var form = {
             materials: [this.material.id]
