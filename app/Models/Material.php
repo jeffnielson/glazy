@@ -402,7 +402,9 @@ class Material extends Model
 
             // 20181124 Use Boolean pattern matching for partial matches
             $search_str = substr(addslashes($keywords), 0, 50);
-            $individualWords = preg_split('/ +/', $search_str);
+            //$individualWords = preg_split('/ +/', $search_str);
+            // 20181211 Mysql can't handle @ character in MATCH against Innodb TEXT field
+            $individualWords = preg_split("/[\s,@]+/", $search_str);
 
             if ($search_str && $individualWords) {
                 $search_str = '"'.$search_str.'" (';
