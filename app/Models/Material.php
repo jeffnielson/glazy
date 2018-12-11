@@ -404,12 +404,15 @@ class Material extends Model
             $search_str = substr(addslashes($keywords), 0, 50);
             //$individualWords = preg_split('/ +/', $search_str);
             // 20181211 Mysql can't handle @ character in MATCH against Innodb TEXT field
-            $individualWords = preg_split("/[\s,@]+/", $search_str);
+            $individualWords = preg_split("/[\s,@-]+/", $search_str);
 
-            if ($search_str && $individualWords) {
+            if (strlen($search_str) && $individualWords) {
                 $search_str = '"'.$search_str.'" (';
                 foreach($individualWords as $word) {
-                    $search_str .= '+' . $word . '* ';
+                    // 20181211 Only include actual words
+                    if (strlen($word)) {
+                        $search_str .= '+' . $word . '* ';
+                    }
                 }
                 $search_str .= ')';
                 $selectWords = 'MATCH (materials.description, materials.name, materials.other_names) AGAINST (\''.$search_str.'\' IN BOOLEAN MODE) AS relevance';
