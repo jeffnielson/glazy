@@ -396,7 +396,7 @@ class Material extends Model
             $whereID = '';
             $whereIDend = '';
             if (is_numeric($keywords) && is_int($keywords + 0)) {
-                $whereID = '(id = '.$keywords.' OR ';
+                $whereID = '(materials.id = '.$keywords.' OR ';
                 $whereIDend = ')';
             }
 
