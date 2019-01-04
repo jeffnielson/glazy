@@ -182,9 +182,6 @@
                             v-model="form.materialStateId"
                             :options="constants.MATERIAL_STATES_SELECT"
                     >
-                        <template slot="first">
-                            <option :value="0">No Status</option>
-                        </template>
                     </b-form-select>
                 </b-col>
                 <b-col md="6">
