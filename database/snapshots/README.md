@@ -7,6 +7,8 @@
  * created_by_user_id: The user ID in Glazy
  * material_type_id: Categorizes the material, e.g. "Celadon".  
  * material_type: Name of the material category.  May have duplicates, as material_type is a tree.  e.g. "Celadon -> Blue" and "Blue"
+ * material_state_id: ID of the material's state: Testing, Production, or Discontinued
+ * material_state: Testing, Production, or Discontinued
  * rgb_r, rgb_g, rgb_b: RGB values that represent the color of the glaze.  Usually taken from a photo.  Not reliable.
  * surface_type:
    - 1	Matte
