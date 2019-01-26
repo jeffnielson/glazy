@@ -1,0 +1,5 @@
+SELECT CONCAT('https://glazy.org/recipes/', materials.id), materials.id, materials.name, count(material_materials.parent_material_id) 
+FROM `materials`
+left join material_materials on materials.id = material_materials.parent_material_id
+WHERE `materials`.`is_private` = '0' and `thumbnail_id` IS not NULL and `materials`.`material_type_id` in ('470', '480', '490', '500', '510', '520', '530', '533', '535', '540', '550', '560', '570', '580', '585', '590', '600', '610', '620', '630', '635', '640', '650', '660', '670', '673', '675', '680', '690', '700', '710', '720', '730', '740', '745', '750', '760', '770', '780', '790', '800', '810', '820', '830', '840', '850', '860', '870', '880', '890', '900', '910', '920', '930', '940', '950', '960', '970', '980', '990', '1000', '1010', '1020', '1030', '1040', '1050', '1055', '1060', '1070', '1080', '1090', '1100', '1130', '1140', '1150', '1160', '1170', '460') and (`materials`.`to_orton_cone_id` >= '33') and `materials`.`material_state_id` = '2' and `materials`.`is_primitive` = '0' and `materials`.`is_analysis` = '0' and `materials`.`deleted_at` IS NULL
+GROUP  BY materials.id;
